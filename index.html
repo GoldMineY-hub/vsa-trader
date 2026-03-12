@@ -1146,6 +1146,41 @@
   </div>
 
 
+  <!-- PROXY INSTELLINGEN -->
+  <div class="panel" style="border-color:var(--accent3);background:rgba(184,134,11,0.03);">
+    <div class="panel-toggle" onclick="togglePanel('proxysettings')">
+      <div class="panel-left"><div class="panel-icon">⚙️</div><div>
+        <div class="panel-title">Proxy Instellingen — Data ophalen</div>
+        <div class="panel-sub" id="proxyStatusSub">Data ophalen via allorigins proxy · klik voor eigen proxy instellen</div>
+      </div></div>
+      <div class="panel-arrow" id="proxysettings-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="proxysettings-body">
+      <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
+        <p style="font-size:13px;line-height:1.7;margin:0 0 12px;">
+          Yahoo Finance blokkeert verzoeken vanuit de browser (CORS). De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt meestal maar kan traag zijn.<br><br>
+          Voor de <strong>snelste en meest betrouwbare</strong> verbinding: zet een gratis <strong>Cloudflare Worker</strong> op (5 minuten, geen creditcard nodig).
+        </p>
+        <details style="font-size:12px;color:var(--muted);">
+          <summary style="cursor:pointer;font-weight:700;color:var(--text);margin-bottom:8px;">📋 Instructies: eigen proxy instellen</summary>
+          <ol style="margin:8px 0 0 16px;line-height:2;">
+            <li>Ga naar <a href="https://workers.cloudflare.com" target="_blank">workers.cloudflare.com</a> → gratis account</li>
+            <li>Klik <strong>Create Worker</strong> → plak de Worker-code erin (zie ZIP)</li>
+            <li>Klik <strong>Deploy</strong> → kopieer de URL (bijv. <code>https://vsa-proxy.jouw-naam.workers.dev</code>)</li>
+            <li>Plak die URL hieronder en klik Opslaan</li>
+          </ol>
+        </details>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input id="proxyInput" type="url" placeholder="https://vsa-proxy.jouw-naam.workers.dev"
+          style="flex:1;min-width:260px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;background:var(--surface);color:var(--text);">
+        <button onclick="saveProxyUrl()" style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">💾 Opslaan</button>
+        <button onclick="clearProxyUrl()" style="padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">✕ Wissen</button>
+      </div>
+      <div id="proxyTestResult" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:12px;"></div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -1206,27 +1241,35 @@ function makeAbortSignal(ms) {
 }
 
 // ── FETCH LAAG ──
-// Yahoo blokkeert directe verzoeken. We gebruiken gratis proxies + Stooq als fallback.
+// Yahoo blokkeert directe verzoeken via CORS vanuit browsers.
+// Volgorde: eigen proxy (indien ingesteld) → allorigins → Stooq via allorigins
+
+// Eigen proxy URL (Cloudflare Worker) — instelbaar
+let customProxyUrl = localStorage.getItem('vsa_proxy') || '';
 
 async function fetchData(ticker, range) {
   const sym = ticker.toUpperCase().trim();
   const safeRange = ['1mo','3mo','6mo'].includes(range) ? range : '1mo';
   const interval  = safeRange === '6mo' ? '1wk' : '1d';
 
-  const yUrl2 = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
+  const yUrl  = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
   const yUrl1 = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
 
-  const attempts = [
-    // allorigins /get — geeft { contents: "<json>" }
-    () => fetchViaAllorigins(yUrl2, sym),
-    () => fetchViaAllorigins(yUrl1, sym),
-    // jsonp.afeld.me — open CORS proxy
-    () => fetchViaJsonpAfeld(yUrl2, sym),
-    // corsproxy.io
-    () => fetchViaGenericProxy(`https://corsproxy.io/?${encodeURIComponent(yUrl2)}`, sym, 'json'),
-    // Stooq CSV (werkt voor US & EU aandelen) — via allorigins als CORS blokkeert
-    () => fetchStooq(sym, safeRange),
-  ];
+  const attempts = [];
+
+  // Eigen proxy heeft prioriteit
+  if (customProxyUrl) {
+    attempts.push(() => fetchViaCustomProxy(yUrl, sym));
+    attempts.push(() => fetchViaCustomProxy(yUrl1, sym));
+  }
+
+  // allorigins als fallback
+  attempts.push(() => fetchViaAlloriginsGet(yUrl, sym));
+  attempts.push(() => fetchViaAlloriginsGet(yUrl1, sym));
+  attempts.push(() => fetchViaAlloriginsRaw(yUrl, sym));
+
+  // Stooq als laatste redmiddel (geen Yahoo nodig)
+  attempts.push(() => fetchStooq(sym, safeRange));
 
   for (const attempt of attempts) {
     try {
@@ -1237,31 +1280,32 @@ async function fetchData(ticker, range) {
     }
   }
 
-  throw new Error(`Geen data voor "${sym}". Controleer het symbool.<br><small>Werkt het op <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">Yahoo Finance →</a>? Dan is het symbool correct.</small>`);
+  throw new Error(`Geen data voor "${sym}".<br><small>Werkt het op <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">Yahoo Finance →</a>? Zo ja, stel dan een eigen proxy in via ⚙️ onderaan de pagina.</small>`);
 }
 
-async function fetchViaAllorigins(yahooUrl, sym) {
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
+async function fetchViaCustomProxy(yahooUrl, sym) {
+  const proxyUrl = `${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(yahooUrl)}`;
   const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
-  if (!res.ok) throw new Error(`allorigins HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`eigen proxy HTTP ${res.status}`);
+  const data = await res.json();
+  return parseYahooJSON(data, sym);
+}
+
+async function fetchViaAlloriginsGet(yahooUrl, sym) {
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(30000) });
+  if (!res.ok) throw new Error(`allorigins/get HTTP ${res.status}`);
   const wrapper = await res.json();
   if (!wrapper?.contents) throw new Error('allorigins: geen contents');
   const data = JSON.parse(wrapper.contents);
   return parseYahooJSON(data, sym);
 }
 
-async function fetchViaJsonpAfeld(yahooUrl, sym) {
-  const proxyUrl = `https://jsonp.afeld.me/?url=${encodeURIComponent(yahooUrl)}`;
-  const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
-  if (!res.ok) throw new Error(`afeld HTTP ${res.status}`);
+async function fetchViaAlloriginsRaw(yahooUrl, sym) {
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`;
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(30000) });
+  if (!res.ok) throw new Error(`allorigins/raw HTTP ${res.status}`);
   const data = await res.json();
-  return parseYahooJSON(data, sym);
-}
-
-async function fetchViaGenericProxy(proxyUrl, sym, type) {
-  const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
-  if (!res.ok) throw new Error(`proxy HTTP ${res.status}`);
-  const data = type === 'json' ? await res.json() : await res.text();
   return parseYahooJSON(data, sym);
 }
 
@@ -3591,6 +3635,45 @@ function renderJournalList() {
     </div>`;
   }).join('');
 }
+
+// ── PROXY INSTELLINGEN ──
+function saveProxyUrl() {
+  const val = document.getElementById('proxyInput').value.trim();
+  if (val && !val.startsWith('http')) {
+    document.getElementById('proxyTestResult').innerHTML = '<span style="color:var(--accent2);">⚠️ URL moet beginnen met https://</span>';
+    return;
+  }
+  customProxyUrl = val;
+  localStorage.setItem('vsa_proxy', val);
+  const sub = document.getElementById('proxyStatusSub');
+  if (val) {
+    if (sub) sub.textContent = '✅ Eigen proxy actief: ' + val.replace('https://', '');
+    document.getElementById('proxyTestResult').innerHTML = '<span style="color:var(--accent);">✅ Proxy opgeslagen. Wordt gebruikt bij volgende analyse.</span>';
+  } else {
+    if (sub) sub.textContent = 'Data ophalen via allorigins proxy · klik voor eigen proxy instellen';
+    document.getElementById('proxyTestResult').innerHTML = '<span style="color:var(--muted);">Proxy gewist. Terug naar allorigins.</span>';
+  }
+}
+
+function clearProxyUrl() {
+  document.getElementById('proxyInput').value = '';
+  customProxyUrl = '';
+  localStorage.removeItem('vsa_proxy');
+  const sub = document.getElementById('proxyStatusSub');
+  if (sub) sub.textContent = 'Data ophalen via allorigins proxy · klik voor eigen proxy instellen';
+  document.getElementById('proxyTestResult').innerHTML = '<span style="color:var(--muted);">Proxy gewist.</span>';
+}
+
+// Init proxy input on load
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('vsa_proxy') || '';
+  if (saved) {
+    const el = document.getElementById('proxyInput');
+    if (el) el.value = saved;
+    const sub = document.getElementById('proxyStatusSub');
+    if (sub) sub.textContent = '✅ Eigen proxy actief: ' + saved.replace('https://', '');
+  }
+});
 
 </script>
 </body>
