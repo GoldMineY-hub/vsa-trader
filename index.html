@@ -2235,13 +2235,14 @@ async function showLookup(q) {
 // Yahoo autocomplete fallback
 async function fetchYahooAutocomplete(q) {
   const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=12&newsCount=0&enableFuzzyQuery=true`;
-  const proxies = [
-    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-  ];
+  const proxies = [];
+
+  if (customProxyUrl) proxies.push(`${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(url)}`);
+  proxies.push(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+
   for (const u of proxies) {
     try {
-      const r = await fetch(u, { signal: makeAbortSignal(7000) });
+      const r = await fetch(u, { signal: makeAbortSignal(10000) });
       if (!r.ok) continue;
       const wrapper = await r.json();
       const j = wrapper?.contents ? JSON.parse(wrapper.contents) : wrapper;
@@ -2567,16 +2568,17 @@ async function fetchNewsForTicker(sym) {
   const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
   let json = null;
 
-  // allorigins /get
-  if (!json) try {
-    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(10000) });
-    if (r.ok) { const w = await r.json(); json = JSON.parse(w.contents); }
+  // Eigen proxy (Cloudflare Worker) heeft prioriteit
+  if (customProxyUrl && !json) try {
+    const proxyUrl = `${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(url)}`;
+    const r = await fetch(proxyUrl, { signal: makeAbortSignal(10000) });
+    if (r.ok) json = await r.json();
   } catch(e) {}
 
-  // codetabs
+  // allorigins fallback
   if (!json) try {
-    const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, { signal: makeAbortSignal(10000) });
-    if (r.ok) json = await r.json();
+    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(20000) });
+    if (r.ok) { const w = await r.json(); if (w?.contents) json = JSON.parse(w.contents); }
   } catch(e) {}
 
   const rawNews = json?.news || [];
