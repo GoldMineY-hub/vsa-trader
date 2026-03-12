@@ -2565,26 +2565,57 @@ async function loadAllNews() {
 }
 
 async function fetchNewsForTicker(sym) {
-  const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
-  let json = null;
+  const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
+  const finvizUrl = `https://finviz.com/quote.ashx?t=${encodeURIComponent(sym)}`;
 
-  // Eigen proxy (Cloudflare Worker) heeft prioriteit
-  if (customProxyUrl && !json) try {
-    const proxyUrl = `${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(url)}`;
-    const r = await fetch(proxyUrl, { signal: makeAbortSignal(10000) });
-    if (r.ok) json = await r.json();
+  let articles = [];
+
+  // ── Yahoo nieuws via Worker/allorigins ──
+  try {
+    let json = null;
+    if (customProxyUrl) try {
+      const r = await fetch(`${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(yahooUrl)}`, { signal: makeAbortSignal(10000) });
+      if (r.ok) json = await r.json();
+    } catch(e) {}
+
+    if (!json) try {
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`, { signal: makeAbortSignal(20000) });
+      if (r.ok) { const w = await r.json(); if (w?.contents) json = JSON.parse(w.contents); }
+    } catch(e) {}
+
+    const rawNews = json?.news || [];
+    const yahooArticles = rawNews.filter(n=>n.title&&n.link).slice(0,15).map(n=>({
+      title: n.title, url: n.link, source: n.publisher||'Yahoo Finance',
+      published: n.providerPublishTime||null,
+    }));
+    articles.push(...yahooArticles);
   } catch(e) {}
 
-  // allorigins fallback
-  if (!json) try {
-    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(20000) });
-    if (r.ok) { const w = await r.json(); if (w?.contents) json = JSON.parse(w.contents); }
+  // ── Finviz nieuws scrapen via Worker ──
+  if (customProxyUrl) try {
+    const r = await fetch(`${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(finvizUrl)}`, { signal: makeAbortSignal(10000) });
+    if (r.ok) {
+      const html = await r.text();
+      // Finviz nieuws zit in <a> tags in de news-table
+      const matches = [...html.matchAll(/<a[^>]+href="(https?:\/\/[^"]+)"[^>]*class="[^"]*news-link[^"]*"[^>]*>([^<]+)<\/a>/gi)];
+      // Fallback: zoek alle externe links in de news sectie
+      const fallback = [...html.matchAll(/class="news-link-cell"[^>]*>[\s\S]*?href="(https?:\/\/[^"]+)"[^>]*>([^<]{10,120})</gi)];
+      const fvItems = (matches.length ? matches : fallback).slice(0, 10).map(m => ({
+        title: m[2]?.trim(),
+        url: m[1],
+        source: 'Finviz',
+        published: Math.floor(Date.now()/1000) - 3600, // geen timestamp beschikbaar
+      })).filter(a => a.title && a.url);
+      articles.push(...fvItems);
+    }
   } catch(e) {}
 
-  const rawNews = json?.news || [];
-  newsData[sym] = rawNews.filter(n=>n.title&&n.link).slice(0,15).map(n=>({
-    title: n.title, url: n.link, source: n.publisher||'', published: n.providerPublishTime||null, thumbnail: n.thumbnail?.resolutions?.[0]?.url||null,
-  }));
+  // Dedupliceer op titel, sorteer op datum
+  const seen = new Set();
+  newsData[sym] = articles
+    .filter(a => { if (seen.has(a.title)) return false; seen.add(a.title); return true; })
+    .sort((a,b) => (b.published||0) - (a.published||0))
+    .slice(0, 20);
 }
 
 function renderNewsTabs() {
@@ -2611,7 +2642,7 @@ function showNewsLoading() {
 
 function renderNewsTab(sym) {
   const content = document.getElementById('newsContent');
-  const cutoff48h = (Date.now() / 1000) - (48 * 3600);
+  const cutoff48h_ts = (Date.now() / 1000) - (48 * 3600);
 
   let articles = [];
   if (sym === 'ALL') {
@@ -2627,20 +2658,22 @@ function renderNewsTab(sym) {
     articles = (newsData[sym] || []).map(a => ({...a, ticker: sym}));
   }
 
-  // Filter to last 48 hours only
-  const recent = articles.filter(a => a.published && a.published >= cutoff48h);
+  // Probeer eerst 48u filter, toon anders gewoon de laatste 5
+  const cutoff48h = articles.filter(a => a.published && a.published >= cutoff48h_ts);
+  const recent = cutoff48h.length > 0 ? cutoff48h : articles.slice(0, 5);
 
   if (recent.length === 0) {
-    const msg = 'Geen nieuws gevonden in de afgelopen 48 uur voor dit aandeel.';
-    content.innerHTML = `<div class="news-empty">${msg}</div>`;
+    content.innerHTML = `<div class="news-empty">Geen nieuws gevonden voor dit aandeel.</div>`;
     return;
   }
 
   content.innerHTML = `<div class="news-grid">${recent.map(a => {
-    const ago = timeAgo(a.published, nl);
+    const ago = timeAgo(a.published);
+    const isOld = a.published && a.published < cutoff48h_ts;
     return `<div class="news-card">
       <div>
         <span class="news-ticker-tag">${a.ticker}</span>
+        ${isOld ? `<span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-left:6px;">ouder dan 48u</span>` : ''}
       </div>
       <a href="${a.url}" target="_blank" rel="noopener">
         <div class="news-headline">${a.title}</div>
