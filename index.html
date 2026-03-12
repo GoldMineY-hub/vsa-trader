@@ -35,8 +35,7 @@
   .header-right{display:flex;align-items:center;gap:12px;}
   .free-badge{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);border:1.5px solid var(--accent);
     padding:4px 12px;border-radius:20px;background:rgba(45,122,79,0.08);font-weight:700;}
-  .lang-toggle{display:flex;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;}
-  .lang-btn{padding:6px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+  .lang-btn{display:none;padding:6px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
     cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
   .lang-btn.active{background:var(--accent);color:#fff;}
   .main{max-width:1100px;margin:0 auto;padding:28px 20px;position:relative;z-index:1;}
@@ -539,6 +538,82 @@
   .quiz-next.show{display:inline-block;}
   .quiz-progress{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;}
 
+  /* ── BATCH SCANNER ── */
+  .scanner-input-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .scanner-textarea{flex:1;min-width:200px;min-height:80px;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;background:var(--surface2);color:var(--text);resize:vertical;}
+  .scanner-textarea:focus{outline:none;border-color:var(--accent);}
+  .scanner-btn{padding:10px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;align-self:flex-end;}
+  .scanner-btn:disabled{opacity:0.5;cursor:not-allowed;}
+  .scanner-btn.secondary{background:var(--surface2);color:var(--text);border:1.5px solid var(--border);}
+  .scanner-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .scanner-preset{padding:5px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-family:'Space Mono',monospace;cursor:pointer;transition:all 0.15s;}
+  .scanner-preset:hover{border-color:var(--accent);color:var(--accent);}
+  .scanner-progress{margin-bottom:14px;display:none;}
+  .scanner-progress.show{display:block;}
+  .scanner-progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+  .scanner-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.3s;}
+  .scanner-progress-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+  .scanner-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+  .scanner-result-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.15s;position:relative;}
+  .scanner-result-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 12px rgba(44,36,22,0.1);}
+  .scanner-result-card.bullish{border-left:3px solid var(--accent);}
+  .scanner-result-card.bearish{border-left:3px solid var(--accent2);}
+  .scanner-result-card.neutral{border-left:3px solid var(--accent3);}
+  .scanner-result-card.error{border-left:3px solid var(--muted);opacity:0.6;}
+  .scanner-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .scanner-sym{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;}
+  .scanner-price{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);}
+  .scanner-bias{font-size:11px;font-weight:700;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;}
+  .scanner-bias.BULLISH{background:rgba(45,122,79,0.15);color:var(--accent);}
+  .scanner-bias.BEARISH{background:rgba(192,57,43,0.12);color:var(--accent2);}
+  .scanner-bias.NEUTRAL{background:rgba(184,134,11,0.12);color:var(--accent3);}
+  .scanner-signals{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+  .scanner-sig-tag{font-size:10px;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;font-weight:700;}
+  .scanner-sig-tag.bullish{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .scanner-sig-tag.bearish{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .scanner-sig-tag.absorption{background:rgba(184,134,11,0.1);color:var(--accent3);}
+  .scanner-sig-tag.warning{background:rgba(37,99,168,0.1);color:var(--blue);}
+  .scanner-score{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;}
+  .scanner-sort-row{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+  .scanner-sort-btn{padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;font-family:'Space Mono',monospace;cursor:pointer;background:var(--surface2);}
+  .scanner-sort-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.07);}
+  .scanner-empty{text-align:center;padding:32px;color:var(--muted);font-size:13px;}
+
+  /* ── TRADE JOURNAL ── */
+  .journal-form{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;}
+  .journal-form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:12px;}
+  .journal-field{display:flex;flex-direction:column;gap:4px;}
+  .journal-label{font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1px;}
+  .journal-input{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;background:var(--surface);color:var(--text);}
+  .journal-input:focus{outline:none;border-color:var(--accent);}
+  .journal-select{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Space Mono',monospace;background:var(--surface);color:var(--text);}
+  .journal-textarea{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;background:var(--surface);color:var(--text);resize:vertical;min-height:60px;grid-column:1/-1;}
+  .journal-save-btn{padding:9px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;}
+  .journal-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:16px;}
+  .journal-stat{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center;}
+  .journal-stat-val{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);}
+  .journal-stat-val.red{color:var(--accent2);}
+  .journal-stat-val.amber{color:var(--accent3);}
+  .journal-stat-lbl{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:2px;}
+  .journal-list{display:flex;flex-direction:column;gap:8px;}
+  .journal-entry{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;}
+  .journal-entry.win{border-left:3px solid var(--accent);}
+  .journal-entry.loss{border-left:3px solid var(--accent2);}
+  .journal-entry.open{border-left:3px solid var(--accent3);}
+  .journal-entry-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  .journal-entry-sym{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+  .journal-entry-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
+  .journal-entry-result{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;}
+  .journal-entry-result.win{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .journal-entry-result.loss{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .journal-entry-result.open{background:rgba(184,134,11,0.1);color:var(--accent3);}
+  .journal-entry-body{font-size:12px;color:var(--muted);line-height:1.6;}
+  .journal-entry-delete{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;opacity:0.5;}
+  .journal-entry-delete:hover{opacity:1;color:var(--accent2);}
+  .journal-filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .journal-filter-btn{padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;font-family:'Space Mono',monospace;cursor:pointer;background:var(--surface2);}
+  .journal-filter-btn.active{border-color:var(--accent);color:var(--accent);}
+
   /* API Key Banner */
   .api-banner{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#2d7a4f;color:#fff;font-size:13px;flex-wrap:wrap;position:sticky;top:0;z-index:200;}
   .api-banner span{flex:1;font-weight:600;min-width:180px;}
@@ -582,10 +657,7 @@
   </div>
   <div class="header-right">
     <div class="free-badge">✓ 100% FREE</div>
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')">🇬🇧 EN</button>
-      <button class="lang-btn" onclick="setLang('nl')">🇳🇱 NL</button>
-    </div>
+    
   </div>
 </header>
 
@@ -602,8 +674,8 @@
       <button class="range-btn" data-range="3mo">3M</button>
       <button class="range-btn" data-range="6mo">6M</button>
     </div>
-    <button class="analyze-btn" id="analyzeBtn" data-en="ANALYSE →" data-nl="ANALYSEER →">ANALYSE →</button>
-    <button class="save-btn" id="watchAddBtn" onclick="addCurrentToWatchlist()" data-en="📌 Save" data-nl="📌 Opslaan">📌 Save</button>
+    <button class="analyze-btn" id="analyzeBtn" data-en="ANALYSE →" data-nl="ANALYSEER →">ANALYSEER →</button>
+    <button class="save-btn" id="watchAddBtn" onclick="addCurrentToWatchlist()" data-en="📌 Save" data-nl="📌 Opslaan">📌 Opslaan</button>
   </div>
 
   <!-- 2. WATCHLIST — live price ticker -->
@@ -615,11 +687,11 @@
       </div>
       <div class="watchlist-refresh-info">
         <span class="live-dot"></span>
-        <span id="watchLastUpdate" data-en="updating..." data-nl="updaten...">updating...</span>
+        <span id="watchLastUpdate" data-en="updating..." data-nl="updaten...">updaten...</span>
       </div>
     </div>
     <div class="watchlist-cards" id="watchlistCards">
-      <div class="watch-empty" data-en="Save a stock after analysing it to track prices here." data-nl="Sla een aandeel op na analyse om de prijs hier te volgen.">Save a stock after analysing it to track prices here.</div>
+      <div class="watch-empty" data-en="Save a stock after analysing it to track prices here." data-nl="Sla een aandeel op na analyse om de prijs hier te volgen.">Sla een aandeel op na analyse om de prijs hier te volgen.</div>
     </div>
   </div>
 
@@ -627,8 +699,8 @@
   <div id="output">
     <div class="empty-state">
       <div class="empty-icon">📊</div>
-      <div class="empty-title" data-en="Enter a stock ticker above" data-nl="Voer een aandelenticker in">Enter a stock ticker above</div>
-      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds — no account or API key needed." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden — geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds — no account or API key needed.</div>
+      <div class="empty-title" data-en="Enter a stock ticker above" data-nl="Voer een aandelenticker in">Voer een aandelenticker in</div>
+      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds — geen account of API-sleutel nodig." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden — geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds — geen account of API-sleutel nodig.</div>
     </div>
   </div>
 
@@ -864,6 +936,128 @@
     </div>
   </div>
 
+  <!-- BATCH SCANNER PANEL -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('scanner')">
+      <div class="panel-left"><div class="panel-icon">🔍</div><div>
+        <div class="panel-title">VSA Batch Scanner — Analyseer meerdere stocks tegelijk</div>
+        <div class="panel-sub">Plak 10–20 tickers · app rankt ze op signaalsterkte · klik om te analyseren</div>
+      </div></div>
+      <div class="panel-arrow" id="scanner-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="scanner-body">
+
+      <div class="section-label" style="margin-bottom:10px;">⚡ SNELLE LIJSTEN — 1 KLIK</div>
+      <div class="scanner-presets">
+        <button class="scanner-preset" onclick="loadPreset('under50')">📋 Populaire stocks &lt; $50</button>
+        <button class="scanner-preset" onclick="loadPreset('tech')">💻 Tech stocks</button>
+        <button class="scanner-preset" onclick="loadPreset('etf')">📦 Belangrijke ETFs</button>
+        <button class="scanner-preset" onclick="loadPreset('aex')">🇳🇱 AEX stocks</button>
+        <button class="scanner-preset" onclick="loadPreset('meme')">🚀 High volatility</button>
+      </div>
+
+      <div class="section-label" style="margin-bottom:8px;">✏️ OF PLAK EIGEN TICKERS</div>
+      <div class="scanner-input-row">
+        <textarea class="scanner-textarea" id="scannerInput"
+          placeholder="AAPL TSLA NVDA NFLX AMD&#10;Of komma-gescheiden: AAPL, TSLA, NVDA&#10;Elke ticker op een nieuwe regel of met komma/spatie"></textarea>
+        <div style="display:flex;flex-direction:column;gap:8px;align-self:flex-end;">
+          <button class="scanner-btn" id="scannerRunBtn" onclick="runBatchScanner()">▶ Scannen</button>
+          <button class="scanner-btn secondary" onclick="clearScanner()">✕ Wissen</button>
+        </div>
+      </div>
+
+      <div class="scanner-progress" id="scannerProgress">
+        <div class="scanner-progress-bar"><div class="scanner-progress-fill" id="scannerProgressFill" style="width:0%"></div></div>
+        <div class="scanner-progress-text" id="scannerProgressText">Bezig...</div>
+      </div>
+
+      <div id="scannerResults"></div>
+    </div>
+  </div>
+
+  <!-- TRADE JOURNAL PANEL -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('journal')">
+      <div class="panel-left"><div class="panel-icon">📓</div><div>
+        <div class="panel-title">Trade Journal — Bijhouden & Leren</div>
+        <div class="panel-sub">Noteer je trades · zie je trefferpercentage · leer van je fouten</div>
+      </div></div>
+      <div class="panel-arrow" id="journal-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="journal-body">
+
+      <!-- Stats -->
+      <div class="journal-stats" id="journalStats"></div>
+
+      <!-- New trade form -->
+      <div class="section-label" style="margin-bottom:10px;">➕ NIEUWE TRADE INVOEREN</div>
+      <div class="journal-form">
+        <div class="journal-form-grid">
+          <div class="journal-field">
+            <label class="journal-label">TICKER</label>
+            <input class="journal-input" id="jTicker" placeholder="AAPL" style="font-family:'Space Mono',monospace;font-weight:700;">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">DATUM ENTRY</label>
+            <input class="journal-input" id="jDate" type="date">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">ENTRY PRIJS ($)</label>
+            <input class="journal-input" id="jEntry" type="number" step="0.01" placeholder="24.50">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">EXIT PRIJS ($)</label>
+            <input class="journal-input" id="jExit" type="number" step="0.01" placeholder="28.00 (leeg = open)">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">STOP LOSS ($)</label>
+            <input class="journal-input" id="jStop" type="number" step="0.01" placeholder="22.00">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">AANTAL AANDELEN</label>
+            <input class="journal-input" id="jShares" type="number" placeholder="100">
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">VSA SIGNAAL</label>
+            <select class="journal-select" id="jSignal">
+              <option value="">— kies signaal —</option>
+              <option>Stopping Volume</option>
+              <option>No Supply</option>
+              <option>Shake Out</option>
+              <option>Demand Surge</option>
+              <option>Bullish Absorption</option>
+              <option>No Demand</option>
+              <option>Up-Thrust / Rejection</option>
+              <option>Supply Surge</option>
+              <option>Climactic Action</option>
+              <option>Anders</option>
+            </select>
+          </div>
+          <div class="journal-field">
+            <label class="journal-label">RICHTING</label>
+            <select class="journal-select" id="jDirection">
+              <option value="LONG">LONG (koop)</option>
+              <option value="SHORT">SHORT (verkoop)</option>
+            </select>
+          </div>
+          <textarea class="journal-textarea journal-input" id="jNotes" placeholder="Notities: waarom instappen, wat zag je in het chart, emoties tijdens de trade..."></textarea>
+        </div>
+        <button class="journal-save-btn" onclick="saveJournalEntry()">💾 Trade opslaan</button>
+      </div>
+
+      <!-- Filter -->
+      <div class="section-label" style="margin-bottom:10px;">📋 TRADE GESCHIEDENIS</div>
+      <div class="journal-filter-row">
+        <button class="journal-filter-btn active" id="jf-all" onclick="filterJournal('all')">Alle</button>
+        <button class="journal-filter-btn" id="jf-win" onclick="filterJournal('win')">✅ Winst</button>
+        <button class="journal-filter-btn" id="jf-loss" onclick="filterJournal('loss')">❌ Verlies</button>
+        <button class="journal-filter-btn" id="jf-open" onclick="filterJournal('open')">⏳ Open</button>
+      </div>
+      <div class="journal-list" id="journalList"></div>
+
+    </div>
+  </div>
+
   <!-- PANEL 2: WHEN TO USE -->
   <div class="panel">
     <div class="panel-toggle" onclick="togglePanel('when')">
@@ -956,39 +1150,12 @@
 
 <script>
 // ── LANGUAGE SYSTEM ──
-let lang = localStorage.getItem('vsa_lang') || 'en';
-
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('vsa_lang', l);
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
-  applyLang();
-  // Recompute signals/bias/checklist in new language, then re-render
-  if (window._rawResult) {
-    const { ticker, rows, meta } = window._rawResult;
-    const signals   = runVSA(rows);
-    const biasObj   = computeBias(rows, signals);
-    const checklist = buildChecklist(rows, signals, biasObj);
-    const stats     = computeStats(rows);
-    const cvdData   = computeCVD(rows);
-    const vpData    = computeVolumeProfile(rows);
-    const zones     = computeKeyZones(rows, signals);
-    const trendStrength = computeTrendStrength(rows, signals, biasObj);
-    renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cvdData, vpData, zones, trendStrength);
-  }
-  // Re-render news tabs and content in new language
-  if (activeNewsTab) {
-    renderNewsTabs();
-    renderNewsTab(activeNewsTab);
-  }
-  // Re-render watchlist labels
-  renderWatchlist();
-}
+const lang = 'nl';
 
 function applyLang() {
-  document.querySelectorAll('[data-en]').forEach(el => {
-    const val = el.getAttribute('data-' + lang);
+  // Altijd Nederlands — pas alle data-nl attributen toe op zichtbare tekst
+  document.querySelectorAll('[data-nl]').forEach(el => {
+    const val = el.getAttribute('data-nl');
     if (val !== null) el.innerHTML = val;
   });
 }
@@ -1039,7 +1206,6 @@ function makeAbortSignal(ms) {
 }
 
 async function fetchData(ticker, range) {
-  const nl = lang === 'nl';
   const sym = ticker.toUpperCase().trim();
   const safeRange = ['1mo','3mo','6mo'].includes(range) ? range : '1mo';
   const interval  = safeRange === '6mo' ? '1wk' : '1d';
@@ -1063,9 +1229,7 @@ async function fetchData(ticker, range) {
     }
   }
 
-  throw new Error(nl
-    ? `Geen data voor "${sym}". Controleer het symbool.<br><small>De app probeert Yahoo Finance direct, via corsproxy.io, via allorigins, en stooq.com.<br>Als alle vier mislukken: hostingprobleem of onbekend symbool.</small>`
-    : `No data for "${sym}". Check the symbol.<br><small>App tried Yahoo direct, corsproxy.io, allorigins, and stooq.com.<br>If all four fail: hosting issue or unknown symbol.</small>`);
+  throw new Error(`Geen data voor "${sym}". Controleer het symbool.<br><small>Werkt het op <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">Yahoo Finance</a>? Dan is het symbool correct.<br>Op GitHub Pages werkt de app het beste — lokaal kan CORS problemen geven.</small>`);
 }
 
 async function fetchYahooDirect(url, sym) {
@@ -1152,96 +1316,75 @@ function runVSA(rows) {
   const avgVol = rows.reduce((s,r)=>s+r.volume,0)/rows.length;
   const avgSpread = rows.reduce((s,r)=>s+r.spread,0)/rows.length;
   const signals = [];
-  const nl = lang === 'nl';
 
   rows.forEach((r,i) => {
     if (i<2) return;
     const vr = r.volume/avgVol, sr = r.spread/avgSpread;
     const isUp = r.close >= r.open;
     const closePos = (r.close-r.low)/(r.spread||0.0001);
-    const fmt = d => d.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'});
+    const fmt = d => d.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
     const d = fmt(r.date);
     const prev = rows[i-1];
     const prev2 = rows[i-2];
 
     // 1. STOPPING VOLUME — high vol down bar closing upper half
     if (vr>2 && !isUp && closePos>0.55) {
-      signals.push({ type:'bullish', label: nl?'STOP-VOLUME':'STOPPING VOLUME', date:d, strength: vr > 3 ? 'high' : 'medium',
-        body: nl
-          ? `Op ${d} daalde de prijs sterk op zeer hoog volume (${vr.toFixed(1)}× gem.) maar sloot in de bovenste helft van de staaf — kopers absorbeerden de verkopen. Klassiek VSA-keerpuntsignaal. De zone rond $${r.low.toFixed(2)} is nu een potentieel vraaggebied.`
-          : `On ${d}, a very high-volume down bar (${vr.toFixed(1)}× avg) closed in the upper half — buyers absorbed the selling. Classic VSA reversal signal. Zone near $${r.low.toFixed(2)} is a potential demand area.`
+      signals.push({ type:'bullish', label: 'STOP-VOLUME', date:d, strength: vr > 3 ? 'high' : 'medium',
+        body: `Op ${d} daalde de prijs sterk op zeer hoog volume (${vr.toFixed(1)}× gem.) maar sloot in de bovenste helft van de staaf — kopers absorbeerden de verkopen. Klassiek VSA-keerpuntsignaal. De zone rond $${r.low.toFixed(2)} is nu een potentieel vraaggebied.`
       });
     }
     // 2. DEMAND SURGE — wide up bar, high vol, closes near high
     else if (vr>1.6 && sr>1.3 && isUp && closePos>0.6) {
-      signals.push({ type:'bullish', label: nl?'VRAAGSTIJGING':'DEMAND SURGE', date:d, strength: vr > 2.5 ? 'high' : 'medium',
-        body: nl
-          ? `Op ${d} steeg de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede stijgende staaf die dicht bij het hoogste punt sloot. Agressieve kopers aan de macht. Bullish vervolgssignaal.`
-          : `On ${d}, price rose from $${r.open.toFixed(2)} to $${r.close.toFixed(2)} on ${vr.toFixed(1)}× avg volume — wide up bar closing near the high. Aggressive buyers in control. Bullish continuation signal.`
+      signals.push({ type:'bullish', label: 'VRAAGSTIJGING', date:d, strength: vr > 2.5 ? 'high' : 'medium',
+        body: `Op ${d} steeg de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede stijgende staaf die dicht bij het hoogste punt sloot. Agressieve kopers aan de macht. Bullish vervolgssignaal.`
       });
     }
     // 3. SUPPLY SURGE — wide down bar, high vol, closes near low
     else if (vr>1.6 && sr>1.3 && !isUp && closePos<0.4) {
-      signals.push({ type:'bearish', label: nl?'AANBODSTIJGING':'SUPPLY SURGE', date:d, strength: vr > 2.5 ? 'high' : 'medium',
-        body: nl
-          ? `Op ${d} daalde de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede dalende staaf die dicht bij het laagste punt sloot. Verkopers domineren. Bearish vervolgssignaal.`
-          : `On ${d}, price fell from $${r.open.toFixed(2)} to $${r.close.toFixed(2)} on ${vr.toFixed(1)}× avg volume — wide down bar closing near the low. Sellers dominating. Bearish continuation signal.`
+      signals.push({ type:'bearish', label: 'AANBODSTIJGING', date:d, strength: vr > 2.5 ? 'high' : 'medium',
+        body: `Op ${d} daalde de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede dalende staaf die dicht bij het laagste punt sloot. Verkopers domineren. Bearish vervolgssignaal.`
       });
     }
     // 4. ABSORPTION — very high vol, narrow spread
     else if (vr>1.5 && sr<0.55) {
-      signals.push({ type:'absorption', label: isUp ? (nl?'BULLISH ABSORPTIE':'BULLISH ABSORPTION') : (nl?'BEARISH ABSORPTIE':'BEARISH ABSORPTION'), date:d, strength: 'medium',
-        body: nl
-          ? `Op ${d} was er zeer hoog volume (${vr.toFixed(1)}× gem.) maar slechts een smalle prijsrange van $${r.spread.toFixed(2)}. ${isUp ? 'Verkopers worden geabsorbeerd — potentiële steunzone.' : 'Kopers worden geabsorbeerd — potentiële weerstandszone.'} Let op het niveau $${r.close.toFixed(2)}.`
-          : `On ${d}, very high volume (${vr.toFixed(1)}× avg) but only a $${r.spread.toFixed(2)} price range. ${isUp ? 'Sellers being absorbed — potential support zone.' : 'Buyers being absorbed — potential resistance zone.'} Watch $${r.close.toFixed(2)}.`
+      signals.push({ type:'absorption', label: isUp ? ('BULLISH ABSORPTIE') : ('BEARISH ABSORPTIE'), date:d, strength: 'medium',
+        body: `Op ${d} was er zeer hoog volume (${vr.toFixed(1)}× gem.) maar slechts een smalle prijsrange van $${r.spread.toFixed(2)}. ${isUp ? 'Verkopers worden geabsorbeerd — potentiële steunzone.' : 'Kopers worden geabsorbeerd — potentiële weerstandszone.'} Let op het niveau $${r.close.toFixed(2)}.`
       });
     }
     // 5. UP-THRUST / REJECTION — high vol up bar closing near low
     else if (vr>1.3 && isUp && closePos<0.3 && sr>0.9) {
-      signals.push({ type:'warning', label: nl?'VALSE UITBRAAK':'UP-THRUST / REJECTION', date:d, strength: 'medium',
-        body: nl
-          ? `Op ${d} steeg de prijs naar $${r.high.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar sloot dicht bij het laagste punt op $${r.close.toFixed(2)}. Verkopers verwierpen de stijging — potentieel distributie- of keerpuntsignaal.`
-          : `On ${d}, price pushed to $${r.high.toFixed(2)} on high volume (${vr.toFixed(1)}× avg) but closed near the low at $${r.close.toFixed(2)}. Sellers rejected the move — potential distribution or reversal warning.`
+      signals.push({ type:'warning', label: 'VALSE UITBRAAK', date:d, strength: 'medium',
+        body: `Op ${d} steeg de prijs naar $${r.high.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar sloot dicht bij het laagste punt op $${r.close.toFixed(2)}. Verkopers verwierpen de stijging — potentieel distributie- of keerpuntsignaal.`
       });
     }
     // 6. LOW EFFORT MOVE — wide spread, very low volume
     else if (vr<0.65 && sr>1.5) {
-      signals.push({ type: isUp?'bullish':'bearish', label: isUp?(nl?'LAGE WEERSTAND OMHOOG':'LOW EFFORT RISE'):(nl?'LAGE WEERSTAND OMLAAG':'LOW EFFORT DROP'), date:d, strength: 'low',
-        body: nl
-          ? `Op ${d} bewoog de prijs ${isUp?'omhoog':'omlaag'} met $${r.spread.toFixed(2)} op slechts ${vr.toFixed(1)}× gemiddeld volume. Weinig ${isUp?'weerstand':'steun'} — het pad van de minste weerstand is ${isUp?'omhoog':'omlaag'}. De trend gaat waarschijnlijk door.`
-          : `On ${d}, price moved ${isUp?'up':'down'} $${r.spread.toFixed(2)} on only ${vr.toFixed(1)}× avg volume. Very little ${isUp?'resistance':'support'} — path of least resistance is ${isUp?'up':'down'}. Trend likely continues.`
+      signals.push({ type: isUp?'bullish':'bearish', label: isUp?('LAGE WEERSTAND OMHOOG'):('LAGE WEERSTAND OMLAAG'), date:d, strength: 'low',
+        body: `Op ${d} bewoog de prijs ${isUp?'omhoog':'omlaag'} met $${r.spread.toFixed(2)} op slechts ${vr.toFixed(1)}× gemiddeld volume. Weinig ${isUp?'weerstand':'steun'} — het pad van de minste weerstand is ${isUp?'omhoog':'omlaag'}. De trend gaat waarschijnlijk door.`
       });
     }
     // 7. NO SUPPLY — narrow spread, low vol, up bar after a down move (strongest entry signal)
     else if (vr<0.8 && sr<0.7 && isUp && prev && !prev.close>=prev.open) {
-      signals.push({ type:'bullish', label: nl?'GEEN AANBOD':'NO SUPPLY', date:d, strength: 'high',
-        body: nl
-          ? `Op ${d} steeg de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere daling toont dit dat verkopers zijn uitgeput — er is geen aanbod meer om de prijs omlaag te drukken. Dit is een van de sterkste VSA-instapsignalen. $${r.close.toFixed(2)} is een potentieel instappunt.`
-          : `On ${d}, price moved up on low volume (${vr.toFixed(1)}× avg) with a narrow $${r.spread.toFixed(2)} spread. After the prior down move, this shows sellers are exhausted — no supply left to push price down. One of the strongest VSA entry signals. $${r.close.toFixed(2)} is a potential entry zone.`
+      signals.push({ type:'bullish', label: 'GEEN AANBOD', date:d, strength: 'high',
+        body: `Op ${d} steeg de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere daling toont dit dat verkopers zijn uitgeput — er is geen aanbod meer om de prijs omlaag te drukken. Dit is een van de sterkste VSA-instapsignalen. $${r.close.toFixed(2)} is een potentieel instappunt.`
       });
     }
     // 8. NO DEMAND — narrow spread, low vol, down bar after an up move (trend weakening)
     else if (vr<0.8 && sr<0.7 && !isUp && prev && prev.close>=prev.open) {
-      signals.push({ type:'warning', label: nl?'GEEN VRAAG':'NO DEMAND', date:d, strength: 'medium',
-        body: nl
-          ? `Op ${d} daalde de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere stijging toont dit dat kopers zich terugtrekken — de stijgende trend heeft weinig kracht meer. Verkoop- of winstnemingssignaal. Pas op voor een ommekeer.`
-          : `On ${d}, price moved down on low volume (${vr.toFixed(1)}× avg) with a narrow $${r.spread.toFixed(2)} spread. After the prior up move, this shows buyers are pulling back — the uptrend is losing strength. Potential distribution or profit-taking signal. Watch for reversal.`
+      signals.push({ type:'warning', label: 'GEEN VRAAG', date:d, strength: 'medium',
+        body: `Op ${d} daalde de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere stijging toont dit dat kopers zich terugtrekken — de stijgende trend heeft weinig kracht meer. Verkoop- of winstnemingssignaal. Pas op voor een ommekeer.`
       });
     }
     // 9. SHAKE OUT — sharp down bar that recovers, closing in top 40%, on high vol
     else if (vr>1.8 && sr>1.4 && !isUp && closePos>0.5 && prev && prev.close > r.low) {
-      signals.push({ type:'bullish', label: nl?'UITSCHUDDING':'SHAKE OUT', date:d, strength: 'high',
-        body: nl
-          ? `Op ${d} daalde de prijs scherp naar $${r.low.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar herstelde en sloot in de bovenste helft op $${r.close.toFixed(2)}. Dit is een klassieke "uitschudding" — zwakke houders worden eruit gegooid terwijl slimme actoren kopen. Bullish omkeersignaal.`
-          : `On ${d}, price sharply dropped to $${r.low.toFixed(2)} on high volume (${vr.toFixed(1)}× avg) but recovered to close in the upper half at $${r.close.toFixed(2)}. Classic "shake out" — weak holders flushed while smart money buys. Strong bullish reversal signal.`
+      signals.push({ type:'bullish', label: 'UITSCHUDDING', date:d, strength: 'high',
+        body: `Op ${d} daalde de prijs scherp naar $${r.low.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar herstelde en sloot in de bovenste helft op $${r.close.toFixed(2)}. Dit is een klassieke "uitschudding" — zwakke houders worden eruit gegooid terwijl slimme actoren kopen. Bullish omkeersignaal.`
       });
     }
     // 10. CLIMACTIC ACTION — extreme volume (3x+), wide spread, potential exhaustion
     else if (vr>3 && sr>1.8) {
-      signals.push({ type:'absorption', label: nl?'KLIMACTISCHE ACTIE':'CLIMACTIC ACTION', date:d, strength: 'high',
-        body: nl
-          ? `Op ${d} explodeerde het volume naar ${vr.toFixed(1)}× gemiddeld met een brede range van $${r.spread.toFixed(2)}. Zulk extreme activiteit duidt vaak op een klimactisch einde van een trend. ${isUp ? 'Grote kopers kunnen uitgeput raken — pas op voor een ommekeer.' : 'Massale capitulatie mogelijk — let op stop-volume op de volgende dag.'} Afwachten is verstandig.`
-          : `On ${d}, volume exploded to ${vr.toFixed(1)}× average with a wide $${r.spread.toFixed(2)} range. Such extreme activity often marks a climactic end to a trend. ${isUp ? 'Large buyers may be exhausted — watch for reversal.' : 'Mass capitulation possible — watch for stopping volume next session.'} Wait for confirmation before acting.`
+      signals.push({ type:'absorption', label: 'KLIMACTISCHE ACTIE', date:d, strength: 'high',
+        body: `Op ${d} explodeerde het volume naar ${vr.toFixed(1)}× gemiddeld met een brede range van $${r.spread.toFixed(2)}. Zulk extreme activiteit duidt vaak op een klimactisch einde van een trend. ${isUp ? 'Grote kopers kunnen uitgeput raken — pas op voor een ommekeer.' : 'Massale capitulatie mogelijk — let op stop-volume op de volgende dag.'} Afwachten is verstandig.`
       });
     }
   });
@@ -1255,12 +1398,10 @@ function runVSA(rows) {
   }
   if (streak >= 3 && streakType !== 'absorption') {
     const streakLabel = streakType === 'bullish'
-      ? (nl ? `🔥 ${streak}× BULLISH OP RIJ — HOGE OVERTUIGING` : `🔥 ${streak}× BULLISH IN A ROW — HIGH CONVICTION`)
-      : (nl ? `🔥 ${streak}× BEARISH OP RIJ — HOGE OVERTUIGING` : `🔥 ${streak}× BEARISH IN A ROW — HIGH CONVICTION`);
-    signals.unshift({ type: streakType, label: streakLabel, date: nl ? 'Recente trend' : 'Recent trend', strength: 'high',
-      body: nl
-        ? `De laatste ${streak} VSA-signalen wijzen allemaal in dezelfde richting (${streakType}). Dit is een sterke aanwijzing dat de trend goed ingebed is. Handel alleen met de richting — ${streakType === 'bullish' ? 'koop op terugval' : 'vermijd long posities'}.`
-        : `The last ${streak} VSA signals all point in the same direction (${streakType}). This is strong evidence the trend is well-established. Only trade with it — ${streakType === 'bullish' ? 'buy on pullbacks' : 'avoid long positions'}.`
+      ? (`🔥 ${streak}× BULLISH OP RIJ — HOGE OVERTUIGING`)
+      : (`🔥 ${streak}× BEARISH OP RIJ — HOGE OVERTUIGING`);
+    signals.unshift({ type: streakType, label: streakLabel, date: 'Recente trend', strength: 'high',
+      body: `De laatste ${streak} VSA-signalen wijzen allemaal in dezelfde richting (${streakType}). Dit is een sterke aanwijzing dat de trend goed ingebed is. Handel alleen met de richting — ${streakType === 'bullish' ? 'koop op terugval' : 'vermijd long posities'}.`
     });
   }
 
@@ -1274,8 +1415,7 @@ function computeKeyZones(rows, signals) {
   const allRows = rows.slice().reverse();
   signals.forEach(sig => {
     const matchRow = rows.find(r => {
-      const nl = lang === 'nl';
-      const d = r.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'});
+      const d = r.date.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
       return d === sig.date;
     });
     if (!matchRow) return;
@@ -1298,7 +1438,6 @@ function computeKeyZones(rows, signals) {
 // ── TREND STRENGTH SCORE (1-10) ──
 function computeTrendStrength(rows, signals, biasObj) {
   let score = 5; // neutral baseline
-  const nl = lang === 'nl';
   const bull = signals.filter(s=>s.type==='bullish').length;
   const bear = signals.filter(s=>s.type==='bearish').length;
   const highStrength = signals.filter(s=>s.strength==='high').length;
@@ -1317,11 +1456,11 @@ function computeTrendStrength(rows, signals, biasObj) {
   if (volRising && biasObj.bias==='BEARISH') score -= 0.5;
 
   score = Math.max(1, Math.min(10, Math.round(score * 2) / 2));
-  const label = score >= 7.5 ? (nl?'Zeer sterk':'Very Strong')
-              : score >= 6   ? (nl?'Sterk':'Strong')
-              : score >= 4.5 ? (nl?'Neutraal':'Neutral')
-              : score >= 3   ? (nl?'Zwak':'Weak')
-              :                (nl?'Zeer zwak':'Very Weak');
+  const label = score >= 7.5 ? ('Zeer sterk')
+              : score >= 6   ? ('Sterk')
+              : score >= 4.5 ? ('Neutraal')
+              : score >= 3   ? ('Zwak')
+              :                ('Zeer zwak');
   const color = score >= 7 ? 'var(--accent)' : score >= 5 ? 'var(--accent3)' : 'var(--accent2)';
   return { score, label, color };
 }
@@ -1333,26 +1472,13 @@ function computeBias(rows, signals) {
   const bull = recent.filter(s=>s.type==='bullish').length;
   const bear = recent.filter(s=>s.type==='bearish').length;
   const absorb = recent.filter(s=>s.type==='absorption').length;
-  const nl = lang === 'nl';
 
-  if (bull>bear && pct>1) return { bias:'BULLISH', text: nl
-    ? `De prijs is de afgelopen 10 sessies met ${pct.toFixed(1)}% gestegen en recente signalen tonen kopers in controle (${bull} bullish vs ${bear} bearish). Favoriseer lange posities — wacht op terugval naar groene signaalzones.`
-    : `Price is up ${pct.toFixed(1)}% over the last 10 sessions and recent signals show buyers in control (${bull} bullish vs ${bear} bearish). Favour long setups — wait for pullbacks to green signal zones.` };
-  if (bear>bull && pct<-1) return { bias:'BEARISH', text: nl
-    ? `De prijs is de afgelopen 10 sessies met ${Math.abs(pct).toFixed(1)}% gedaald en verkopers domineren (${bear} bearish vs ${bull} bullish). Vermijd kopen — wacht eerst op een duidelijk keerpuntsignaal.`
-    : `Price is down ${Math.abs(pct).toFixed(1)}% over the last 10 sessions and sellers are dominating (${bear} bearish vs ${bull} bullish). Avoid buying — wait for a clear reversal signal first.` };
-  if (absorb>=2) return { bias:'NEUTRAL', text: nl
-    ? `Meerdere absorptiesignalen gevonden — de markt verwerkt vraag en aanbod. Geen duidelijke richtingskans. Wacht op een uitbraak met volume voordat je handelt.`
-    : `Multiple absorption signals detected — market is digesting supply and demand. No clear directional edge. Wait for a breakout with volume before committing.` };
-  if (pct>2) return { bias:'BULLISH', text: nl
-    ? `De prijs is recentelijk met ${pct.toFixed(1)}% gestegen. Matig bullish — nog geen sterke volumebevestiging. Wacht op een test van een triggerzone voor instap.`
-    : `Price has trended up ${pct.toFixed(1)}% recently. Moderate bullish lean — no strong volume confirmation yet. Wait for a trigger zone test before entering.` };
-  if (pct<-2) return { bias:'BEARISH', text: nl
-    ? `De prijs is recentelijk met ${Math.abs(pct).toFixed(1)}% gedaald. Matig bearish. Probeer geen vallend mes te vangen — wacht op stop-volume of absorptie voor long posities.`
-    : `Price has dropped ${Math.abs(pct).toFixed(1)}% recently. Moderate bearish lean. Don't catch falling knives — wait for stopping volume or absorption before considering longs.` };
-  return { bias:'NEUTRAL', text: nl
-    ? `Gemengde signalen — geen duidelijke kans op dit moment. VSA zegt: als je geen duidelijke kans ziet, wacht dan af. Geduld is ook een positie.`
-    : `Mixed signals — no clear directional edge right now. VSA says: if you can't see a clear edge, sit on your hands. Patience is a position.` };
+  if (bull>bear && pct>1) return { bias:'BULLISH', text: `De prijs is de afgelopen 10 sessies met ${pct.toFixed(1)}% gestegen en recente signalen tonen kopers in controle (${bull} bullish vs ${bear} bearish). Favoriseer lange posities — wacht op terugval naar groene signaalzones.` };
+  if (bear>bull && pct<-1) return { bias:'BEARISH', text: `De prijs is de afgelopen 10 sessies met ${Math.abs(pct).toFixed(1)}% gedaald en verkopers domineren (${bear} bearish vs ${bull} bullish). Vermijd kopen — wacht eerst op een duidelijk keerpuntsignaal.` };
+  if (absorb>=2) return { bias:'NEUTRAL', text: `Meerdere absorptiesignalen gevonden — de markt verwerkt vraag en aanbod. Geen duidelijke richtingskans. Wacht op een uitbraak met volume voordat je handelt.` };
+  if (pct>2) return { bias:'BULLISH', text: `De prijs is recentelijk met ${pct.toFixed(1)}% gestegen. Matig bullish — nog geen sterke volumebevestiging. Wacht op een test van een triggerzone voor instap.` };
+  if (pct<-2) return { bias:'BEARISH', text: `De prijs is recentelijk met ${Math.abs(pct).toFixed(1)}% gedaald. Matig bearish. Probeer geen vallend mes te vangen — wacht op stop-volume of absorptie voor long posities.` };
+  return { bias:'NEUTRAL', text: `Gemengde signalen — geen duidelijke kans op dit moment. VSA zegt: als je geen duidelijke kans ziet, wacht dan af. Geduld is ook een positie.` };
 }
 
 function buildChecklist(rows, signals, biasObj) {
@@ -1366,7 +1492,6 @@ function buildChecklist(rows, signals, biasObj) {
   const bear = signals.filter(s=>s.type==='bearish').length;
   const recentSpread = rows.slice(-5).reduce((s,r)=>s+r.spread,0)/5;
   const lastBig = last.spread > recentSpread*1.6;
-  const nl = lang === 'nl';
 
   // CVD divergence check
   const cvd = computeCVD(rows);
@@ -1375,33 +1500,31 @@ function buildChecklist(rows, signals, biasObj) {
   const hasDivergence = (priceTrendCheck > 0 && cvdTrendCheck < 0) || (priceTrendCheck < 0 && cvdTrendCheck > 0);
 
   return [
-    { text: nl
-        ? `Algemene richting is ${biasObj.bias} — handel alleen in deze richting`
-        : `Overall bias is ${biasObj.bias} — only take trades in this direction`,
+    { text: `Algemene richting is ${biasObj.bias} — handel alleen in deze richting`,
       status: biasObj.bias!=='NEUTRAL'?'pass':'warn' },
     { text: bull>bear
-        ? (nl?`VSA-signalen neigen bullish (${bull} bullish vs ${bear} bearish) — signalen ondersteunen stijging`:`VSA signals lean bullish (${bull} bullish vs ${bear} bearish) — signals support upside`)
+        ? (`VSA-signalen neigen bullish (${bull} bullish vs ${bear} bearish) — signalen ondersteunen stijging`)
         : bear>bull
-        ? (nl?`VSA-signalen neigen bearish (${bear} bearish vs ${bull} bullish) — signalen waarschuwen voor daling`:`VSA signals lean bearish (${bear} bearish vs ${bull} bullish) — signals warn of downside`)
-        : (nl?`VSA-signalen zijn gemengd (${bull} bullish, ${bear} bearish) — geen duidelijke overeenstemming`:`VSA signals are mixed (${bull} bullish, ${bear} bearish) — no clear agreement`),
+        ? (`VSA-signalen neigen bearish (${bear} bearish vs ${bull} bullish) — signalen waarschuwen voor daling`)
+        : (`VSA-signalen zijn gemengd (${bull} bullish, ${bear} bearish) — geen duidelijke overeenstemming`),
       status: (biasObj.bias==='BULLISH'&&bull>=bear)||(biasObj.bias==='BEARISH'&&bear>=bull)?'pass':'warn' },
     { text: hasDivergence
-        ? (nl?`⚠️ CVD-divergentie gedetecteerd — prijs en koopdruk bewegen in tegengestelde richting. Wees voorzichtig!`:`⚠️ CVD divergence detected — price and buying pressure moving opposite directions. Caution!`)
-        : (nl?`CVD bevestigt prijsrichting — koopdruk en prijs bewegen in lijn`:`CVD confirms price direction — buying pressure aligned with price`),
+        ? (`⚠️ CVD-divergentie gedetecteerd — prijs en koopdruk bewegen in tegengestelde richting. Wees voorzichtig!`)
+        : (`CVD bevestigt prijsrichting — koopdruk en prijs bewegen in lijn`),
       status: hasDivergence ? 'warn' : 'pass' },
     { text: vr>2.2
-        ? (nl?`⚠️ Laatste staaf volume is ${vr.toFixed(1)}× gemiddeld — mogelijke klimactische uitputting. Voorzichtig instappen.`:`⚠️ Last bar volume is ${vr.toFixed(1)}× average — possible climactic exhaustion. Be careful entering here.`)
-        : (nl?`Laatste staaf volume is normaal (${vr.toFixed(1)}× gem.) — geen uitputtingswaarschuwing`:`Last bar volume is normal (${vr.toFixed(1)}× avg) — no exhaustion warning`),
+        ? (`⚠️ Laatste staaf volume is ${vr.toFixed(1)}× gemiddeld — mogelijke klimactische uitputting. Voorzichtig instappen.`)
+        : (`Laatste staaf volume is normaal (${vr.toFixed(1)}× gem.) — geen uitputtingswaarschuwing`),
       status: vr>2.2?'warn':'pass' },
     { text: pos>70
-        ? (nl?`Prijs is dicht bij de periodeHOOGSTE (${pos}% van range) — als bullish is dit sterk; als bearish is shorten hier riskant`:`Price is near the period HIGH (${pos}% of range) — if bullish this is strong; if bearish it's risky to short here`)
+        ? (`Prijs is dicht bij de periodeHOOGSTE (${pos}% van range) — als bullish is dit sterk; als bearish is shorten hier riskant`)
         : pos<30
-        ? (nl?`Prijs is dicht bij de periodeLAAGSTE (${pos}% van range) — potentiële steunzone, betere verhouding voor long`:`Price is near the period LOW (${pos}% of range) — potential support zone, better risk/reward for longs`)
-        : (nl?`Prijs is midden in de range (${pos}%) — randen van de range geven betere kansen. Wacht indien mogelijk.`:`Price is mid-range (${pos}% of range) — edges of the range give better risk/reward. Wait if possible.`),
+        ? (`Prijs is dicht bij de periodeLAAGSTE (${pos}% van range) — potentiële steunzone, betere verhouding voor long`)
+        : (`Prijs is midden in de range (${pos}%) — randen van de range geven betere kansen. Wacht indien mogelijk.`),
       status: pos>70||pos<30?'pass':'warn' },
     { text: lastBig
-        ? (nl?`Laatste staaf is breed en uitgerekt — niet achterna rennen. Wacht op een terugval naar een signaalzone.`:`Last bar is wide and extended — avoid chasing. Wait for a pullback to a signal zone.`)
-        : (nl?`Laatste staaf is niet uitgerekt — instapomstandigheden zijn redelijk`:`Last bar is not over-extended — entry conditions are reasonable`),
+        ? (`Laatste staaf is breed en uitgerekt — niet achterna rennen. Wacht op een terugval naar een signaalzone.`)
+        : (`Laatste staaf is niet uitgerekt — instapomstandigheden zijn redelijk`),
       status: lastBig?'warn':'pass' }
   ];
 }
@@ -1414,12 +1537,12 @@ function computeStats(rows) {
   const hi=Math.max(...closes), lo=Math.min(...closes);
   const pos=((closes[closes.length-1]-lo)/(hi-lo)*100).toFixed(0);
   const fmt=n=>n>=1e9?(n/1e9).toFixed(1)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':(n/1e3).toFixed(0)+'K';
-  const nl = lang==='nl';
+
   return {
     avgVolStr:fmt(avgVol), volTrend:vt,
-    volTrendStr: vt>1.1?(nl?`Boven gem. (+${((vt-1)*100).toFixed(0)}%)`:`Above avg (+${((vt-1)*100).toFixed(0)}%)`):vt<0.9?(nl?`Onder gem. (${(((vt-1)*100)).toFixed(0)}%)`:`Below avg (${(((vt-1)*100)).toFixed(0)}%)`):(nl?'Gemiddeld':'Average'),
+    volTrendStr: vt>1.1?(`Boven gem. (+${((vt-1)*100).toFixed(0)}%)`):vt<0.9?(`Onder gem. (${(((vt-1)*100)).toFixed(0)}%)`):('Gemiddeld'),
     rangePos:pos,
-    rangePosStr: pos>70?(nl?`Dicht bij hoogste (${pos}%)`:`Near highs (${pos}%)`):pos<30?(nl?`Dicht bij laagste (${pos}%)`:`Near lows (${pos}%)`):(nl?`Midden range (${pos}%)`:`Mid-range (${pos}%)`)
+    rangePosStr: pos>70?(`Dicht bij hoogste (${pos}%)`):pos<30?(`Dicht bij laagste (${pos}%)`):(`Midden range (${pos}%)`)
   };
 }
 
@@ -1461,15 +1584,15 @@ function computeVolumeProfile(rows, buckets = 20) {
 async function runAnalysis(ticker) {
   const btn=document.getElementById('analyzeBtn');
   const output=document.getElementById('output');
-  const nl=lang==='nl';
+
   btn.disabled=true;
   output.innerHTML=`<div class="loading-box"><div class="spinner"></div>
-    <div class="loading-text">${nl?'ANALYSEREN':'ANALYSING'} ${ticker}...</div>
-    <div class="loading-sub">→ ${nl?'Data ophalen...':'Fetching data...'}<br>→ ${nl?'Handelsdagen laden':'Loading trading days'}<br>→ ${nl?'VSA-engine uitvoeren':'Running VSA engine'}</div></div>`;
+    <div class="loading-text">${'ANALYSEREN'} ${ticker}...</div>
+    <div class="loading-sub">→ ${'Data ophalen...'}<br>→ ${'Handelsdagen laden'}<br>→ ${'VSA-engine uitvoeren'}</div></div>`;
   try {
     const result = await fetchData(ticker, currentRange);
     const rows = parseRows(result);
-    if (rows.length<8) throw new Error(nl?'Onvoldoende data. Probeer een langere periode (3M of 6M).':'Not enough data. Try a longer range (3M or 6M).');
+    if (rows.length<8) throw new Error('Onvoldoende data. Probeer een langere periode (3M of 6M).');
     const signals = runVSA(rows);
     const biasObj = computeBias(rows, signals);
     const checklist = buildChecklist(rows, signals, biasObj);
@@ -1481,13 +1604,13 @@ async function runAnalysis(ticker) {
     window._rawResult = { ticker, rows, meta: result };
     renderResult(ticker, rows, signals, biasObj, checklist, stats, result, cvdData, vpData, zones, trendStrength);
   } catch(err) {
-    const nl=lang==='nl';
+  
     output.innerHTML=`<div class="error-box">⚠️ <strong>${err.message}</strong><br><br>
-      <strong>${nl?'Tips:':'Tips:'}</strong><br>
-      · ${nl?'Amerikaanse aandelen: AAPL, TSLA, NVDA, MSFT':'US stocks: AAPL, TSLA, NVDA, MSFT'}<br>
-      · ${nl?'Nederlandse aandelen (AEX): ASML.AS, PHIA.AS, HEIA.AS, SHELL.AS':'Dutch stocks (AEX): ASML.AS, PHIA.AS, HEIA.AS, SHELL.AS'}<br>
-      · ${nl?'Controleer of het symbool correct is':'Verify the symbol is correct'}<br><br>
-      <a href="https://finance.yahoo.com/lookup" target="_blank">🔍 ${nl?'Symbool opzoeken op Yahoo Finance':'Look up symbol on Yahoo Finance'}</a></div>`;
+      <strong>${'Tips:'}</strong><br>
+      · ${'Amerikaanse aandelen: AAPL, TSLA, NVDA, MSFT'}<br>
+      · ${'Nederlandse aandelen (AEX): ASML.AS, PHIA.AS, HEIA.AS, SHELL.AS'}<br>
+      · ${'Controleer of het symbool correct is'}<br><br>
+      <a href="https://finance.yahoo.com/lookup" target="_blank">🔍 ${'Symbool opzoeken op Yahoo Finance'}</a></div>`;
   } finally { btn.disabled=false; }
 }
 
@@ -1497,7 +1620,6 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   const change=last.close-prev.close, changePct=(change/prev.close*100).toFixed(2);
   const isUp=change>=0;
   const avgVol=rows.reduce((s,r)=>s+r.volume,0)/rows.length;
-  const nl=lang==='nl';
 
   // CVD divergence analysis
   const cvdLast = cvdData[cvdData.length-1]?.cvd || 0;
@@ -1507,12 +1629,12 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   const cvdDivergence = (priceTrend > 0 && cvdTrend < 0) ? 'bearish_div' :
                         (priceTrend < 0 && cvdTrend > 0) ? 'bullish_div' : 'aligned';
   const cvdBadgeHTML = cvdDivergence === 'bearish_div'
-    ? `<span class="cvd-badge div-warn">⚠️ ${nl?'BEARISH DIVERGENTIE — verborgen zwakte':'BEARISH DIVERGENCE — hidden weakness'}</span>`
+    ? `<span class="cvd-badge div-warn">⚠️ ${'BEARISH DIVERGENTIE — verborgen zwakte'}</span>`
     : cvdDivergence === 'bullish_div'
-    ? `<span class="cvd-badge div-warn">⚠️ ${nl?'BULLISH DIVERGENTIE — verborgen kracht':'BULLISH DIVERGENCE — hidden strength'}</span>`
+    ? `<span class="cvd-badge div-warn">⚠️ ${'BULLISH DIVERGENTIE — verborgen kracht'}</span>`
     : cvdTrend >= 0
-    ? `<span class="cvd-badge pos">${nl?'KOOPDRUK DOMINANT':'BUY PRESSURE DOMINANT'}</span>`
-    : `<span class="cvd-badge neg">${nl?'VERKOOPDRUK DOMINANT':'SELL PRESSURE DOMINANT'}</span>`;
+    ? `<span class="cvd-badge pos">${'KOOPDRUK DOMINANT'}</span>`
+    : `<span class="cvd-badge neg">${'VERKOOPDRUK DOMINANT'}</span>`;
 
   // Volume Profile POC price
   const pocPrice = vpData?.poc?.price?.toFixed(2) || null;
@@ -1527,18 +1649,18 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
     return up?'rgba(45,122,79,0.35)':'rgba(192,57,43,0.35)';
   });
 
-  const labels=rows.map(r=>r.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'}));
+  const labels=rows.map(r=>r.date.toLocaleDateString('nl-NL',{day:'numeric',month:'short'}));
   const closes=rows.map(r=>r.close);
   const volumes=rows.map(r=>r.volume);
 
-  const noSignalsMsg = nl ? 'Geen sterke VSA-signalen gevonden in deze periode. De markt lijkt in balans — wacht op een duidelijker signaal.' : 'No strong VSA signals detected in this period. Market may be in balance — wait for a clearer setup.';
+  const noSignalsMsg = 'Geen sterke VSA-signalen gevonden in deze periode. De markt lijkt in balans — wacht op een duidelijker signaal.';
   const signalsHTML = signals.length===0
     ? `<div style="color:var(--muted);font-size:13px;padding:10px 0;">${noSignalsMsg}</div>`
     : signals.map(s=>{
         const strengthDots = s.strength === 'high' ? '●●●' : s.strength === 'medium' ? '●●○' : '●○○';
         const strengthColor = s.strength === 'high' ? 'var(--accent)' : s.strength === 'medium' ? 'var(--accent3)' : 'var(--muted)';
-        const nl = lang==='nl';
-        const strengthLabel = s.strength === 'high' ? (nl?'Sterk':'Strong') : s.strength === 'medium' ? (nl?'Gemiddeld':'Medium') : (nl?'Zwak':'Weak');
+      
+        const strengthLabel = s.strength === 'high' ? ('Sterk') : s.strength === 'medium' ? ('Gemiddeld') : ('Zwak');
         return `<div class="signal-card ${s.type}" onclick="openSignalModal('${s.label.replace(/'/g,"\\'")}')">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <div class="signal-type">${s.label} <span class="signal-learn-btn">📖 Uitleg</span></div>
@@ -1551,7 +1673,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
 
   const checklistHTML=checklist.map(c=>`<div class="check-item"><div class="dot ${c.status}"></div><div>${c.text}</div></div>`).join('');
 
-  const dateRange = `${rows[0].date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'})} – ${last.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'})}`;
+  const dateRange = `${rows[0].date.toLocaleDateString('nl-NL',{day:'numeric',month:'short'})} – ${last.date.toLocaleDateString('nl-NL',{day:'numeric',month:'short'})}`;
 
   output.innerHTML=`
     <div class="result-header">
@@ -1561,26 +1683,21 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;">${meta?.exchange ? meta.exchange + ' · ' : ''}${dateRange}</div>
     </div>
     <div class="bias-strip">
-      <div class="bias-label">${nl?'ALGEMENE RICHTING':'OVERALL BIAS'}</div>
+      <div class="bias-label">${'ALGEMENE RICHTING'}</div>
       <div class="bias-pill ${biasObj.bias}">${biasObj.bias}</div>
       <div class="bias-text">${biasObj.text}</div>
       <button class="help-btn" id="helpbtn-bias" onclick="toggleHelp('bias')">Uitleg</button>
     </div>
     <div class="help-box" id="help-bias" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04)">
-      ${nl
-        ? `<strong>Wat is de Overall Bias?</strong> Een samenvatting van de afgelopen 4–6 weken koersactie in één richting. Controleer dit altijd <em>eerst</em> — handel alleen in deze richting.<br><br>
+      ${`<strong>Wat is de Overall Bias?</strong> Een samenvatting van de afgelopen 4–6 weken koersactie in één richting. Controleer dit altijd <em>eerst</em> — handel alleen in deze richting.<br><br>
           <span style="color:var(--accent);font-weight:700;">BULLISH</span> → Kopers hebben de leiding. Alleen koopmomenten zoeken.<br>
           <span style="color:var(--accent2);font-weight:700;">BEARISH</span> → Verkopers hebben de leiding. Wacht op een ommekeer voor je koopt.<br>
-          <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → Geen duidelijke richting. Veiligste keuze: afwachten.`
-        : `<strong>What is the Overall Bias?</strong> A summary of the last 4–6 weeks of price action in one direction. Always check this <em>first</em> — only trade in this direction.<br><br>
-          <span style="color:var(--accent);font-weight:700;">BULLISH</span> → Buyers in control. Only look for buy setups.<br>
-          <span style="color:var(--accent2);font-weight:700;">BEARISH</span> → Sellers in control. Wait for a reversal before buying.<br>
-          <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → No clear direction. Safest choice: sit out.`}
+          <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → Geen duidelijke richting. Veiligste keuze: afwachten.`}
     </div>
     <div style="padding:14px 22px;border-bottom:2px solid var(--border);display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--surface);">
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;">
-          ${nl?'TRENDSTERKTE':'TREND STRENGTH'}
+          ${'TRENDSTERKTE'}
           <button class="help-btn" id="helpbtn-trend" onclick="toggleHelp('trend')">Uitleg</button>
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
@@ -1590,155 +1707,129 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
           <div style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:${trendStrength.color};white-space:nowrap;">${trendStrength.score}/10 — ${trendStrength.label}</div>
         </div>
         <div class="help-box" id="help-trend">
-          ${nl
-            ? `Een score van 1 tot 10 voor de kracht van de huidige trend.<br><strong>7–10</strong> = Sterke, verhandelbare trend. <strong>4–6</strong> = Matige trend, voorzichtig zijn. <strong>1–3</strong> = Zwakke trend, weinig richting — overweeg te wachten.`
-            : `A score from 1–10 for the strength of the current trend.<br><strong>7–10</strong> = Strong, tradeable trend. <strong>4–6</strong> = Moderate, proceed with caution. <strong>1–3</strong> = Weak trend, little direction — consider waiting.`}
+          ${`Een score van 1 tot 10 voor de kracht van de huidige trend.<br><strong>7–10</strong> = Sterke, verhandelbare trend. <strong>4–6</strong> = Matige trend, voorzichtig zijn. <strong>1–3</strong> = Zwakke trend, weinig richting — overweeg te wachten.`}
         </div>
       </div>
       ${zones.length > 0 ? `
       <div style="flex:1 1 100%;">
         <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;">
-          ${nl?'SLEUTELZONES (STEUN/WEERSTAND)':'KEY ZONES (SUPPORT / RESISTANCE)'}
+          ${'SLEUTELZONES (STEUN/WEERSTAND)'}
           <button class="help-btn" id="helpbtn-zones" onclick="toggleHelp('zones')">Uitleg</button>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;">
           ${zones.map(z=>`
             <div style="background:${z.type==='support'?'rgba(45,122,79,0.1)':'rgba(192,57,43,0.08)'};border:1px solid ${z.type==='support'?'rgba(45,122,79,0.3)':'rgba(192,57,43,0.25)'};border-radius:6px;padding:5px 10px;display:flex;gap:8px;align-items:center;">
-              <span style="font-family:'Space Mono',monospace;font-size:9px;color:${z.type==='support'?'var(--accent)':'var(--accent2)'};font-weight:700;">${z.type==='support'?(nl?'STEUN':'SUPP'):(nl?'WEERSTAND':'RES')}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:9px;color:${z.type==='support'?'var(--accent)':'var(--accent2)'};font-weight:700;">${z.type==='support'?('STEUN'):('WEERSTAND')}</span>
               <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">$${z.price.toFixed(2)}</span>
               <span style="font-size:10px;color:var(--muted);">${z.label}</span>
             </div>`).join('')}
         </div>
         <div class="help-box" id="help-zones">
-          ${nl
-            ? `Prijsniveaus waar eerder belangrijke VSA-signalen plaatsvonden. Prijzen keren hier vaak terug.<br><strong style="color:var(--accent)">Groen (STEUN)</strong> = prijs stuiterde hier eerder omhoog — goede plek voor je stop-loss eronder.<br><strong style="color:var(--accent2)">Rood (WEERSTAND)</strong> = prijs werd hier eerder teruggedrukt — wees voorzichtig bij het benaderen.`
-            : `Price levels where important VSA signals happened before. Price tends to return to these levels.<br><strong style="color:var(--accent)">Green (SUPPORT)</strong> = price bounced up here before — good place to put stop-loss just below.<br><strong style="color:var(--accent2)">Red (RESISTANCE)</strong> = price was rejected here before — be cautious as price approaches.`}
+          ${`Prijsniveaus waar eerder belangrijke VSA-signalen plaatsvonden. Prijzen keren hier vaak terug.<br><strong style="color:var(--accent)">Groen (STEUN)</strong> = prijs stuiterde hier eerder omhoog — goede plek voor je stop-loss eronder.<br><strong style="color:var(--accent2)">Rood (WEERSTAND)</strong> = prijs werd hier eerder teruggedrukt — wees voorzichtig bij het benaderen.`}
         </div>
       </div>` : ''}
     </div>
     <div class="chart-area">
-      <div class="chart-title">${nl?'KOERS':'PRICE'} — ${rows.length} ${nl?'HANDELSDAGEN':'TRADING DAYS'}</div>
+      <div class="chart-title">${'KOERS'} — ${rows.length} ${'HANDELSDAGEN'}</div>
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
-      <div class="chart-title" style="margin-top:14px;">${nl?'VOLUME — GEKLEURD OP VSA-SIGNAAL':'VOLUME — COLOURED BY VSA SIGNAL'}</div>
+      <div class="chart-title" style="margin-top:14px;">${'VOLUME — GEKLEURD OP VSA-SIGNAAL'}</div>
       <div class="vol-wrap"><canvas id="volChart"></canvas></div>
-      <div class="cvd-row-label">${nl?'CUMULATIEVE VOLUME DELTA (CVD)':'CUMULATIVE VOLUME DELTA (CVD)'} ${cvdBadgeHTML} <button class="help-btn" id="helpbtn-cvd" onclick="toggleHelp('cvd')">Uitleg</button></div>
+      <div class="cvd-row-label">${'CUMULATIEVE VOLUME DELTA (CVD)'} ${cvdBadgeHTML} <button class="help-btn" id="helpbtn-cvd" onclick="toggleHelp('cvd')">Uitleg</button></div>
       <div class="help-box" id="help-cvd">
-        ${nl
-          ? `<strong>Wat is CVD?</strong> De paarse lijn toont de opgebouwde koopdruk vs verkoopdruk over tijd. Stijgend = meer kopers dan verkopers. Dalend = meer verkopers.<br><br>
-            ⚠️ <strong>CVD Divergentie:</strong> Als de prijs omhoog gaat maar CVD daalt (of andersom) — pas op. De prijsbeweging heeft geen volume achter zich en kan snel omdraaien.`
-          : `<strong>What is CVD?</strong> The purple line tracks cumulative buying vs selling pressure over time. Rising = more buyers than sellers. Falling = more sellers.<br><br>
-            ⚠️ <strong>CVD Divergence:</strong> If price goes up but CVD falls (or vice versa) — caution. The price move has no volume backing it and may quickly reverse.`}
+        ${`<strong>Wat is CVD?</strong> De paarse lijn toont de opgebouwde koopdruk vs verkoopdruk over tijd. Stijgend = meer kopers dan verkopers. Dalend = meer verkopers.<br><br>
+            ⚠️ <strong>CVD Divergentie:</strong> Als de prijs omhoog gaat maar CVD daalt (of andersom) — pas op. De prijsbeweging heeft geen volume achter zich en kan snel omdraaien.`}
       </div>
       <div class="cvd-wrap"><canvas id="cvdChart"></canvas></div>
       <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(45,122,79,0.85)"></div>${nl?'Vraagstijging':'Demand surge'}</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(192,57,43,0.85)"></div>${nl?'Aanbodstijging':'Supply surge'}</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(184,134,11,0.75)"></div>${nl?'Absorptie':'Absorption'}</div>
-        <div class="legend-item"><div class="legend-dot" style="background:rgba(37,99,168,0.7)"></div>${nl?'Lage weerstand beweging':'Low effort move'}</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--purple);opacity:0.7"></div>${nl?'CVD-lijn':'CVD line'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(45,122,79,0.85)"></div>${'Vraagstijging'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(192,57,43,0.85)"></div>${'Aanbodstijging'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(184,134,11,0.75)"></div>${'Absorptie'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(37,99,168,0.7)"></div>${'Lage weerstand beweging'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--purple);opacity:0.7"></div>${'CVD-lijn'}</div>
       </div>
     </div>
     <div class="two-col">
       <div class="col">
         <div class="col-title">
-          <span>${nl?'VSA-SIGNALEN':'VSA SIGNALS'} <button class="help-btn" id="helpbtn-signals" onclick="toggleHelp('signals')">Uitleg</button></span>
-          <span style="color:var(--accent)">${signals.length} ${nl?'GEVONDEN':'FOUND'}</span>
+          <span>${'VSA-SIGNALEN'} <button class="help-btn" id="helpbtn-signals" onclick="toggleHelp('signals')">Uitleg</button></span>
+          <span style="color:var(--accent)">${signals.length} ${'GEVONDEN'}</span>
         </div>
         <div class="help-box" id="help-signals">
-          ${nl
-            ? `<strong>VSA Signalen</strong> zijn specifieke combinaties van prijs en volume die vertellen wat er achter de schermen gebeurt.<br><br>
+          ${`<strong>VSA Signalen</strong> zijn specifieke combinaties van prijs en volume die vertellen wat er achter de schermen gebeurt.<br><br>
               <strong style="color:var(--accent)">🟢 Groen</strong> = Bullish — kopers winnen. <strong style="color:var(--accent2)">🔴 Rood</strong> = Bearish — verkopers winnen.<br>
               <strong style="color:var(--accent3)">🟡 Geel</strong> = Absorptie — iemand groot absorbeert stilletjes. <strong style="color:var(--blue)">🔵 Blauw</strong> = Waarschuwing — twijfelachtige beweging.<br><br>
               De sterkte-stipjes (●○○ zwak → ●●● sterk) geven aan hoe overtuigend het signaal is.<br>
-              🔥 <strong>HIGH CONVICTION</strong> = 3+ signalen op rij in dezelfde richting — het sterkste signaal.`
-            : `<strong>VSA Signals</strong> are specific price + volume combinations that reveal what's happening behind the scenes.<br><br>
-              <strong style="color:var(--accent)">🟢 Green</strong> = Bullish — buyers winning. <strong style="color:var(--accent2)">🔴 Red</strong> = Bearish — sellers winning.<br>
-              <strong style="color:var(--accent3)">🟡 Yellow</strong> = Absorption — someone big absorbing quietly. <strong style="color:var(--blue)">🔵 Blue</strong> = Warning — suspicious move.<br><br>
-              Strength dots (●○○ weak → ●●● strong) show how convincing the signal is.<br>
-              🔥 <strong>HIGH CONVICTION</strong> = 3+ signals in a row same direction — the strongest possible confirmation.`}
+              🔥 <strong>HIGH CONVICTION</strong> = 3+ signalen op rij in dezelfde richting — het sterkste signaal.`}
         </div>
         ${signalsHTML}
       </div>
       <div class="col">
         <div class="col-title">
-          ${nl?'CONTROLELIJST VOOR TRADE':'PRE-TRADE CHECKLIST'}
+          ${'CONTROLELIJST VOOR TRADE'}
           <button class="help-btn" id="helpbtn-checklist" onclick="toggleHelp('checklist')">Uitleg</button>
         </div>
         <div class="help-box" id="help-checklist">
-          ${nl
-            ? `<strong>6 automatische checks</strong> voor elke trade. Als 2 of meer stipjes rood zijn — sla de trade over en wacht op een betere setup.<br><br>
+          ${`<strong>6 automatische checks</strong> voor elke trade. Als 2 of meer stipjes rood zijn — sla de trade over en wacht op een betere setup.<br><br>
               <span style="color:var(--accent)">● Groen</span> = Voorwaarde voldaan. <span style="color:var(--accent3)">● Geel</span> = Grensgeval, let op. <span style="color:var(--accent2)">● Rood</span> = Probleem.<br><br>
-              De checklist controleert o.a.: is de bias duidelijk? bevestigt het volume de richting? is er CVD-divergentie? staat de prijs op een goed niveau?`
-            : `<strong>6 automatic checks</strong> before every trade. If 2 or more dots are red — skip the trade and wait for a cleaner setup.<br><br>
-              <span style="color:var(--accent)">● Green</span> = Condition met. <span style="color:var(--accent3)">● Yellow</span> = Borderline, watch out. <span style="color:var(--accent2)">● Red</span> = Problem.<br><br>
-              Checks include: is bias clear? does volume confirm direction? is there CVD divergence? is price at a good level?`}
+              De checklist controleert o.a.: is de bias duidelijk? bevestigt het volume de richting? is er CVD-divergentie? staat de prijs op een goed niveau?`}
         </div>
         ${checklistHTML}
       </div>
     </div>
     <div class="stats-row">
       <div class="stat-item" style="position:relative;">
-        <div class="stat-label" style="display:flex;align-items:center;gap:6px;">${nl?'Gem. Volume':'Avg Volume'} <button class="help-btn" id="helpbtn-stats" onclick="toggleHelp('stats')">Uitleg</button></div>
+        <div class="stat-label" style="display:flex;align-items:center;gap:6px;">${'Gem. Volume'} <button class="help-btn" id="helpbtn-stats" onclick="toggleHelp('stats')">Uitleg</button></div>
         <div class="stat-val">${stats.avgVolStr}</div>
       </div>
-      <div class="stat-item"><div class="stat-label">${nl?'Volume Trend':'Vol Trend'}</div><div class="stat-val ${stats.volTrend>1.1?'up':stats.volTrend<0.9?'down':'neutral'}">${stats.volTrendStr}</div></div>
-      <div class="stat-item"><div class="stat-label">${nl?'Positie in Range':'Range Position'}</div><div class="stat-val">${stats.rangePosStr}</div></div>
-      <div class="stat-item"><div class="stat-label">${nl?'Periode Hoogste':'Period High'}</div><div class="stat-val">$${Math.max(...rows.map(r=>r.high)).toFixed(2)}</div></div>
-      <div class="stat-item"><div class="stat-label">${nl?'Periode Laagste':'Period Low'}</div><div class="stat-val">$${Math.min(...rows.map(r=>r.low)).toFixed(2)}</div></div>
-      ${pocPrice ? `<div class="stat-item"><div class="stat-label">${nl?'Volume POC':'Volume POC'}</div><div class="stat-val neutral">$${pocPrice}</div></div>` : ''}
+      <div class="stat-item"><div class="stat-label">${'Volume Trend'}</div><div class="stat-val ${stats.volTrend>1.1?'up':stats.volTrend<0.9?'down':'neutral'}">${stats.volTrendStr}</div></div>
+      <div class="stat-item"><div class="stat-label">${'Positie in Range'}</div><div class="stat-val">${stats.rangePosStr}</div></div>
+      <div class="stat-item"><div class="stat-label">${'Periode Hoogste'}</div><div class="stat-val">$${Math.max(...rows.map(r=>r.high)).toFixed(2)}</div></div>
+      <div class="stat-item"><div class="stat-label">${'Periode Laagste'}</div><div class="stat-val">$${Math.min(...rows.map(r=>r.low)).toFixed(2)}</div></div>
+      ${pocPrice ? `<div class="stat-item"><div class="stat-label">${'Volume POC'}</div><div class="stat-val neutral">$${pocPrice}</div></div>` : ''}
     </div>
     <div id="help-stats" class="help-box" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04);">
-      ${nl
-        ? `<strong>Gem. Volume</strong> — gemiddeld dagelijks verhandeld. Hoog = liquide aandeel (makkelijk kopen/verkopen).<br>
+      ${`<strong>Gem. Volume</strong> — gemiddeld dagelijks verhandeld. Hoog = liquide aandeel (makkelijk kopen/verkopen).<br>
           <strong>Volume Trend</strong> — neemt volume toe of af? Stijgend bevestigt de prijsbeweging. Dalend = trend verzwakt.<br>
           <strong>Positie in Range</strong> — 100% = dicht bij de periode-hoogste. 0% = dicht bij de laagste.<br>
-          <strong>Volume POC</strong> — het prijsniveau waar het meeste volume werd verhandeld. Prijs keert hier vaak naar terug. Goede referentie voor stop-loss.`
-        : `<strong>Avg Volume</strong> — average daily shares traded. High = liquid stock (easy to buy/sell).<br>
-          <strong>Vol Trend</strong> — is volume increasing or decreasing? Rising confirms the price move. Falling = trend weakening.<br>
-          <strong>Range Position</strong> — 100% = near the period high. 0% = near the period low.<br>
-          <strong>Volume POC</strong> — the price level with the most volume traded. Price often returns here. Good stop-loss reference.`}
+          <strong>Volume POC</strong> — het prijsniveau waar het meeste volume werd verhandeld. Prijs keert hier vaak naar terug. Goede referentie voor stop-loss.`}
     </div>
     <div class="risk-calc">
       <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;width:100%;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-        ⚖️ ${nl?'POSITIEGROOTTEBEREKENING':'POSITION SIZE CALCULATOR'}
+        ⚖️ ${'POSITIEGROOTTEBEREKENING'}
         <button class="help-btn" id="helpbtn-risk" onclick="toggleHelp('risk')">Uitleg</button>
       </div>
       <div class="help-box" id="help-risk" style="width:100%;margin-bottom:10px;">
-        ${nl
-          ? `<strong>Waarom is dit belangrijk?</strong> Dit voorkomt dat je te veel riskeert op één trade. Vul je accountgrootte en risico % in — de tool berekent exact hoeveel aandelen je mag kopen.<br><br>
+        ${`<strong>Waarom is dit belangrijk?</strong> Dit voorkomt dat je te veel riskeert op één trade. Vul je accountgrootte en risico % in — de tool berekent exact hoeveel aandelen je mag kopen.<br><br>
             <strong>Gouden regel: riskeer nooit meer dan 1–2% van je account per trade.</strong> Bij een account van €10.000 en 1% risico = max €100 verlies op één trade.<br><br>
-            Zet de stop-loss net onder een groene steunzone die de tool heeft gevonden.`
-          : `<strong>Why does this matter?</strong> This stops you from risking too much on a single trade. Enter your account size and risk % — the tool calculates exactly how many shares to buy.<br><br>
-            <strong>Golden rule: never risk more than 1–2% of your account per trade.</strong> With a $10,000 account at 1% risk = max $100 loss per trade.<br><br>
-            Set your stop-loss just below a green support zone the tool identified.`}
+            Zet de stop-loss net onder een groene steunzone die de tool heeft gevonden.`}
       </div>
       <div class="risk-field">
-        <div class="risk-label">${nl?'Accountgrootte':'Account size'} ($)</div>
+        <div class="risk-label">${'Accountgrootte'} ($)</div>
         <input class="risk-input" id="riskAccount" type="number" placeholder="10000" value="10000" oninput="calcRisk()">
       </div>
       <div class="risk-field">
-        <div class="risk-label">${nl?'Risico per trade':'Risk per trade'} (%)</div>
+        <div class="risk-label">${'Risico per trade'} (%)</div>
         <input class="risk-input" id="riskPct" type="number" placeholder="1" value="1" step="0.5" oninput="calcRisk()">
       </div>
       <div class="risk-field">
-        <div class="risk-label">${nl?'Instapprijs':'Entry price'} ($)</div>
+        <div class="risk-label">${'Instapprijs'} ($)</div>
         <input class="risk-input" id="riskEntry" type="number" placeholder="${last.close.toFixed(2)}" value="${last.close.toFixed(2)}" oninput="calcRisk()">
       </div>
       <div class="risk-field">
-        <div class="risk-label">${nl?'Stop-loss prijs':'Stop-loss price'} ($)</div>
+        <div class="risk-label">${'Stop-loss prijs'} ($)</div>
         <input class="risk-input" id="riskStop" type="number" placeholder="${(last.close * 0.98).toFixed(2)}" value="${(last.close * 0.98).toFixed(2)}" oninput="calcRisk()">
       </div>
       <div class="risk-divider-label">→</div>
       <div class="risk-result">
-        <div class="risk-result-label">${nl?'MAX RISICOBEDRAG':'MAX RISK AMOUNT'}</div>
+        <div class="risk-result-label">${'MAX RISICOBEDRAG'}</div>
         <div class="risk-result-val" id="riskAmount">$100</div>
       </div>
       <div class="risk-result">
-        <div class="risk-result-label">${nl?'AANTAL AANDELEN':'SHARES TO BUY'}</div>
+        <div class="risk-result-label">${'AANTAL AANDELEN'}</div>
         <div class="risk-result-val" id="riskShares">—</div>
       </div>
       <div class="risk-result">
-        <div class="risk-result-label">${nl?'TOTALE POSITIE':'TOTAL POSITION'}</div>
+        <div class="risk-result-label">${'TOTALE POSITIE'}</div>
         <div class="risk-result-val" id="riskTotal">—</div>
       </div>
     </div>`;
@@ -1787,12 +1878,12 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
           callbacks: {
             label: ctx => {
               const d = ctx.raw;
-              const nl = lang==='nl';
+            
               return [
-                `${nl?'Open':'Open'}: $${d.o?.toFixed(2)}`,
-                `${nl?'Hoog':'High'}: $${d.h?.toFixed(2)}`,
-                `${nl?'Laag':'Low'}: $${d.l?.toFixed(2)}`,
-                `${nl?'Sluit':'Close'}: $${d.c?.toFixed(2)}`
+                `${'Open'}: $${d.o?.toFixed(2)}`,
+                `${'Hoog'}: $${d.h?.toFixed(2)}`,
+                `${'Laag'}: $${d.l?.toFixed(2)}`,
+                `${'Sluit'}: $${d.c?.toFixed(2)}`
               ];
             }
           }
@@ -2002,7 +2093,6 @@ let lastLookupQuery = '';
 
 async function showLookup(q) {
   const box = document.getElementById('lookupResults');
-  const nl = lang === 'nl';
   const qTrim = q.trim();
   if (!qTrim) { closeLookup(); return; }
 
@@ -2011,7 +2101,7 @@ async function showLookup(q) {
 
   // If DB not ready yet, show loading
   if (!stockDBready) {
-    box.innerHTML = `<div class="lookup-searching">⏳ ${nl ? 'Aandelenlijst laden...' : 'Loading stock list...'}</div>`;
+    box.innerHTML = `<div class="lookup-searching">⏳ ${'Aandelenlijst laden...'}</div>`;
     // Wait max 8s for DB
     for (let i = 0; i < 40; i++) {
       await new Promise(r => setTimeout(r, 200));
@@ -2037,12 +2127,12 @@ async function showLookup(q) {
   if (results.length === 0) {
     box.innerHTML = `
       <div class="lookup-searching" style="color:var(--muted);font-size:11px;padding:8px 14px;">
-        ${nl ? 'Geen resultaten — probeer het exacte symbool.' : 'No results — try the exact symbol.'}
+        ${'Geen resultaten — probeer het exacte symbool.'}
       </div>
       <div class="lookup-item" onmousedown="selectTicker('${qTrim.toUpperCase().replace(/'/g,"\\'")}')">
         <span class="lookup-exch">→</span>
         <div class="lookup-sym">${qTrim.toUpperCase()}</div>
-        <div class="lookup-name">${nl ? 'Direct analyseren' : 'Analyse directly'}</div>
+        <div class="lookup-name">${'Direct analyseren'}</div>
       </div>`;
   } else {
     box.innerHTML = results.map(t => `
@@ -2092,7 +2182,7 @@ loadStockDB();
 
 // Apply saved language on load
 applyLang();
-if(lang==='nl') { document.querySelector(".lang-btn[onclick=\"setLang('en')\"]").classList.remove('active'); document.querySelector(".lang-btn[onclick=\"setLang('nl')\"]").classList.add('active'); }
+
 
 // ══════════════════════════════════════════════
 // ── MARKET STATE — calculated from local time, no Yahoo dependency ──
@@ -2149,21 +2239,18 @@ function saveWatchlist() {
 function renderWatchlist() {
   const container = document.getElementById('watchlistCards');
   const slotsEl   = document.getElementById('watchSlots');
-  const nl = lang === 'nl';
 
   slotsEl.textContent = `${watchlist.length} / ${MAX_WATCH}`;
   const saveBtn = document.getElementById('watchAddBtn');
   if (saveBtn) {
     saveBtn.disabled = watchlist.length >= MAX_WATCH;
-    saveBtn.textContent = nl ? '📌 Opslaan' : '📌 Save';
+    saveBtn.textContent = '📌 Opslaan';
   }
 
   container.innerHTML = '';
 
   if (watchlist.length === 0) {
-    container.innerHTML = `<div class="watch-empty">${nl
-      ? 'Sla een aandeel op na analyse om de prijs hier te volgen.'
-      : 'Save a stock after analysing it to track prices here.'}</div>`;
+    container.innerHTML = `<div class="watch-empty">${'Sla een aandeel op na analyse om de prijs hier te volgen.'}</div>`;
     return;
   }
 
@@ -2171,7 +2258,7 @@ function renderWatchlist() {
     const card = document.createElement('div');
     card.className = 'watch-card';
     card.id = `watch-card-${w.sym}`;
-    card.title = nl ? 'Klik om te analyseren' : 'Click to analyse';
+    card.title = 'Klik om te analyseren';
 
     const cls = w.change > 0 ? 'up' : w.change < 0 ? 'down' : 'flat';
     const sign = w.change > 0 ? '+' : '';
@@ -2184,8 +2271,8 @@ function renderWatchlist() {
 
     const marketLabel = marketState === 'REGULAR' ? 'OPEN'
                       : marketState === 'PRE'     ? 'PRE-MARKET'
-                      : marketState === 'POST'    ? (nl ? 'NA-MARKET' : 'AFTER-HRS')
-                      : (nl ? 'GESLOTEN' : 'CLOSED');
+                      : marketState === 'POST'    ? ('NA-MARKET')
+                      : ('GESLOTEN');
     const marketCls = marketState === 'REGULAR' ? 'open'
                     : (marketState === 'PRE' || marketState === 'POST') ? 'pre' : 'closed';
 
@@ -2205,14 +2292,14 @@ function renderWatchlist() {
       const postSign = w.postChangePct > 0 ? '+' : '';
       extraLine = `
         <div class="watch-extra-row">
-          <span class="watch-extra-label">${nl ? 'NA' : 'AH'}</span>
+          <span class="watch-extra-label">${'NA'}</span>
           <span class="watch-extra-price ${postCls}">${currency}${w.postPrice.toFixed(2)}</span>
           <span class="watch-extra-chg ${postCls}">${postSign}${w.postChangePct.toFixed(2)}%</span>
         </div>`;
     }
 
     card.innerHTML = `
-      <button class="watch-remove" onclick="removeFromWatchlist(${i},event)" title="${nl?'Verwijderen':'Remove'}">✕</button>
+      <button class="watch-remove" onclick="removeFromWatchlist(${i},event)" title="${'Verwijderen'}">✕</button>
       <div class="watch-card-top">
         <span class="watch-sym">${w.sym}</span>
         ${w.loaded ? `<span class="watch-market ${marketCls}">${marketLabel}</span>` : ''}
@@ -2242,56 +2329,54 @@ function renderWatchlist() {
 
 async function fetchAllQuotes() {
   if (watchlist.length === 0) return;
-  // Fetch each ticker via stooq first, then Yahoo via proxies
+
   const fetches = watchlist.map(async (w, i) => {
     try {
-      // Try Yahoo via proxy for live price (stooq doesn't give real-time)
-      let meta = null;
-      const yUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(w.sym)}?interval=1d&range=5d&events=history`;
+      // Hergebruik dezelfde fetchData als de analyser — werkt altijd als analyse werkt
+      const data = await fetchData(w.sym, '1mo');
+      if (!data || !data.rows || data.rows.length === 0) return;
 
-      // Try corsproxy.io
-      try {
-        const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(yUrl)}`, { signal: makeAbortSignal(8000) });
-        if (r.ok) { const d = await r.json(); meta = d?.chart?.result?.[0]?.meta; }
-      } catch(e) {}
+      const rows    = data.rows;
+      const last    = rows[rows.length - 1];
+      const prev    = rows[rows.length - 2];
+      const price   = last.c;
+      const change  = price - prev.c;
+      const changePct = (change / prev.c) * 100;
 
-      // Try allorigins if no meta yet
-      if (!meta) {
-        try {
-          const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yUrl)}`, { signal: makeAbortSignal(8000) });
-          if (r.ok) { const w2 = await r.json(); const d = JSON.parse(w2.contents); meta = d?.chart?.result?.[0]?.meta; }
-        } catch(e) {}
-      }
-
-      // Try direct
-      if (!meta) {
-        try {
-          const r = await fetch(yUrl, { signal: makeAbortSignal(5000) });
-          if (r.ok) { const d = await r.json(); meta = d?.chart?.result?.[0]?.meta; }
-        } catch(e) {}
-      }
-
-      if (!meta) return; // all sources failed, keep existing data
-      const marketState  = meta.marketState || calcUSMarketState();
-      const regularPrice = meta.regularMarketPrice ?? null;
-      const prevClose    = meta.chartPreviousClose ?? meta.previousClose ?? null;
-      const displayChange    = (regularPrice!=null&&prevClose!=null) ? regularPrice-prevClose : 0;
-      const displayChangePct = (regularPrice!=null&&prevClose!=null&&prevClose!==0) ? ((regularPrice-prevClose)/prevClose)*100 : 0;
-      if (w.loaded && w.price!=null && regularPrice!=null && regularPrice!==w.price) {
-        const dir = regularPrice > w.price ? 'up' : 'down';
+      if (w.loaded && w.price != null && price !== w.price) {
+        const dir = price > w.price ? 'up' : 'down';
         const card = document.getElementById(`watch-card-${w.sym}`);
-        if (card) { card.classList.remove('watch-flash-up','watch-flash-down'); void card.offsetWidth; card.classList.add(dir==='up'?'watch-flash-up':'watch-flash-down'); }
+        if (card) {
+          card.classList.remove('watch-flash-up', 'watch-flash-down');
+          void card.offsetWidth;
+          card.classList.add(dir === 'up' ? 'watch-flash-up' : 'watch-flash-down');
+        }
       }
-      watchlist[i] = { ...w, price:regularPrice, change:displayChange, changePct:displayChangePct, regularPrice, prevClose, prePrice:null, preChangePct:null, postPrice:null, postChangePct:null, currency:meta.currency||'USD', marketState, loaded:true };
-    } catch(e) { console.warn(`Quote failed ${w.sym}:`, e.message); }
+
+      watchlist[i] = {
+        ...w,
+        price, change, changePct,
+        regularPrice: price,
+        prevClose: prev.c,
+        prePrice: null, preChangePct: null,
+        postPrice: null, postChangePct: null,
+        currency: data.currency || 'USD',
+        marketState: calcUSMarketState(),
+        loaded: true,
+      };
+    } catch(e) {
+      console.warn(`Quote failed ${w.sym}:`, e.message);
+    }
   });
+
   await Promise.all(fetches);
   saveWatchlist();
   renderWatchlist();
+
   const now = new Date();
-  const timeStr = now.toLocaleTimeString(lang==='nl'?'nl-NL':'en-GB',{hour:'2-digit',minute:'2-digit'});
+  const timeStr = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
   const el = document.getElementById('watchLastUpdate');
-  if (el) el.textContent = (lang==='nl' ? 'bijgewerkt ' : 'updated ') + timeStr;
+  if (el) el.textContent = 'bijgewerkt ' + timeStr;
 }
 
 function calcUSMarketState() {
@@ -2316,7 +2401,7 @@ function startLiveTicker() {
     watchCountdown--;
     const el = document.getElementById('watchLastUpdate');
     if (el && watchCountdown > 0) {
-      el.textContent = (lang==='nl' ? `verversen in ${watchCountdown}s` : `refresh in ${watchCountdown}s`);
+      el.textContent = (`verversen in ${watchCountdown}s`);
     }
     if (watchCountdown <= 0) {
       watchCountdown = REFRESH_INTERVAL;
@@ -2328,11 +2413,11 @@ function startLiveTicker() {
 function addCurrentToWatchlist() {
   const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
   if (!ticker) {
-    alert(lang==='nl' ? 'Analyseer eerst een aandeel om het op te slaan.' : 'Analyse a stock first to save it.');
+    alert('Analyseer eerst een aandeel om het op te slaan.');
     return;
   }
   if (watchlist.find(w => w.sym === ticker)) {
-    alert(lang==='nl' ? `${ticker} staat al in je watchlijst.` : `${ticker} is already in your watchlist.`);
+    alert(`${ticker} staat al in je watchlijst.`);
     return;
   }
   if (watchlist.length >= MAX_WATCH) return;
@@ -2420,9 +2505,8 @@ async function fetchNewsForTicker(sym) {
 
 function renderNewsTabs() {
   const tabs = document.getElementById('newsTickerTabs');
-  const nl = lang === 'nl';
   tabs.innerHTML = [
-    { sym: 'ALL', label: nl ? 'Alles' : 'All' },
+    { sym: 'ALL', label: 'Alles' },
     ...watchlist.map(w => ({ sym: w.sym, label: w.sym }))
   ].map(t => `
     <button class="news-tab ${t.sym === activeNewsTab ? 'active' : ''}"
@@ -2437,13 +2521,11 @@ function switchNewsTab(sym) {
 }
 
 function showNewsLoading() {
-  const nl = lang === 'nl';
   document.getElementById('newsContent').innerHTML =
-    `<div class="news-loading"><div class="news-spinner"></div><span>${nl ? 'Nieuws laden...' : 'Loading news...'}</span></div>`;
+    `<div class="news-loading"><div class="news-spinner"></div><span>${'Nieuws laden...'}</span></div>`;
 }
 
 function renderNewsTab(sym) {
-  const nl = lang === 'nl';
   const content = document.getElementById('newsContent');
   const cutoff48h = (Date.now() / 1000) - (48 * 3600);
 
@@ -2465,9 +2547,7 @@ function renderNewsTab(sym) {
   const recent = articles.filter(a => a.published && a.published >= cutoff48h);
 
   if (recent.length === 0) {
-    const msg = nl
-      ? 'Geen nieuws gevonden in de afgelopen 48 uur voor dit aandeel.'
-      : 'No news found in the last 48 hours for this stock.';
+    const msg = 'Geen nieuws gevonden in de afgelopen 48 uur voor dit aandeel.';
     content.innerHTML = `<div class="news-empty">${msg}</div>`;
     return;
   }
@@ -2492,9 +2572,9 @@ function renderNewsTab(sym) {
 function timeAgo(ts, nl) {
   if (!ts) return '';
   const diff = Math.floor((Date.now() / 1000) - ts);
-  if (diff < 3600)  return nl ? `${Math.floor(diff/60)}m geleden` : `${Math.floor(diff/60)}m ago`;
-  if (diff < 86400) return nl ? `${Math.floor(diff/3600)}u geleden` : `${Math.floor(diff/3600)}h ago`;
-  return nl ? `${Math.floor(diff/86400)}d geleden` : `${Math.floor(diff/86400)}d ago`;
+  if (diff < 3600)  return `${Math.floor(diff/60)}m geleden`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}u geleden`;
+  return `${Math.floor(diff/86400)}d geleden`;
 }
 
 // Show news on load if watchlist has items
@@ -3124,7 +3204,355 @@ window.togglePanel = function(id) {
   if (id === 'quiz' && quizIdx === 0 && quizTotal === 0) {
     setTimeout(renderQuizQuestion, 100);
   }
+  if (id === 'journal') {
+    setTimeout(() => { renderJournalStats(); renderJournalList(); }, 50);
+  }
 };
+
+// ══════════════════════════════════════════════
+// BATCH SCANNER
+// ══════════════════════════════════════════════
+
+const PRESETS = {
+  under50: {
+    label: 'Populaire stocks < $50',
+    tickers: ['F','BAC','SOFI','HOOD','PLTR','NIO','XPEV','RIVN','LCID','AAL','CCL','AMC','SNAP','PINS','UBER','LYFT','MARA','RIOT','CLSK','SNDL','FFIE','MULN','ONDS','GRAB','SE','CPNG','DKNG','PENN','NKLA','SPCE','HIMS','LMND','ROOT','WBA','INTC','NOK','BB','GME','PTON','RBLX']
+  },
+  tech: {
+    label: 'Tech stocks',
+    tickers: ['AAPL','MSFT','NVDA','AMD','INTC','QCOM','AVGO','TXN','MU','ANET','CRWD','PANW','DDOG','NET','SNOW','PLTR','SHOP','COIN','MSTR','ORCL','CRM','ADBE','NOW','HUBS','TWLO','ZM','TEAM']
+  },
+  etf: {
+    label: 'Belangrijke ETFs',
+    tickers: ['SPY','QQQ','IWM','DIA','GLD','SLV','TLT','XLF','XLE','XLK','XLV','SOXL','TQQQ','ARKK','IBIT']
+  },
+  aex: {
+    label: 'AEX stocks',
+    tickers: ['ASML.AS','PHIA.AS','HEIA.AS','SHELL.AS','UNA.AS','INGA.AS','ABN.AS','ADYEN.AS','NN.AS','AKZA.AS','WKL.AS','BESI.AS','PRX.AS','KPN.AS','MT.AS']
+  },
+  meme: {
+    label: 'High volatility',
+    tickers: ['GME','AMC','BBBY','MSTR','MARA','RIOT','CLSK','COIN','PLTR','SPCE','NKLA','PTON','HOOD','SOFI','RIVN','LCID','DKNG','SNAP','RBLX','UBER']
+  }
+};
+
+let scannerRunning = false;
+let scannerResultsData = [];
+let scannerSort = 'score';
+
+function loadPreset(key) {
+  const preset = PRESETS[key];
+  if (!preset) return;
+  document.getElementById('scannerInput').value = preset.tickers.join('\n');
+}
+
+function clearScanner() {
+  document.getElementById('scannerInput').value = '';
+  document.getElementById('scannerResults').innerHTML = '';
+  scannerResultsData = [];
+}
+
+function parseScannerInput(raw) {
+  return [...new Set(
+    raw.toUpperCase()
+      .replace(/[,;\n\r\t]+/g, ' ')
+      .split(/\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length >= 1 && s.length <= 10 && /^[A-Z0-9.\-\^]+$/.test(s))
+  )];
+}
+
+async function runBatchScanner() {
+  if (scannerRunning) return;
+  const raw = document.getElementById('scannerInput').value;
+  const tickers = parseScannerInput(raw);
+  if (tickers.length === 0) {
+    document.getElementById('scannerResults').innerHTML = '<div class="scanner-empty">Voer minstens één ticker in.</div>';
+    return;
+  }
+
+  scannerRunning = true;
+  const btn = document.getElementById('scannerRunBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Bezig...';
+  scannerResultsData = [];
+
+  const prog = document.getElementById('scannerProgress');
+  const fill = document.getElementById('scannerProgressFill');
+  const text = document.getElementById('scannerProgressText');
+  prog.classList.add('show');
+  document.getElementById('scannerResults').innerHTML = '';
+  const range = document.getElementById('rangeSelect')?.value || '1mo';
+
+  for (let i = 0; i < tickers.length; i++) {
+    const sym = tickers[i];
+    const pct = Math.round(((i + 1) / tickers.length) * 100);
+    fill.style.width = pct + '%';
+    text.textContent = `${i + 1} / ${tickers.length} — ${sym}`;
+
+    try {
+      const raw = await fetchData(sym, range);
+      const rows = parseRows(raw);
+      if (rows.length < 5) throw new Error('te weinig data');
+
+      // Run VSA engine
+      const signals = runVSA(rows);
+      const biasObj = computeBias(rows, signals);
+      const trend   = computeTrendStrength(rows, signals, biasObj);
+      const last = rows[rows.length - 1];
+      const prev = rows[rows.length - 2];
+      const changePct = ((last.close - prev.close) / prev.close * 100).toFixed(2);
+
+      // Score: bullish signals +, bearish -, bias bonus
+      let score = 0;
+      signals.forEach(s => {
+        if (s.type === 'bullish')    score += s.strength === 'high' ? 3 : s.strength === 'medium' ? 2 : 1;
+        if (s.type === 'bearish')    score -= s.strength === 'high' ? 2 : 1;
+        if (s.type === 'absorption' && biasObj.bias === 'BULLISH') score += 1;
+      });
+      if (biasObj.bias === 'BULLISH') score += 2;
+      if (biasObj.bias === 'BEARISH') score -= 2;
+
+      scannerResultsData.push({
+        sym, score,
+        bias: biasObj.bias,
+        price: last.close,
+        currency: raw.currency || 'USD',
+        changePct: +changePct,
+        signals: signals.slice(0, 4),
+        trendStrength: trend.score,
+        error: null,
+      });
+    } catch(e) {
+      scannerResultsData.push({ sym, score: -99, bias: 'ERROR', price: null, signals: [], error: e.message });
+    }
+
+    // Small delay to not hammer the API
+    if (i < tickers.length - 1) await new Promise(r => setTimeout(r, 400));
+  }
+
+  prog.classList.remove('show');
+  btn.disabled = false;
+  btn.textContent = '▶ Scannen';
+  scannerRunning = false;
+  renderScannerResults();
+}
+
+function renderScannerResults() {
+  const container = document.getElementById('scannerResults');
+  if (scannerResultsData.length === 0) {
+    container.innerHTML = '<div class="scanner-empty">Geen resultaten.</div>';
+    return;
+  }
+
+  // Sort
+  const sorted = [...scannerResultsData].sort((a, b) => {
+    if (scannerSort === 'score') return b.score - a.score;
+    if (scannerSort === 'price') return (a.price || 0) - (b.price || 0);
+    if (scannerSort === 'change') return b.changePct - a.changePct;
+    if (scannerSort === 'alpha') return a.sym.localeCompare(b.sym);
+    return 0;
+  });
+  const bullish = sorted.filter(s => s.bias === 'BULLISH' && s.score > 0).length;
+  const bearish = sorted.filter(s => s.bias === 'BEARISH').length;
+  const errors  = sorted.filter(s => s.error).length;
+
+  container.innerHTML = `
+    <div style="margin-bottom:12px;font-size:13px;color:var(--muted);font-family:'Space Mono',monospace;">
+      ${sorted.length - errors} stocks gescand · <span style="color:var(--accent)">${bullish} bullish</span> · <span style="color:var(--accent2)">${bearish} bearish</span>${errors > 0 ? ` · ${errors} fout` : ''}
+    </div>
+    <div class="scanner-sort-row">
+      <span style="font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;">Sorteren:</span>
+      ${['score','price','change','alpha'].map(s => `
+        <button class="scanner-sort-btn ${scannerSort === s ? 'active' : ''}" onclick="setScannerSort('${s}')">
+          ${{score:'Signaal ↓', price:'Prijs ↑', change:'% Verandering', alpha:'A–Z'}[s]}
+        </button>`).join('')}
+    </div>
+    <div class="scanner-results">
+      ${sorted.map(r => renderScannerCard(r)).join('')}
+    </div>`;
+}
+
+function renderScannerCard(r) {
+  if (r.error || !r.price) {
+    return `<div class="scanner-result-card error">
+      <div class="scanner-card-top">
+        <span class="scanner-sym">${r.sym}</span>
+        <span style="font-size:10px;color:var(--muted);">fout</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);">${r.error || 'geen data'}</div>
+    </div>`;
+  }
+  const cur = r.currency === 'EUR' ? '€' : '$';
+  const chgCls = r.changePct >= 0 ? 'var(--accent)' : 'var(--accent2)';
+  const chgSign = r.changePct >= 0 ? '+' : '';
+  const biasCls = r.bias === 'BULLISH' ? 'BULLISH' : r.bias === 'BEARISH' ? 'BEARISH' : 'NEUTRAL';
+  const stars = r.score >= 6 ? '🔥' : r.score >= 3 ? '⭐' : r.score >= 0 ? '○' : '⚠️';
+  const sigTags = r.signals.map(s =>
+    `<span class="scanner-sig-tag ${s.type}">${s.label}</span>`
+  ).join('');
+
+  return `<div class="scanner-result-card ${biasCls.toLowerCase()}" onclick="loadFromScanner('${r.sym}')">
+    <div class="scanner-card-top">
+      <span class="scanner-sym">${r.sym}</span>
+      <span class="scanner-bias ${biasCls}">${r.bias}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span class="scanner-price">${cur}${r.price.toFixed(2)} <span style="color:${chgCls};font-size:10px;">${chgSign}${r.changePct.toFixed(2)}%</span></span>
+      <span style="font-size:16px;">${stars}</span>
+    </div>
+    <div class="scanner-signals">${sigTags || '<span style="font-size:11px;color:var(--muted);">geen signalen</span>'}</div>
+    <div class="scanner-score">Score: ${r.score > 0 ? '+' : ''}${r.score} · Trend: ${r.trendStrength || '—'}/10 · klik om te analyseren →</div>
+  </div>`;
+}
+
+function setScannerSort(s) {
+  scannerSort = s;
+  renderScannerResults();
+}
+
+function loadFromScanner(sym) {
+  document.getElementById('tickerInput').value = sym;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => document.getElementById('analyzeBtn').click(), 300);
+}
+
+// ══════════════════════════════════════════════
+// TRADE JOURNAL
+// ══════════════════════════════════════════════
+
+let journalEntries = JSON.parse(localStorage.getItem('vsa_journal') || '[]');
+let journalFilter = 'all';
+
+// Set today's date as default
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().slice(0, 10);
+  const el = document.getElementById('jDate');
+  if (el) el.value = today;
+  renderJournalStats();
+  renderJournalList();
+});
+
+function saveJournalEntry() {
+  const sym    = document.getElementById('jTicker').value.trim().toUpperCase();
+  const date   = document.getElementById('jDate').value;
+  const entry  = parseFloat(document.getElementById('jEntry').value);
+  const exit   = parseFloat(document.getElementById('jExit').value) || null;
+  const stop   = parseFloat(document.getElementById('jStop').value) || null;
+  const shares = parseInt(document.getElementById('jShares').value) || null;
+  const signal = document.getElementById('jSignal').value;
+  const dir    = document.getElementById('jDirection').value;
+  const notes  = document.getElementById('jNotes').value.trim();
+
+  if (!sym || !date || isNaN(entry)) {
+    alert('Vul minstens Ticker, Datum en Entry prijs in.');
+    return;
+  }
+
+  const pnl = exit && shares ? (exit - entry) * shares : null;
+  const pnlPct = exit ? ((exit - entry) / entry * 100) : null;
+  const result = exit ? (pnl >= 0 ? 'win' : 'loss') : 'open';
+
+  const e = { id: Date.now(), sym, date, entry, exit, stop, shares, signal, dir, notes, pnl, pnlPct, result };
+  journalEntries.unshift(e);
+  localStorage.setItem('vsa_journal', JSON.stringify(journalEntries));
+
+  // Reset form
+  ['jTicker','jEntry','jExit','jStop','jShares','jNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('jSignal').value = '';
+
+  renderJournalStats();
+  renderJournalList();
+}
+
+function deleteJournalEntry(id) {
+  journalEntries = journalEntries.filter(e => e.id !== id);
+  localStorage.setItem('vsa_journal', JSON.stringify(journalEntries));
+  renderJournalStats();
+  renderJournalList();
+}
+
+function filterJournal(f) {
+  journalFilter = f;
+  document.querySelectorAll('.journal-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`jf-${f}`)?.classList.add('active');
+  renderJournalList();
+}
+
+function renderJournalStats() {
+  const el = document.getElementById('journalStats');
+  if (!el) return;
+  const completed = journalEntries.filter(e => e.result !== 'open');
+  const wins = completed.filter(e => e.result === 'win');
+  const losses = completed.filter(e => e.result === 'loss');
+  const open = journalEntries.filter(e => e.result === 'open');
+  const winRate = completed.length > 0 ? Math.round(wins.length / completed.length * 100) : 0;
+  const totalPnl = journalEntries.reduce((s, e) => s + (e.pnl || 0), 0);
+  const avgWin  = wins.length > 0 ? wins.reduce((s,e) => s + (e.pnlPct||0), 0) / wins.length : 0;
+  const avgLoss = losses.length > 0 ? losses.reduce((s,e) => s + (e.pnlPct||0), 0) / losses.length : 0;
+
+  const signalCounts = {};
+  wins.forEach(e => { if (e.signal) signalCounts[e.signal] = (signalCounts[e.signal]||0) + 1; });
+  const bestSignal = Object.entries(signalCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+
+  el.innerHTML = `
+    <div class="journal-stat">
+      <div class="journal-stat-val">${journalEntries.length}</div>
+      <div class="journal-stat-lbl">TRADES</div>
+    </div>
+    <div class="journal-stat">
+      <div class="journal-stat-val ${winRate >= 50 ? '' : 'red'}">${winRate}%</div>
+      <div class="journal-stat-lbl">WIN RATE</div>
+    </div>
+    <div class="journal-stat">
+      <div class="journal-stat-val ${totalPnl >= 0 ? '' : 'red'}">${totalPnl >= 0 ? '+' : ''}$${Math.abs(totalPnl).toFixed(0)}</div>
+      <div class="journal-stat-lbl">TOTAAL P&L</div>
+    </div>
+    <div class="journal-stat">
+      <div class="journal-stat-val">${wins.length}W / ${losses.length}L</div>
+      <div class="journal-stat-lbl">WINST / VERLIES</div>
+    </div>
+    <div class="journal-stat">
+      <div class="journal-stat-val amber">${open.length}</div>
+      <div class="journal-stat-lbl">OPEN TRADES</div>
+    </div>
+    <div class="journal-stat">
+      <div class="journal-stat-val" style="font-size:12px;">${bestSignal.split(' ').slice(0,2).join(' ')}</div>
+      <div class="journal-stat-lbl">BESTE SIGNAAL</div>
+    </div>`;
+}
+
+function renderJournalList() {
+  const el = document.getElementById('journalList');
+  if (!el) return;
+  const filtered = journalFilter === 'all' ? journalEntries : journalEntries.filter(e => e.result === journalFilter);
+  if (filtered.length === 0) {
+    el.innerHTML = `<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">
+      ${journalFilter === 'all' ? 'Nog geen trades ingevoerd. Voeg je eerste trade toe hierboven!' : 'Geen trades in deze categorie.'}
+    </div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(e => {
+    const pnlStr = e.pnl != null ? `${e.pnl >= 0 ? '+' : ''}$${e.pnl.toFixed(2)} (${e.pnlPct >= 0 ? '+' : ''}${e.pnlPct?.toFixed(1)}%)` : 'Open positie';
+    const exitStr = e.exit ? `→ exit $${e.exit.toFixed(2)}` : '';
+    return `<div class="journal-entry ${e.result}">
+      <button class="journal-entry-delete" onclick="deleteJournalEntry(${e.id})" title="Verwijderen">✕</button>
+      <div class="journal-entry-top">
+        <span class="journal-entry-sym">${e.sym}</span>
+        <span class="journal-entry-date">${e.date}</span>
+        <span class="journal-entry-result ${e.result}">${e.result === 'win' ? '✅ WINST' : e.result === 'loss' ? '❌ VERLIES' : '⏳ OPEN'}</span>
+        ${e.signal ? `<span style="font-size:10px;color:var(--blue);font-family:'Space Mono',monospace;">${e.signal}</span>` : ''}
+      </div>
+      <div class="journal-entry-body">
+        <strong>${e.dir}</strong> · entry $${e.entry.toFixed(2)} ${exitStr}
+        ${e.stop ? ` · stop $${e.stop.toFixed(2)}` : ''}
+        ${e.shares ? ` · ${e.shares} aandelen` : ''}
+        · <strong style="color:${e.result==='win'?'var(--accent)':e.result==='loss'?'var(--accent2)':'var(--accent3)'};">${pnlStr}</strong>
+        ${e.notes ? `<br><span style="opacity:0.8;">${e.notes}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
 
 </script>
 </body>
