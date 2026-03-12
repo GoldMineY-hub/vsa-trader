@@ -1,0 +1,3131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f5f0e8">
+<title>VSA Trader — Orderflow Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1/dist/chartjs-adapter-luxon.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f0e8;--surface:#faf7f2;--surface2:#ede8df;--border:#ddd6c8;
+    --text:#2c2416;--muted:#8a7d6b;--accent:#2d7a4f;--accent2:#c0392b;
+    --accent3:#b8860b;--blue:#2563a8;--purple:#6d3fa8;
+    --glow:rgba(45,122,79,0.1);--shadow:0 2px 12px rgba(44,36,22,0.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{overscroll-behavior-y:contain;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;-webkit-font-smoothing:antialiased;}
+  body::before{content:'';position:fixed;inset:0;
+    background:radial-gradient(ellipse at 10% 10%,rgba(255,248,230,0.6) 0%,transparent 50%),
+               radial-gradient(ellipse at 90% 90%,rgba(230,240,255,0.3) 0%,transparent 50%);
+    pointer-events:none;z-index:0;}
+  .header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;
+    justify-content:space-between;position:relative;z-index:1;background:var(--surface);box-shadow:var(--shadow);}
+  .logo-title{font-size:20px;font-weight:800;letter-spacing:-0.5px;font-family:'Inter',sans-serif;}
+  .logo-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-top:2px;}
+  .header-right{display:flex;align-items:center;gap:12px;}
+  .free-badge{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);border:1.5px solid var(--accent);
+    padding:4px 12px;border-radius:20px;background:rgba(45,122,79,0.08);font-weight:700;}
+  .lang-toggle{display:flex;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;}
+  .lang-btn{padding:6px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
+  .lang-btn.active{background:var(--accent);color:#fff;}
+  .main{max-width:1100px;margin:0 auto;padding:28px 20px;position:relative;z-index:1;}
+  .search-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+  .ticker-input{flex:1;min-width:180px;max-width:220px;background:var(--surface);
+    border:1.5px solid var(--border);border-radius:8px;padding:13px 16px;
+    font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--text);
+    text-transform:uppercase;letter-spacing:2px;outline:none;
+    transition:border-color 0.2s,box-shadow 0.2s;box-shadow:var(--shadow);}
+  .ticker-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);}
+  .ticker-input::placeholder{color:var(--muted);font-size:12px;letter-spacing:1px;font-weight:400;}
+  .range-btns{display:flex;gap:6px;}
+  .range-btn{background:var(--surface);border:1.5px solid var(--border);color:var(--muted);
+    font-family:'Space Mono',monospace;font-size:11px;padding:8px 14px;border-radius:6px;
+    cursor:pointer;transition:all 0.15s;font-weight:700;}
+  .range-btn:hover,.range-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.07);}
+  .analyze-btn{background:var(--accent);border:none;color:#fff;font-family:'Inter',sans-serif;
+    font-weight:800;font-size:14px;padding:13px 26px;border-radius:8px;cursor:pointer;
+    transition:all 0.2s;box-shadow:0 2px 8px rgba(45,122,79,0.25);}
+  .analyze-btn:hover{background:#246040;transform:translateY(-1px);}
+  .analyze-btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;border:1px solid var(--border);}
+
+  /* Panels */
+  .panel{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden;}
+  .panel-toggle{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;cursor:pointer;user-select:none;transition:background 0.15s;}
+  .panel-toggle:hover{background:var(--surface2);}
+  .panel-left{display:flex;align-items:center;gap:12px;}
+  .panel-icon{font-size:20px;}
+  .panel-title{font-size:15px;font-weight:700;font-family:'Inter',sans-serif;}
+  .panel-sub{font-size:13px;color:var(--muted);margin-top:2px;font-family:'Inter',sans-serif;line-height:1.5;}
+  .panel-arrow{font-size:11px;color:var(--muted);transition:transform 0.2s;}
+  .panel-arrow.open{transform:rotate(180deg);}
+  .panel-body{display:none;padding:0 22px 22px;border-top:1px solid var(--border);}
+  .panel-body.open{display:block;padding-top:20px;}
+
+  /* Guide */
+  .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:16px 0;}
+  .guide-card{background:var(--surface2);border-radius:12px;padding:16px;border-left:4px solid var(--border);}
+  .guide-card.bullish{border-left-color:var(--accent);background:rgba(45,122,79,0.06);}
+  .guide-card.bearish{border-left-color:var(--accent2);background:rgba(192,57,43,0.06);}
+  .guide-card.absorption{border-left-color:var(--accent3);background:rgba(184,134,11,0.06);}
+  .guide-card.warning{border-left-color:var(--blue);background:rgba(37,99,168,0.06);}
+  .guide-emoji{font-size:24px;margin-bottom:8px;}
+  .guide-card-title{font-size:14px;font-weight:700;font-family:'Inter',sans-serif;margin-bottom:6px;}
+  .guide-card.bullish .guide-card-title{color:var(--accent);}
+  .guide-card.bearish .guide-card-title{color:var(--accent2);}
+  .guide-card.absorption .guide-card-title{color:var(--accent3);}
+  .guide-card.warning .guide-card-title{color:var(--blue);}
+  .guide-card-body{font-size:14px;color:var(--text);line-height:1.7;font-family:'Inter',sans-serif;}
+  .divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+  .section-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  .bias-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:10px;}
+  .bias-card{background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:7px;}
+  .mini-pill{font-family:'Space Mono',monospace;font-size:11px;padding:4px 12px;border-radius:20px;display:inline-block;font-weight:700;}
+  .mini-pill.BULLISH{background:rgba(45,122,79,0.12);color:var(--accent);border:1px solid rgba(45,122,79,0.25);}
+  .mini-pill.BEARISH{background:rgba(192,57,43,0.1);color:var(--accent2);border:1px solid rgba(192,57,43,0.25);}
+  .mini-pill.NEUTRAL{background:rgba(184,134,11,0.1);color:var(--accent3);border:1px solid rgba(184,134,11,0.25);}
+  .bias-card-text{font-size:14px;color:var(--text);line-height:1.65;font-family:'Inter',sans-serif;}
+  .dot-legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:10px;}
+  .dot-legend-card{background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:flex-start;gap:12px;}
+  .big-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+  .big-dot.pass{background:var(--accent);}
+  .big-dot.warn{background:var(--accent3);}
+  .big-dot.fail{background:var(--accent2);}
+  .dot-text strong{display:block;font-size:13px;font-weight:800;margin-bottom:3px;}
+  .dot-text span{font-size:13px;color:var(--muted);line-height:1.6;font-family:'Inter',sans-serif;}
+
+  /* When */
+  .when-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px;}
+  .when-card{background:var(--surface2);border-radius:12px;padding:16px 18px;position:relative;padding-top:24px;}
+  .when-step{position:absolute;top:-10px;left:16px;color:#fff;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;}
+  .when-card:nth-child(1) .when-step{background:var(--accent);}
+  .when-card:nth-child(2) .when-step{background:var(--blue);}
+  .when-card:nth-child(3) .when-step{background:var(--accent3);color:var(--text);}
+  .when-card:nth-child(4) .when-step{background:var(--purple);}
+  .when-title{font-size:15px;font-weight:700;font-family:'Inter',sans-serif;margin-bottom:8px;}
+  .when-body{font-size:14px;color:var(--muted);line-height:1.7;font-family:'Inter',sans-serif;}
+  .when-body strong{color:var(--text);}
+  .time-banner{background:linear-gradient(135deg,rgba(45,122,79,0.08),rgba(37,99,168,0.08));border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:14px;}
+  .time-banner-icon{font-size:26px;flex-shrink:0;}
+  .time-banner-body{font-size:14px;color:var(--muted);line-height:1.7;font-family:'Inter',sans-serif;}
+  .time-banner-body strong{color:var(--text);}
+  .tip-box{background:rgba(109,63,168,0.07);border:1.5px solid rgba(109,63,168,0.2);border-radius:10px;padding:14px 16px;margin-top:16px;font-size:14px;color:var(--text);line-height:1.75;font-family:'Inter',sans-serif;}
+  .tip-box strong{color:var(--purple);}
+
+  /* Fetch */
+  .fetch-steps{display:flex;flex-direction:column;gap:0;margin-bottom:20px;}
+  .fetch-step{display:flex;align-items:flex-start;gap:16px;}
+  .fetch-num{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#fff;}
+  .fetch-num.n1{background:var(--accent);}
+  .fetch-num.n2{background:var(--blue);}
+  .fetch-num.n3{background:var(--accent3);color:var(--text);}
+  .fetch-num.n4{background:var(--accent2);}
+  .fetch-content{flex:1;padding-top:4px;padding-bottom:18px;border-left:2px solid var(--border);margin-left:-32px;padding-left:48px;}
+  .fetch-step:last-child .fetch-content{border-left-color:transparent;}
+  .fetch-title{font-size:15px;font-weight:700;font-family:'Inter',sans-serif;margin-bottom:4px;}
+  .fetch-body{font-size:14px;color:var(--muted);line-height:1.7;font-family:'Inter',sans-serif;}
+  .fetch-body strong{color:var(--text);}
+  .info-box{background:rgba(37,99,168,0.07);border:1.5px solid rgba(37,99,168,0.2);border-radius:10px;padding:14px 16px;margin-top:4px;font-size:14px;color:var(--text);line-height:1.75;font-family:'Inter',sans-serif;}
+  .info-box strong{color:var(--blue);}
+  .warn-box{background:rgba(184,134,11,0.08);border:1.5px solid rgba(184,134,11,0.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:14px;color:var(--text);line-height:1.75;font-family:'Inter',sans-serif;}
+  .warn-box strong{color:var(--accent3);}
+
+  /* Output */
+  #output{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;min-height:300px;overflow:hidden;box-shadow:var(--shadow);}
+  .empty-state{text-align:center;padding:70px 20px;color:var(--muted);}
+  .empty-icon{font-size:44px;margin-bottom:14px;opacity:0.5;}
+  .empty-title{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--text);opacity:0.6;font-family:'Inter',sans-serif;}
+  .empty-sub{font-size:14px;line-height:1.7;max-width:340px;margin:0 auto;font-family:'Inter',sans-serif;color:var(--muted);}
+  .loading-box{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:80px 20px;}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;}
+  .loading-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:center;line-height:2;}
+
+  /* Result */
+  .result-header{background:var(--surface2);padding:16px 22px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .ticker-big{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;}
+  .price-big{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;}
+  .price-change{font-family:'Space Mono',monospace;font-size:13px;padding:3px 10px;border-radius:6px;font-weight:700;}
+  .price-change.up{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .price-change.down{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .bias-strip{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:2px solid var(--border);flex-wrap:wrap;}
+  .bias-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;white-space:nowrap;}
+  .bias-pill{font-weight:800;font-size:13px;padding:5px 16px;border-radius:20px;white-space:nowrap;}
+  .bias-pill.BULLISH{background:rgba(45,122,79,0.12);color:var(--accent);border:1px solid rgba(45,122,79,0.3);}
+  .bias-pill.BEARISH{background:rgba(192,57,43,0.1);color:var(--accent2);border:1px solid rgba(192,57,43,0.3);}
+  .bias-pill.NEUTRAL{background:rgba(184,134,11,0.1);color:var(--accent3);border:1px solid rgba(184,134,11,0.3);}
+  .bias-text{font-size:14px;color:var(--muted);flex:1;min-width:200px;line-height:1.65;font-family:'Inter',sans-serif;}
+  .chart-area{padding:20px 22px;border-bottom:2px solid var(--border);}
+  .chart-title{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);letter-spacing:2px;margin-bottom:10px;font-weight:700;}
+  .chart-wrap{position:relative;height:260px;}
+  .vol-wrap{position:relative;height:80px;margin-top:8px;}
+  .chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+  .legend-dot{width:10px;height:10px;border-radius:50%;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid var(--border);}
+  .col{padding:20px 22px;border-right:1px solid var(--border);}
+  .col:last-child{border-right:none;}
+  .col-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--text);font-weight:700;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+  .signal-card{background:var(--surface2);border-radius:8px;padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--border);animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;}}
+  .signal-card{background:var(--surface2);border-radius:8px;padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--border);animation:fadeIn 0.3s ease;cursor:pointer;transition:all 0.15s;}
+  .signal-card:hover{transform:translateX(3px);box-shadow:0 2px 10px rgba(44,36,22,0.1);}
+  .signal-learn-btn{font-size:10px;font-family:'Space Mono',monospace;background:rgba(45,122,79,0.12);color:var(--accent);border:1px solid rgba(45,122,79,0.25);border-radius:4px;padding:2px 7px;cursor:pointer;margin-left:6px;white-space:nowrap;}
+  .signal-card.bearish .signal-learn-btn{background:rgba(192,57,43,0.1);color:var(--accent2);border-color:rgba(192,57,43,0.25);}
+  .signal-card.absorption .signal-learn-btn{background:rgba(184,134,11,0.1);color:var(--accent3);border-color:rgba(184,134,11,0.25);}
+  .signal-card.warning .signal-learn-btn{background:rgba(37,99,168,0.1);color:var(--blue);border-color:rgba(37,99,168,0.25);}
+  .signal-card.bullish{border-left-color:var(--accent);background:rgba(45,122,79,0.05);}
+  .signal-card.bearish{border-left-color:var(--accent2);background:rgba(192,57,43,0.05);}
+  .signal-card.absorption{border-left-color:var(--accent3);background:rgba(184,134,11,0.05);}
+  .signal-card.warning{border-left-color:var(--blue);background:rgba(37,99,168,0.05);}
+  .signal-type{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;margin-bottom:4px;font-weight:700;}
+  .signal-card.bullish .signal-type{color:var(--accent);}
+  .signal-card.bearish .signal-type{color:var(--accent2);}
+  .signal-card.absorption .signal-type{color:var(--accent3);}
+  .signal-card.warning .signal-type{color:var(--blue);}
+  .signal-body{font-size:13px;color:var(--text);line-height:1.7;font-family:'Inter',sans-serif;}
+  .signal-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:5px;}
+  .check-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:var(--surface2);border-radius:8px;margin-bottom:8px;font-size:13px;line-height:1.65;border:1px solid var(--border);font-family:'Inter',sans-serif;}
+  .dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+  .dot.pass{background:var(--accent);}
+  .dot.warn{background:var(--accent3);}
+  .dot.fail{background:var(--accent2);}
+  .stats-row{display:flex;gap:0;border-top:2px solid var(--border);background:var(--surface2);flex-wrap:wrap;}
+  .stat-item{padding:14px 22px;border-right:1px solid var(--border);flex:1;min-width:120px;}
+  .stat-item:last-child{border-right:none;}
+  .stat-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+  .stat-val{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+  .stat-val.up{color:var(--accent);}
+  .stat-val.down{color:var(--accent2);}
+  .stat-val.neutral{color:var(--accent3);}
+  /* ── HELP PILL (replaces tiny ? button) ── */
+  .help-btn{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 7px;border-radius:20px;background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);font-size:10px;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;user-select:none;vertical-align:middle;margin-left:8px;letter-spacing:0.5px;}
+  .help-btn::before{content:'📖';font-size:11px;}
+  .help-btn:hover{background:rgba(45,122,79,0.1);color:var(--accent);border-color:rgba(45,122,79,0.4);}
+  .help-btn.active{background:rgba(45,122,79,0.12);color:var(--accent);border-color:var(--accent);}
+  .help-btn.active::before{content:'✕';}
+  .error-box{background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);color:var(--accent2);padding:24px;font-size:14px;line-height:1.85;font-family:'Inter',sans-serif;}
+  .error-box a{color:var(--blue);}
+  /* ══════════════════════════════════════════════
+     RESPONSIVE — TABLET (max 768px)
+  ══════════════════════════════════════════════ */
+  @media(max-width:768px){
+    .main{padding:16px 14px;}
+    .header{padding:14px 16px;}
+    .logo-title{font-size:17px;}
+    .header-right{gap:8px;}
+
+    /* Search row */
+    .search-row{gap:8px;}
+    .lookup-wrap{max-width:none;min-width:0;flex:1 1 100%;order:1;}
+    .range-btns{order:2;}
+    .analyze-btn{order:3;flex:1;}
+    .save-btn{order:4;}
+
+    /* Watchlist */
+    .watch-card{min-width:100px;}
+
+    /* Result header */
+    .result-header{padding:12px 16px;gap:12px;}
+    .ticker-big{font-size:18px;}
+    .price-big{font-size:18px;}
+    .bias-strip{padding:12px 16px;}
+    .chart-area{padding:14px 16px;}
+    .two-col{grid-template-columns:1fr;}
+    .col{padding:14px 16px;border-right:none;border-bottom:1px solid var(--border);}
+    .col:last-child{border-bottom:none;}
+    .stats-row{flex-direction:column;}
+    .stat-item{border-right:none;border-bottom:1px solid var(--border);padding:10px 16px;min-width:0;}
+    .stat-item:last-child{border-bottom:none;}
+
+    /* Risk calc */
+    .risk-calc{padding:14px 16px;}
+    .risk-input{width:100%;}
+    .risk-field{flex:1 1 calc(50% - 7px);}
+
+    /* Panels */
+    .panel-toggle{padding:14px 16px;}
+    .panel-body{padding:0 16px 16px;}
+    .panel-body.open{padding-top:16px;}
+    .guide-grid{grid-template-columns:1fr 1fr;}
+    .when-cards{grid-template-columns:1fr 1fr;}
+    .markets-grid{grid-template-columns:1fr 1fr;}
+    .nl-clock-time{font-size:22px;}
+
+    /* News */
+    .news-grid{grid-template-columns:1fr;}
+  }
+
+  /* ══════════════════════════════════════════════
+     RESPONSIVE — MOBILE (max 480px)
+  ══════════════════════════════════════════════ */
+  @media(max-width:480px){
+    /* Layout */
+    .main{padding:12px 10px;}
+    .header{padding:12px 14px;flex-wrap:wrap;gap:8px;}
+    .logo-title{font-size:15px;}
+    .logo-sub{display:none;}
+
+    /* Search — full-width stack */
+    .search-row{flex-direction:column;gap:8px;}
+    .lookup-wrap{max-width:none;width:100%;}
+    .ticker-input{max-width:none;width:100%;font-size:16px;} /* 16px = no iOS auto-zoom */
+    .range-btns{width:100%;justify-content:space-between;}
+    .range-btn{flex:1;text-align:center;}
+    .analyze-btn{width:100%;padding:14px;font-size:14px;}
+    .save-btn{width:100%;padding:12px;text-align:center;}
+
+    /* Watchlist — horizontal scroll */
+    .watchlist-bar{padding:9px 12px;}
+    .watchlist-refresh-info{font-size:8px;}
+    .watchlist-cards{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding-bottom:4px;}
+    .watch-card{min-width:120px;scroll-snap-align:start;flex-shrink:0;}
+
+    /* Results */
+    .result-header{padding:10px 12px;}
+    .ticker-big{font-size:16px;}
+    .price-big{font-size:16px;}
+    .bias-strip{padding:10px 12px;gap:10px;}
+    .bias-pill{font-size:12px;padding:4px 12px;}
+    .bias-text{min-width:0;font-size:13px;}
+    .chart-area{padding:10px 12px;}
+    .chart-area canvas{max-height:200px;}
+    .cvd-wrap{height:55px;}
+    .col{padding:12px;}
+    .signal-card{padding:10px 12px;}
+    .stats-row{flex-direction:column;}
+    .stat-item{padding:9px 12px;border-right:none;}
+
+    /* Risk calculator */
+    .risk-calc{padding:12px;flex-direction:column;}
+    .risk-field{width:100%;}
+    .risk-input{width:100%;}
+    .risk-result{width:100%;}
+
+    /* Panels */
+    .panel-toggle{padding:12px;}
+    .panel-icon{font-size:18px;}
+    .panel-title{font-size:14px;}
+    .panel-sub{font-size:11px;}
+    .panel-body{padding:0 12px 14px;}
+    .panel-body.open{padding-top:14px;}
+    .guide-grid{grid-template-columns:1fr;}
+    .when-cards{grid-template-columns:1fr;}
+    .markets-grid{grid-template-columns:1fr;}
+
+    /* Market clock */
+    .nl-clock-banner{padding:12px 14px;}
+    .nl-clock-time{font-size:20px;}
+    .market-local-time{font-size:15px;}
+    .market-card{padding:12px 14px;}
+
+    /* News */
+    .news-grid{grid-template-columns:1fr;}
+    .news-header{flex-direction:column;align-items:flex-start;}
+    .news-card{padding:12px 14px;}
+    .lookup-results{max-height:200px;}
+  }
+
+  /* CVD */
+  .cvd-wrap{position:relative;height:70px;margin-top:8px;}
+  .cvd-row-label{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);font-weight:700;letter-spacing:2px;margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .cvd-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;}
+  .cvd-badge.pos{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .cvd-badge.neg{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .cvd-badge.div-warn{background:rgba(109,63,168,0.15);color:var(--purple);}
+  /* Risk calculator */
+  .risk-calc{background:var(--surface2);border-top:2px solid var(--border);padding:16px 22px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;}
+  .risk-field{display:flex;flex-direction:column;gap:4px;}
+  .risk-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+  .risk-input{background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text);width:120px;outline:none;transition:border-color 0.15s;}
+  .risk-input:focus{border-color:var(--accent);}
+  .risk-result{background:var(--surface);border:1.5px solid var(--accent);border-radius:8px;padding:10px 16px;display:flex;flex-direction:column;gap:3px;min-width:130px;}
+  .risk-result-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;}
+  .risk-result-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);}
+  .risk-divider-label{font-size:11px;color:var(--muted);padding-bottom:6px;}
+  /* Ticker lookup */
+  .lookup-wrap{position:relative;flex:1;min-width:180px;max-width:220px;}
+  .lookup-results{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1.5px solid var(--accent);border-radius:8px;margin-top:4px;z-index:50;box-shadow:0 8px 24px rgba(44,36,22,0.12);max-height:240px;overflow-y:auto;display:none;}
+  .lookup-results.open{display:block;}
+  .lookup-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s;}
+  .lookup-item:last-child{border-bottom:none;}
+  .lookup-item:hover{background:var(--surface2);}
+  .lookup-sym{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--accent);}
+  .lookup-name{font-size:12px;color:var(--muted);margin-top:2px;}
+  .lookup-exch{font-family:'Space Mono',monospace;font-size:10px;color:var(--blue);float:right;}
+  .lookup-searching{padding:12px 14px;font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;}
+
+  /* ── LIVE TICKER WATCHLIST ── */
+  .watchlist-wrap{margin-bottom:16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+  .watchlist-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2);}
+  .watchlist-bar-left{display:flex;align-items:center;gap:10px;}
+  .watchlist-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;white-space:nowrap;}
+  .watchlist-slots{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:rgba(45,122,79,0.1);padding:2px 9px;border-radius:10px;white-space:nowrap;}
+  .watchlist-refresh-info{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+  .watchlist-cards{display:flex;flex-wrap:wrap;gap:0;padding:0;}
+  .watch-card{flex:1;min-width:130px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:background 0.15s;position:relative;border-right:1px solid var(--border);}
+  .watch-card:last-child{border-right:none;}
+  .watch-card:hover{background:rgba(45,122,79,0.04);}
+  .watch-card-top{display:flex;align-items:center;justify-content:space-between;}
+  .watch-sym{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
+  .watch-market{font-family:'Space Mono',monospace;font-size:8px;padding:1px 5px;border-radius:4px;font-weight:700;}
+  .watch-market.open{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .watch-market.closed{background:var(--surface2);color:var(--muted);}
+  .watch-market.pre{background:rgba(184,134,11,0.12);color:var(--accent3);}
+  .watch-price{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;}
+  .watch-price.up{color:var(--accent);}
+  .watch-price.down{color:var(--accent2);}
+  .watch-price.flat{color:var(--text);}
+  .watch-chg{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+  .watch-chg.up{color:var(--accent);}
+  .watch-chg.down{color:var(--accent2);}
+  .watch-chg.flat{color:var(--muted);}
+  .watch-flash-up{animation:flashGreen 0.6s ease;}
+  .watch-flash-down{animation:flashRed 0.6s ease;}
+  @keyframes flashGreen{0%{background:rgba(45,122,79,0.25);}100%{background:transparent;}}
+  @keyframes flashRed{0%{background:rgba(192,57,43,0.18);}100%{background:transparent;}}
+  .watch-spin{display:inline-block;width:8px;height:8px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+  .watch-extra-row{display:flex;align-items:center;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;}
+  .watch-extra-label{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;background:rgba(184,134,11,0.15);color:var(--accent3);border:1px solid rgba(184,134,11,0.3);border-radius:4px;padding:1px 5px;white-space:nowrap;}
+  .watch-extra-price{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+  .watch-extra-chg{font-family:'Space Mono',monospace;font-size:10px;margin-left:auto;}
+  .watch-extra-price.up,.watch-extra-chg.up{color:var(--accent);}
+  .watch-extra-price.down,.watch-extra-chg.down{color:var(--accent2);}
+  .watch-extra-price.flat,.watch-extra-chg.flat{color:var(--muted);}
+  .watch-remove{position:absolute;top:4px;right:5px;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:1px 4px;border-radius:4px;opacity:0;line-height:1;transition:opacity 0.1s;}
+  .watch-card:hover .watch-remove{opacity:1;}
+  .watch-remove:hover{color:var(--accent2);}
+  .watch-empty{padding:18px 20px;font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;}
+  .save-btn{background:var(--surface);border:1.5px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-weight:700;font-size:12px;padding:13px 16px;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+  .save-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.06);}
+  .save-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+  /* ── PREMARKET SCREENER LINKS ── */
+  .screener-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:4px;}
+  .screener-card{display:flex;flex-direction:column;gap:6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;transition:all 0.18s;position:relative;overflow:hidden;}
+  .screener-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(45,122,79,0.04));pointer-events:none;}
+  .screener-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(44,36,22,0.1);transform:translateY(-2px);}
+  .screener-card-top{display:flex;align-items:center;justify-content:space-between;}
+  .screener-name{font-size:15px;font-weight:800;font-family:'Inter',sans-serif;}
+  .screener-badge{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;}
+  .screener-badge.free{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .screener-badge.limited{background:rgba(184,134,11,0.12);color:var(--accent3);}
+  .screener-badge.paid{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .screener-desc{font-size:13px;color:var(--muted);line-height:1.55;font-family:'Inter',sans-serif;}
+  .screener-url{font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:0.5px;margin-top:2px;}
+  .screener-filter{font-family:'Space Mono',monospace;font-size:9px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);margin-top:2px;line-height:1.6;}
+  .screener-filter strong{color:var(--accent);}
+  .screener-divider{border:none;border-top:1px solid var(--border);margin:14px 0 12px;}
+  .screener-tip{background:rgba(37,99,168,0.06);border:1.5px solid rgba(37,99,168,0.15);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.7;font-family:'Inter',sans-serif;}
+  .screener-tip strong{color:var(--blue);}
+  @media(max-width:480px){.screener-grid{grid-template-columns:1fr;}}
+  /* ── INLINE HELP TOOLTIPS ── */
+  .help-box{display:none;background:linear-gradient(135deg,rgba(45,122,79,0.04),rgba(37,99,168,0.03));border:1.5px solid rgba(45,122,79,0.18);border-radius:10px;padding:14px 16px;margin-top:10px;font-size:13px;line-height:1.75;font-family:'Inter',sans-serif;color:var(--text);animation:fadeIn 0.2s ease;}
+  .help-box.open{display:block;}
+  .help-box strong{color:var(--accent);}
+  .help-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+  .help-row:last-child{margin-bottom:0;}
+  .help-tag{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+  .help-tag.bull{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .help-tag.bear{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .help-tag.warn{background:rgba(184,134,11,0.1);color:var(--accent3);}
+  .help-tag.info{background:rgba(37,99,168,0.1);color:var(--blue);}
+  .help-tag.neu{background:var(--surface2);color:var(--muted);}
+  .news-section{margin-top:12px;}
+  .news-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .news-title{font-size:16px;font-weight:800;}
+  .news-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:3px;}
+  .news-refresh{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+  .news-refresh:hover:not(:disabled){border-color:var(--blue);color:var(--blue);}
+  .news-refresh:disabled{opacity:0.45;cursor:not-allowed;}
+  .news-ticker-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+  .news-tab{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all 0.15s;}
+  .news-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.08);}
+  .news-tab:hover:not(.active){border-color:var(--muted);}
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+  .news-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;transition:all 0.15s;display:flex;flex-direction:column;gap:8px;}
+  .news-card:hover{border-color:var(--blue);box-shadow:0 4px 14px rgba(44,36,22,0.08);transform:translateY(-1px);}
+  .news-card a{text-decoration:none;color:inherit;}
+  .news-ticker-tag{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(37,99,168,0.1);color:var(--blue);display:inline-block;margin-bottom:2px;}
+  .news-headline{font-size:14px;font-weight:600;line-height:1.55;color:var(--text);font-family:'Inter',sans-serif;}
+  .news-headline:hover{color:var(--blue);}
+  .news-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+  .news-source{color:var(--accent3);}
+  .news-empty{padding:32px 20px;text-align:center;font-size:14px;font-family:'Inter',sans-serif;color:var(--muted);background:var(--surface);border:1.5px solid var(--border);border-radius:12px;}
+  .news-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:32px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+  .news-spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
+  /* ── MARKET HOURS ── */
+  .markets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
+  .market-card{background:var(--surface2);border-radius:12px;padding:14px 16px;border-left:4px solid var(--border);position:relative;transition:border-color 0.3s;}
+  .market-card.open{border-left-color:var(--accent);background:rgba(45,122,79,0.05);}
+  .market-card.closed{border-left-color:var(--accent2);background:rgba(192,57,43,0.03);}
+  .market-card.pre{border-left-color:var(--accent3);background:rgba(184,134,11,0.04);}
+  .market-card.post{border-left-color:var(--blue);background:rgba(37,99,168,0.04);}
+  .market-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .market-name{font-size:14px;font-weight:700;font-family:'Inter',sans-serif;}
+  .market-status-pill{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .market-status-pill.open{background:rgba(45,122,79,0.15);color:var(--accent);}
+  .market-status-pill.closed{background:rgba(192,57,43,0.12);color:var(--accent2);}
+  .market-status-pill.pre{background:rgba(184,134,11,0.12);color:var(--accent3);}
+  .market-status-pill.post{background:rgba(37,99,168,0.12);color:var(--blue);}
+  .market-abbr{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;}
+  .market-time-row{display:flex;align-items:baseline;gap:6px;margin-bottom:3px;}
+  .market-local-time{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;line-height:1;}
+  .market-local-time.open{color:var(--accent);}
+  .market-local-time.closed{color:var(--muted);}
+  .market-local-time.pre{color:var(--accent3);}
+  .market-local-time.post{color:var(--blue);}
+  .market-tz{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+  .market-hours{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;}
+  .market-hours strong{color:var(--text);}
+  .market-next{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Inter',sans-serif;border-top:1px solid var(--border);padding-top:6px;}
+  .market-next strong{color:var(--text);}
+  .nl-clock-banner{background:linear-gradient(135deg,rgba(45,122,79,0.07),rgba(37,99,168,0.07));border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+  .nl-clock-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px;}
+  .nl-clock-time{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--text);letter-spacing:-1px;}
+  .nl-clock-date{font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;margin-top:2px;}
+  .dst-note{font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;background:var(--surface2);border-radius:8px;padding:10px 14px;margin-top:4px;line-height:1.6;}
+  /* ── SIGNAL LEARN MODAL ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(44,36,22,0.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);}
+  .modal-overlay.hidden{display:none;}
+  .modal-box{background:var(--surface);border-radius:16px;padding:24px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(44,36,22,0.2);max-height:90vh;overflow-y:auto;}
+  .modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px;}
+  .modal-title{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:1px;}
+  .modal-close{background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .modal-canvas-wrap{background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:16px;height:160px;position:relative;}
+  .modal-canvas-wrap canvas{width:100%!important;height:136px!important;}
+  .modal-section{margin-bottom:14px;}
+  .modal-section-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px;}
+  .modal-body{font-size:13px;line-height:1.7;color:var(--text);}
+  .modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .modal-tag{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-family:'Space Mono',monospace;}
+  .modal-tag.green{background:rgba(45,122,79,0.1);border-color:rgba(45,122,79,0.3);color:var(--accent);}
+  .modal-tag.red{background:rgba(192,57,43,0.1);border-color:rgba(192,57,43,0.3);color:var(--accent2);}
+  .modal-tag.amber{background:rgba(184,134,11,0.1);border-color:rgba(184,134,11,0.3);color:var(--accent3);}
+
+  /* ── VSA QUIZ ── */
+  .quiz-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-top:12px;}
+  .quiz-header{background:var(--surface2);padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .quiz-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;font-weight:700;color:var(--text);}
+  .quiz-score{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);}
+  .quiz-body{padding:18px;}
+  .quiz-chart-wrap{background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:16px;height:150px;}
+  .quiz-chart-wrap canvas{width:100%!important;height:126px!important;}
+  .quiz-question{font-size:14px;font-weight:600;margin-bottom:14px;line-height:1.5;}
+  .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .quiz-opt{padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;background:var(--surface2);transition:all 0.15s;text-align:left;}
+  .quiz-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(45,122,79,0.05);}
+  .quiz-opt.correct{border-color:var(--accent);background:rgba(45,122,79,0.12);color:var(--accent);font-weight:700;}
+  .quiz-opt.wrong{border-color:var(--accent2);background:rgba(192,57,43,0.08);color:var(--accent2);}
+  .quiz-opt:disabled{cursor:default;}
+  .quiz-feedback{font-size:13px;line-height:1.6;padding:12px 14px;border-radius:8px;margin-bottom:12px;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.correct{background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.2);color:var(--accent);}
+  .quiz-feedback.wrong{background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);color:var(--accent2);}
+  .quiz-next{padding:9px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;display:none;}
+  .quiz-next.show{display:inline-block;}
+  .quiz-progress{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;}
+
+  /* API Key Banner */
+  .api-banner{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#2d7a4f;color:#fff;font-size:13px;flex-wrap:wrap;position:sticky;top:0;z-index:200;}
+  .api-banner span{flex:1;font-weight:600;min-width:180px;}
+  .api-banner input{flex:2;min-width:200px;padding:6px 10px;border-radius:6px;border:none;font-size:13px;font-family:'Space Mono',monospace;}
+  .api-banner button{padding:6px 14px;background:#fff;color:#2d7a4f;border:none;border-radius:6px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .api-banner a{color:#a8e6c3;font-size:12px;white-space:nowrap;}
+  .api-banner.warn{background:#b8860b;}
+</style>
+</head>
+<body>
+
+<!-- SIGNAL LEARN MODAL -->
+<div class="modal-overlay hidden" id="signalModal" onclick="closeSignalModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-section-title">VSA SIGNAAL UITLEG</div>
+        <div class="modal-title" id="modalTitle">—</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('signalModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="modal-canvas-wrap">
+      <canvas id="modalChart"></canvas>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">WAT BETEKENT DIT?</div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">WAT DOE JE ERMEE?</div>
+      <div class="modal-body" id="modalAction"></div>
+    </div>
+    <div class="modal-tags" id="modalTags"></div>
+  </div>
+</div>
+
+<header class="header">
+  <div>
+    <div class="logo-title">VSA Trader</div>
+    <div class="logo-sub" data-en="ORDERFLOW INTELLIGENCE" data-nl="ORDERFLOW ANALYSE">ORDERFLOW INTELLIGENCE</div>
+  </div>
+  <div class="header-right">
+    <div class="free-badge">✓ 100% FREE</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn" onclick="setLang('nl')">🇳🇱 NL</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- 1. SEARCH ROW — first thing you see, clear action -->
+  <div class="search-row">
+    <div class="lookup-wrap">
+      <input class="ticker-input" id="tickerInput" type="text" placeholder="AAPL, TSLA, ASML..." maxlength="10" autocomplete="off" oninput="onTickerInput(this.value)" onblur="setTimeout(()=>closeLookup(),200)"/>
+      <div class="lookup-results" id="lookupResults"></div>
+    </div>
+    <div class="range-btns">
+      <button class="range-btn active" data-range="1mo">1M</button>
+      <button class="range-btn" data-range="3mo">3M</button>
+      <button class="range-btn" data-range="6mo">6M</button>
+    </div>
+    <button class="analyze-btn" id="analyzeBtn" data-en="ANALYSE →" data-nl="ANALYSEER →">ANALYSE →</button>
+    <button class="save-btn" id="watchAddBtn" onclick="addCurrentToWatchlist()" data-en="📌 Save" data-nl="📌 Opslaan">📌 Save</button>
+  </div>
+
+  <!-- 2. WATCHLIST — live price ticker -->
+  <div class="watchlist-wrap" id="watchlistWrap">
+    <div class="watchlist-bar">
+      <div class="watchlist-bar-left">
+        <div class="watchlist-label" data-en="📌 WATCHLIST" data-nl="📌 WATCHLIJST">📌 WATCHLIST</div>
+        <div class="watchlist-slots" id="watchSlots">0 / 7</div>
+      </div>
+      <div class="watchlist-refresh-info">
+        <span class="live-dot"></span>
+        <span id="watchLastUpdate" data-en="updating..." data-nl="updaten...">updating...</span>
+      </div>
+    </div>
+    <div class="watchlist-cards" id="watchlistCards">
+      <div class="watch-empty" data-en="Save a stock after analysing it to track prices here." data-nl="Sla een aandeel op na analyse om de prijs hier te volgen.">Save a stock after analysing it to track prices here.</div>
+    </div>
+  </div>
+
+  <!-- 3. RESULTS — main analysis output -->
+  <div id="output">
+    <div class="empty-state">
+      <div class="empty-icon">📊</div>
+      <div class="empty-title" data-en="Enter a stock ticker above" data-nl="Voer een aandelenticker in">Enter a stock ticker above</div>
+      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds — no account or API key needed." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden — geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds — no account or API key needed.</div>
+    </div>
+  </div>
+
+  <!-- 4. NEWS — directly after results, same stock context -->
+  <section id="newsSection" style="display:none;margin-top:12px;">
+    <div class="news-header">
+      <div>
+        <div class="news-title" data-en="📰 Stock News" data-nl="📰 Aandelenni­euws">📰 Stock News</div>
+        <div class="news-sub" data-en="LATEST HEADLINES FOR YOUR WATCHLIST" data-nl="LAATSTE NIEUWS VOOR JE WATCHLIJST">LATEST HEADLINES FOR YOUR WATCHLIST</div>
+      </div>
+      <button class="news-refresh" id="newsRefreshBtn" onclick="loadAllNews()" data-en="↺ Refresh" data-nl="↺ Vernieuwen">↺ Refresh</button>
+    </div>
+    <div class="news-ticker-tabs" id="newsTickerTabs"></div>
+    <div id="newsContent">
+      <div class="news-loading"><div class="news-spinner"></div><span data-en="Loading news..." data-nl="Nieuws laden...">Loading news...</span></div>
+    </div>
+  </section>
+
+  <!-- PANEL 0: PREMARKET SCREENER LINKS -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('screener')">
+      <div class="panel-left"><div class="panel-icon">🚀</div><div>
+        <div class="panel-title">Premarket Gainers — Waar vind je ze?</div>
+        <div class="panel-sub">Directe links naar gratis screeners · filter op +10% tot +50% onder $100</div>
+      </div></div>
+      <div class="panel-arrow" id="screener-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="screener-body">
+
+      <div class="section-label" style="margin-bottom:12px;">📈 BESTE GRATIS SCREENERS VOOR PREMARKET</div>
+
+      <div class="screener-grid">
+
+        <!-- Finviz -->
+        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&f=sh_price_u100,ta_change_u10&o=-prechange&ar=180" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">Finviz</div>
+            <span class="screener-badge free">GRATIS</span>
+          </div>
+          <div class="screener-desc">Krachtigste gratis screener. Filter direct op prijs, premarket %, sector en volume.</div>
+          <div class="screener-filter">Prijs &lt; $100 · Change &gt; <strong>+10%</strong> · gesorteerd op change</div>
+          <div class="screener-url">finviz.com/screener →</div>
+        </a>
+
+        <!-- Stockanalysis -->
+        <a class="screener-card" href="https://stockanalysis.com/stocks/screener/?p=premarket&f=marketCap-desc&c=s,name,price,changePercent,preMarketChangePercent,volume&filters=preMarketChangePercent__gte__10~price__lte__100" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">Stock Analysis</div>
+            <span class="screener-badge free">GRATIS</span>
+          </div>
+          <div class="screener-desc">Overzichtelijke screener met premarket kolom. Werkt goed op mobiel.</div>
+          <div class="screener-filter">Premarket &gt; <strong>+10%</strong> · Prijs &lt; $100</div>
+          <div class="screener-url">stockanalysis.com/screener →</div>
+        </a>
+
+        <!-- Yahoo Finance -->
+        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_gainers" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">Yahoo Finance</div>
+            <span class="screener-badge free">GRATIS</span>
+          </div>
+          <div class="screener-desc">Day Gainers lijst. Voeg zelf premarket filter toe via de filterknop bovenaan.</div>
+          <div class="screener-filter">Day Gainers · pas aan: Prijs &lt; <strong>$100</strong></div>
+          <div class="screener-url">finance.yahoo.com/screener →</div>
+        </a>
+
+        <!-- MarketWatch -->
+        <a class="screener-card" href="https://www.marketwatch.com/tools/screener/premarket" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">MarketWatch</div>
+            <span class="screener-badge free">GRATIS</span>
+          </div>
+          <div class="screener-desc">Specifieke premarket screener. Toont % change vóór opening, gesorteerd op gainers.</div>
+          <div class="screener-filter">Premarket screener · filter prijs &lt; <strong>$100</strong></div>
+          <div class="screener-url">marketwatch.com/tools/screener →</div>
+        </a>
+
+        <!-- Benzinga -->
+        <a class="screener-card" href="https://www.benzinga.com/premarket/" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">Benzinga</div>
+            <span class="screener-badge limited">BEPERKT GRATIS</span>
+          </div>
+          <div class="screener-desc">Populair bij day traders. Toont premarket movers met nieuws erbij. Sommige data achter betaalmuur.</div>
+          <div class="screener-filter">Premarket movers + nieuws gecombineerd</div>
+          <div class="screener-url">benzinga.com/premarket →</div>
+        </a>
+
+        <!-- Unusual Whales -->
+        <a class="screener-card" href="https://unusualwhales.com/market-overview/premarket" target="_blank" rel="noopener">
+          <div class="screener-card-top">
+            <div class="screener-name">Unusual Whales</div>
+            <span class="screener-badge limited">BEPERKT GRATIS</span>
+          </div>
+          <div class="screener-desc">Toont premarket gainers én options flow. Goed voor het spotten van institutionele activiteit.</div>
+          <div class="screener-filter">Premarket overview · opties activiteit</div>
+          <div class="screener-url">unusualwhales.com/premarket →</div>
+        </a>
+
+      </div>
+
+      <div class="screener-divider"></div>
+
+      <div class="section-label" style="margin-bottom:10px;">🎯 HOE GEBRUIK JE DIT SAMEN MET VSA?</div>
+      <div class="screener-tip">
+        <strong>Stap 1:</strong> Open Finviz of Stock Analysis vóór de markt opent (06:00–09:30 NL tijd).<br>
+        <strong>Stap 2:</strong> Filter op premarket change <strong>≥ +10%</strong> en prijs <strong>&lt; $100</strong>. Noteer de top 5 symbolen.<br>
+        <strong>Stap 3:</strong> Voer elk symbool in de VSA analyser hierboven in. Kijk of het signaal de move bevestigt.<br>
+        <strong>Stap 4:</strong> Alleen instappen als de VSA bias <strong>BULLISH</strong> is én het checklist ≤ 1 rode stip heeft.<br><br>
+        ⚠️ <strong>Let op:</strong> Stocks die +30% of meer premarket stijgen zijn vaak al te laat om in te stappen — het risico op een snelle reversal is hoog. Focus op +10% tot +25% met bevestiging vanuit het chart.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MARKET LINKS PANEL -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('marketlinks')">
+      <div class="panel-left"><div class="panel-icon">📊</div><div>
+        <div class="panel-title">Market Links — Gainers, Losers & Volume</div>
+        <div class="panel-sub">Directe links naar de beste gratis marktoverzichten</div>
+      </div></div>
+      <div class="panel-arrow" id="marketlinks-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="marketlinks-body">
+
+      <div class="section-label" style="margin-bottom:12px;">📈 DAY GAINERS</div>
+      <div class="screener-grid">
+        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_gainers" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Top stijgers van de dag, gesorteerd op % winst.</div>
+          <div class="screener-url">finance.yahoo.com → Day Gainers</div>
+        </a>
+        <a class="screener-card" href="https://stockanalysis.com/markets/gainers/" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Overzichtelijke gainers lijst met volume en marktkapitalisatie.</div>
+          <div class="screener-url">stockanalysis.com/markets/gainers →</div>
+        </a>
+        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_topgainers" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Finviz Gainers</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Top gainers met filteropties voor sector, prijs en volume.</div>
+          <div class="screener-url">finviz.com/screener → Top Gainers</div>
+        </a>
+      </div>
+
+      <div class="screener-divider"></div>
+      <div class="section-label" style="margin-bottom:12px;">📉 DAY LOSERS</div>
+      <div class="screener-grid">
+        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_losers" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Grootste dalers van de dag. Interessant voor short setups of reversal kansen.</div>
+          <div class="screener-url">finance.yahoo.com → Day Losers</div>
+        </a>
+        <a class="screener-card" href="https://stockanalysis.com/markets/losers/" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Overzichtelijke verliezers met % daling en volume data.</div>
+          <div class="screener-url">stockanalysis.com/markets/losers →</div>
+        </a>
+        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_toplosers" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Finviz Losers</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Top losers met uitgebreide filteropties.</div>
+          <div class="screener-url">finviz.com/screener → Top Losers</div>
+        </a>
+      </div>
+
+      <div class="screener-divider"></div>
+      <div class="section-label" style="margin-bottom:12px;">🔥 MOST ACTIVE / HIGHEST VOLUME</div>
+      <div class="screener-grid">
+        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/most_actives" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Meest verhandelde aandelen. Hoog volume = institutionele interesse.</div>
+          <div class="screener-url">finance.yahoo.com → Most Active</div>
+        </a>
+        <a class="screener-card" href="https://stockanalysis.com/markets/most-active/" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Most active stocks gesorteerd op totaal handelsvolume vandaag.</div>
+          <div class="screener-url">stockanalysis.com/markets/most-active →</div>
+        </a>
+        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_mostactive" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Finviz Volume</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Meest actieve aandelen met Finviz heatmap en filteropties.</div>
+          <div class="screener-url">finviz.com/screener → Most Active</div>
+        </a>
+      </div>
+
+      <div class="screener-divider"></div>
+      <div class="section-label" style="margin-bottom:12px;">👁️ STOCKS TO WATCH</div>
+      <div class="screener-grid">
+        <a class="screener-card" href="https://finviz.com/map.ashx?t=sec" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Finviz Heatmap</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Visuele heatmap van de markt. In één oogopslag zien welke sectoren bewegen.</div>
+          <div class="screener-url">finviz.com/map → S&P 500 Heatmap</div>
+        </a>
+        <a class="screener-card" href="https://stockanalysis.com/markets/trending/" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Trending Stocks</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Meest bekeken aandelen vandaag. Populair = media-aandacht = mogelijke volatiliteit.</div>
+          <div class="screener-url">stockanalysis.com/markets/trending →</div>
+        </a>
+        <a class="screener-card" href="https://www.tradingview.com/markets/stocks-usa/market-movers-large-cap/" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">TradingView</div><span class="screener-badge free">GRATIS</span></div>
+          <div class="screener-desc">Large cap movers op TradingView. Uitstekende grafieken om VSA op toe te passen.</div>
+          <div class="screener-url">tradingview.com → Market Movers</div>
+        </a>
+        <a class="screener-card" href="https://unusualwhales.com/market-overview" target="_blank" rel="noopener">
+          <div class="screener-card-top"><div class="screener-name">Unusual Whales</div><span class="screener-badge limited">BEPERKT</span></div>
+          <div class="screener-desc">Marktoverzicht met opties flow. Signaleert institutionele activiteit vroeg.</div>
+          <div class="screener-url">unusualwhales.com/market-overview →</div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VSA QUIZ PANEL -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('quiz')">
+      <div class="panel-left"><div class="panel-icon">🧠</div><div>
+        <div class="panel-title">VSA Quiz — Test je kennis</div>
+        <div class="panel-sub">Leer VSA patronen herkennen met interactieve vragen</div>
+      </div></div>
+      <div class="panel-arrow" id="quiz-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="quiz-body">
+      <div class="quiz-wrap">
+        <div class="quiz-header">
+          <div class="quiz-title">🧠 VSA PATROON QUIZ</div>
+          <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+        </div>
+        <div class="quiz-body" id="quizBody">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: WHEN TO USE -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('when')">
+      <div class="panel-left"><div class="panel-icon">🕐</div><div>
+        <div class="panel-title" data-en="When & how to use this tool" data-nl="Wanneer & hoe gebruik je dit hulpmiddel">When & how to use this tool</div>
+        <div class="panel-sub" data-en="What time period it covers, and when to run a scan" data-nl="Welke periode het dekt, en wanneer je een scan uitvoert">What time period it covers, and when to run a scan</div>
+      </div></div>
+      <div class="panel-arrow" id="when-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="when-body">
+      <div class="time-banner">
+        <div class="time-banner-icon">📅</div>
+        <div>
+          <strong style="display:block;font-size:14px;margin-bottom:6px;" data-en="What time period does a scan cover?" data-nl="Welke periode dekt een scan?">What time period does a scan cover?</strong>
+          <div class="time-banner-body"
+            data-en="This tool does <strong>NOT</strong> just look at today's price. It looks back over the last <strong>20–30 trading days</strong> (roughly 4–6 weeks). It reads each day like a chapter — the price, how much it moved, and how many people were trading. Then it spots the important moments hidden in that history."
+            data-nl="Dit hulpmiddel kijkt <strong>NIET</strong> alleen naar de huidige prijs. Het kijkt terug over de laatste <strong>20–30 handelsdagen</strong> (ongeveer 4–6 weken). Het leest elke dag als een hoofdstuk — de prijs, hoeveel die bewoog, en hoeveel mensen handelden. Dan herkent het de belangrijke momenten verborgen in die geschiedenis.">
+            This tool does <strong>NOT</strong> just look at today's price. It looks back over the last <strong>20–30 trading days</strong> (roughly 4–6 weeks). It reads each day like a chapter — the price, how much it moved, and how many people were trading. Then it spots the important moments hidden in that history.
+          </div>
+        </div>
+      </div>
+      <div class="section-label" data-en="YOUR TRADING DAY — STEP BY STEP" data-nl="JOUW HANDELSDAG — STAP VOOR STAP">YOUR TRADING DAY — STEP BY STEP</div>
+      <div class="when-grid">
+        <div class="when-card">
+          <div class="when-step" data-en="STEP 1" data-nl="STAP 1">STEP 1</div>
+          <div class="when-title" data-en="☀️ Before the market opens" data-nl="☀️ Vóór de markt opent">☀️ Before the market opens</div>
+          <div class="when-body" data-en="Run a scan on any stock you're watching. This tells you the <strong>overall direction</strong> and any important signal zones from recent weeks. This is your game plan for the day." data-nl="Voer een scan uit op een aandeel dat je volgt. Dit geeft je de <strong>algemene richting</strong> en belangrijke signaalzones van de afgelopen weken. Dit is jouw plan voor de dag.">Run a scan on any stock you're watching. This tells you the <strong>overall direction</strong> and any important signal zones from recent weeks. This is your game plan for the day.</div>
+        </div>
+        <div class="when-card">
+          <div class="when-step" data-en="STEP 2" data-nl="STAP 2">STEP 2</div>
+          <div class="when-title" data-en="✅ Check the bias first" data-nl="✅ Check eerst de richting">✅ Check the bias first</div>
+          <div class="when-body" data-en="Is it <strong>BULLISH, BEARISH or NEUTRAL?</strong> If NEUTRAL — consider sitting out. Only trade in the direction the bias points." data-nl="Is het <strong>BULLISH, BEARISH of NEUTRAL?</strong> Als NEUTRAL — overweeg dan niet te handelen. Trade alleen in de richting die de bias aangeeft.">Is it <strong>BULLISH, BEARISH or NEUTRAL?</strong> If NEUTRAL — consider sitting out. Only trade in the direction the bias points.</div>
+        </div>
+        <div class="when-card">
+          <div class="when-step" data-en="STEP 3" data-nl="STAP 3">STEP 3</div>
+          <div class="when-title" data-en="🔍 Read the signals" data-nl="🔍 Lees de signalen">🔍 Read the signals</div>
+          <div class="when-body" data-en="Look at the VSA signals. Are they mostly green or red? Do they match the bias? <strong>More signals agreeing = stronger edge.</strong>" data-nl="Bekijk de VSA-signalen. Zijn ze voornamelijk groen of rood? Kloppen ze met de bias? <strong>Meer overeenkomende signalen = sterkere kans.</strong>">Look at the VSA signals. Are they mostly green or red? Do they match the bias? <strong>More signals agreeing = stronger edge.</strong></div>
+        </div>
+        <div class="when-card">
+          <div class="when-step" data-en="STEP 4" data-nl="STAP 4">STEP 4</div>
+          <div class="when-title" data-en="📋 Check the checklist" data-nl="📋 Check de controlelijst">📋 Check the checklist</div>
+          <div class="when-body" data-en="Before placing on eToro, run through the dots. <strong>2+ red dots = skip it.</strong> Wait for a cleaner setup." data-nl="Voordat je op eToro plaatst, loop je de stipjes door. <strong>2+ rode stipjes = overslaan.</strong> Wacht op een betere situatie.">Before placing on eToro, run through the dots. <strong>2+ red dots = skip it.</strong> Wait for a cleaner setup.</div>
+        </div>
+      </div>
+      <div class="tip-box"
+        data-en="💡 <strong>Best times to scan:</strong> Evening after US markets close, or morning before they open. Re-scan mid-week if a stock makes a big move — fresh signals appear. <strong>Avoid scanning during big news events</strong> — signals will be noisy."
+        data-nl="💡 <strong>Beste momenten om te scannen:</strong> 's Avonds na sluiting van de Amerikaanse markten, of 's ochtends voor de opening. Scan opnieuw midden in de week als een aandeel sterk beweegt — nieuwe signalen verschijnen. <strong>Vermijd scannen tijdens grote nieuwsgebeurtenissen</strong> — signalen zijn dan onbetrouwbaar.">
+        💡 <strong>Best times to scan:</strong> Evening after US markets close, or morning before they open. Re-scan mid-week if a stock makes a big move — fresh signals appear. <strong>Avoid scanning during big news events</strong> — signals will be noisy.
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: MARKET HOURS -->
+  <div class="panel">
+    <div class="panel-toggle" onclick="togglePanel('markets')">
+      <div class="panel-left"><div class="panel-icon">🌍</div><div>
+        <div class="panel-title">Openingstijden beurzen</div>
+        <div class="panel-sub">Live status — wanneer is welke markt open?</div>
+      </div></div>
+      <div class="panel-arrow" id="markets-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="markets-body">
+
+      <!-- Your local NL time -->
+      <div class="nl-clock-banner">
+        <div>
+          <div class="nl-clock-label">🇳🇱 JOUW TIJD — NEDERLAND</div>
+          <div class="nl-clock-time" id="nlClock">--:--:--</div>
+          <div class="nl-clock-date" id="nlDate">--</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="nl-clock-label">ZOMERTIJD</div>
+          <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="dstStatus">--</div>
+          <div class="nl-clock-label" style="margin-top:6px;">UTC OFFSET</div>
+          <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;" id="utcOffset">--</div>
+        </div>
+      </div>
+
+      <!-- Market cards grid -->
+      <div class="markets-grid" id="marketsGrid"></div>
+
+      <div class="dst-note">
+        ⚠️ <strong>Let op zomertijd:</strong> Amerikaanse markten verschuiven <strong>niet</strong> gelijk met Europa. In de periode dat Europa al zomertijd heeft maar de VS nog niet (of omgekeerd), zijn de tijdsverschillen tijdelijk anders. Dit dashboard houdt hier automatisch rekening mee.
+      </div>
+    </div>
+  </div>
+
+
+</main>
+
+<script>
+// ── LANGUAGE SYSTEM ──
+let lang = localStorage.getItem('vsa_lang') || 'en';
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('vsa_lang', l);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  applyLang();
+  // Recompute signals/bias/checklist in new language, then re-render
+  if (window._rawResult) {
+    const { ticker, rows, meta } = window._rawResult;
+    const signals   = runVSA(rows);
+    const biasObj   = computeBias(rows, signals);
+    const checklist = buildChecklist(rows, signals, biasObj);
+    const stats     = computeStats(rows);
+    const cvdData   = computeCVD(rows);
+    const vpData    = computeVolumeProfile(rows);
+    const zones     = computeKeyZones(rows, signals);
+    const trendStrength = computeTrendStrength(rows, signals, biasObj);
+    renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cvdData, vpData, zones, trendStrength);
+  }
+  // Re-render news tabs and content in new language
+  if (activeNewsTab) {
+    renderNewsTabs();
+    renderNewsTab(activeNewsTab);
+  }
+  // Re-render watchlist labels
+  renderWatchlist();
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val !== null) el.innerHTML = val;
+  });
+}
+
+// ── INLINE HELP TOGGLES ──
+function toggleHelp(id) {
+  const box = document.getElementById('help-' + id);
+  const btn = document.getElementById('helpbtn-' + id);
+  if (!box || !btn) return;
+  const isOpen = box.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  btn.textContent = isOpen ? 'Sluit' : 'Uitleg';
+}
+
+// ── PANEL TOGGLES ──
+function togglePanel(id) {
+  document.getElementById(id+'-body').classList.toggle('open');
+  document.getElementById(id+'-arrow').classList.toggle('open');
+}
+
+// ── RANGE BUTTONS ──
+let currentRange = '1mo';
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRange = btn.dataset.range;
+  });
+});
+
+document.getElementById('tickerInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('analyzeBtn').click();
+});
+document.getElementById('analyzeBtn').addEventListener('click', () => {
+  const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+  if (ticker) runAnalysis(ticker);
+});
+
+// ── FETCH — direct Yahoo Finance with CORS proxy fallback ──
+// ── FETCH ENGINE — GitHub Pages versie (Yahoo Finance direct) ──
+// Op GitHub Pages werkt Yahoo Finance direct — geen CORS problemen.
+// Fallback naar proxies als de app lokaal geopend wordt.
+
+function makeAbortSignal(ms) {
+  const ctrl = new AbortController();
+  setTimeout(() => ctrl.abort(), ms);
+  return ctrl.signal;
+}
+
+async function fetchData(ticker, range) {
+  const nl = lang === 'nl';
+  const sym = ticker.toUpperCase().trim();
+  const safeRange = ['1mo','3mo','6mo'].includes(range) ? range : '1mo';
+  const interval  = safeRange === '6mo' ? '1wk' : '1d';
+
+  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history`;
+
+  // Probeer in volgorde: direct → corsproxy → allorigins → stooq
+  const attempts = [
+    () => fetchYahooDirect(yahooUrl, sym),
+    () => fetchYahooViaProxy(yahooUrl, `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`, sym),
+    () => fetchYahooViaProxy(yahooUrl, `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`, sym),
+    () => fetchStooq(sym, safeRange),
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      const data = await attempt();
+      if (data && data.rows.length >= 5) return data;
+    } catch(e) {
+      console.log('fetch attempt failed:', e.message);
+    }
+  }
+
+  throw new Error(nl
+    ? `Geen data voor "${sym}". Controleer het symbool.<br><small>De app probeert Yahoo Finance direct, via corsproxy.io, via allorigins, en stooq.com.<br>Als alle vier mislukken: hostingprobleem of onbekend symbool.</small>`
+    : `No data for "${sym}". Check the symbol.<br><small>App tried Yahoo direct, corsproxy.io, allorigins, and stooq.com.<br>If all four fail: hosting issue or unknown symbol.</small>`);
+}
+
+async function fetchYahooDirect(url, sym) {
+  const res = await fetch(url, { signal: makeAbortSignal(8000) });
+  if (!res.ok) throw new Error(`Yahoo direct HTTP ${res.status}`);
+  return parseYahooJSON(await res.json(), sym);
+}
+
+async function fetchYahooViaProxy(originalUrl, proxyUrl, sym) {
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(12000) });
+  if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
+  const json = await res.json();
+  // allorigins wraps in {contents: "..."}
+  const data = json?.contents ? JSON.parse(json.contents) : json;
+  return parseYahooJSON(data, sym);
+}
+
+function parseYahooJSON(data, sym) {
+  const result = data?.chart?.result?.[0];
+  if (!result) throw new Error('Yahoo: no result');
+  const ts = result.timestamp || [];
+  const q  = result.indicators?.quote?.[0] || {};
+  const rows = [];
+  for (let i = 0; i < ts.length; i++) {
+    if (q.close?.[i] == null || q.high?.[i] == null || q.low?.[i] == null) continue;
+    rows.push({
+      t: ts[i],
+      o: q.open?.[i] ?? q.close[i],
+      h: q.high[i],
+      l: q.low[i],
+      c: q.close[i],
+      v: q.volume?.[i] ?? 0
+    });
+  }
+  if (rows.length < 5) throw new Error('Yahoo: too few rows');
+  return {
+    ticker:   result.meta?.symbol || sym,
+    exchange: result.meta?.exchangeName || '',
+    currency: result.meta?.currency || 'USD',
+    rows
+  };
+}
+
+async function fetchStooq(sym, range) {
+  // Stooq werkt zonder CORS — goed fallback voor US en EU stocks
+  if (sym.includes('-USD') || sym.startsWith('^')) throw new Error('stooq: skip crypto/index');
+  const stooqSym = sym.includes('.') ? sym.toLowerCase() : sym.toLowerCase() + '.us';
+  const days = range === '6mo' ? 210 : range === '3mo' ? 105 : 45;
+  const fmt  = d => d.toISOString().slice(0,10).replace(/-/g,'');
+  const to   = new Date();
+  const from = new Date(Date.now() - days * 86400000);
+  const url  = `https://stooq.com/q/d/l/?s=${stooqSym}&d1=${fmt(from)}&d2=${fmt(to)}&i=d`;
+  const res  = await fetch(url, { signal: makeAbortSignal(10000) });
+  if (!res.ok) throw new Error(`stooq HTTP ${res.status}`);
+  const csv = await res.text();
+  if (!csv || csv.includes('No data') || csv.trim().length < 50) throw new Error('stooq: no data');
+  const lines = csv.trim().split('\n').slice(1);
+  const rows = lines.map(line => {
+    const [date, open, high, low, close, vol] = line.split(',');
+    if (!close || isNaN(+close)) return null;
+    return { t: Math.floor(new Date(date).getTime()/1000), o:+open, h:+high, l:+low, c:+close, v:+(vol||0) };
+  }).filter(Boolean);
+  if (rows.length < 5) throw new Error('stooq: too few rows');
+  return {
+    ticker:   sym,
+    exchange: sym.includes('.AS') ? 'AEX' : 'NYSE/NASDAQ',
+    currency: sym.includes('.AS') || sym.includes('.DE') || sym.includes('.PA') ? 'EUR' : 'USD',
+    rows
+  };
+}
+
+function parseRows(data) {
+  // data = { ticker, exchange, currency, rows:[{t,o,h,l,c,v}] }
+  return data.rows.map(r => ({
+    date:   new Date(r.t * 1000),
+    open:   r.o, high: r.h,
+    low:    r.l, close: r.c,
+    volume: r.v, spread: r.h - r.l
+  }));
+}
+
+// ── VSA ENGINE (bilingual) ──
+function runVSA(rows) {
+  const avgVol = rows.reduce((s,r)=>s+r.volume,0)/rows.length;
+  const avgSpread = rows.reduce((s,r)=>s+r.spread,0)/rows.length;
+  const signals = [];
+  const nl = lang === 'nl';
+
+  rows.forEach((r,i) => {
+    if (i<2) return;
+    const vr = r.volume/avgVol, sr = r.spread/avgSpread;
+    const isUp = r.close >= r.open;
+    const closePos = (r.close-r.low)/(r.spread||0.0001);
+    const fmt = d => d.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'});
+    const d = fmt(r.date);
+    const prev = rows[i-1];
+    const prev2 = rows[i-2];
+
+    // 1. STOPPING VOLUME — high vol down bar closing upper half
+    if (vr>2 && !isUp && closePos>0.55) {
+      signals.push({ type:'bullish', label: nl?'STOP-VOLUME':'STOPPING VOLUME', date:d, strength: vr > 3 ? 'high' : 'medium',
+        body: nl
+          ? `Op ${d} daalde de prijs sterk op zeer hoog volume (${vr.toFixed(1)}× gem.) maar sloot in de bovenste helft van de staaf — kopers absorbeerden de verkopen. Klassiek VSA-keerpuntsignaal. De zone rond $${r.low.toFixed(2)} is nu een potentieel vraaggebied.`
+          : `On ${d}, a very high-volume down bar (${vr.toFixed(1)}× avg) closed in the upper half — buyers absorbed the selling. Classic VSA reversal signal. Zone near $${r.low.toFixed(2)} is a potential demand area.`
+      });
+    }
+    // 2. DEMAND SURGE — wide up bar, high vol, closes near high
+    else if (vr>1.6 && sr>1.3 && isUp && closePos>0.6) {
+      signals.push({ type:'bullish', label: nl?'VRAAGSTIJGING':'DEMAND SURGE', date:d, strength: vr > 2.5 ? 'high' : 'medium',
+        body: nl
+          ? `Op ${d} steeg de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede stijgende staaf die dicht bij het hoogste punt sloot. Agressieve kopers aan de macht. Bullish vervolgssignaal.`
+          : `On ${d}, price rose from $${r.open.toFixed(2)} to $${r.close.toFixed(2)} on ${vr.toFixed(1)}× avg volume — wide up bar closing near the high. Aggressive buyers in control. Bullish continuation signal.`
+      });
+    }
+    // 3. SUPPLY SURGE — wide down bar, high vol, closes near low
+    else if (vr>1.6 && sr>1.3 && !isUp && closePos<0.4) {
+      signals.push({ type:'bearish', label: nl?'AANBODSTIJGING':'SUPPLY SURGE', date:d, strength: vr > 2.5 ? 'high' : 'medium',
+        body: nl
+          ? `Op ${d} daalde de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede dalende staaf die dicht bij het laagste punt sloot. Verkopers domineren. Bearish vervolgssignaal.`
+          : `On ${d}, price fell from $${r.open.toFixed(2)} to $${r.close.toFixed(2)} on ${vr.toFixed(1)}× avg volume — wide down bar closing near the low. Sellers dominating. Bearish continuation signal.`
+      });
+    }
+    // 4. ABSORPTION — very high vol, narrow spread
+    else if (vr>1.5 && sr<0.55) {
+      signals.push({ type:'absorption', label: isUp ? (nl?'BULLISH ABSORPTIE':'BULLISH ABSORPTION') : (nl?'BEARISH ABSORPTIE':'BEARISH ABSORPTION'), date:d, strength: 'medium',
+        body: nl
+          ? `Op ${d} was er zeer hoog volume (${vr.toFixed(1)}× gem.) maar slechts een smalle prijsrange van $${r.spread.toFixed(2)}. ${isUp ? 'Verkopers worden geabsorbeerd — potentiële steunzone.' : 'Kopers worden geabsorbeerd — potentiële weerstandszone.'} Let op het niveau $${r.close.toFixed(2)}.`
+          : `On ${d}, very high volume (${vr.toFixed(1)}× avg) but only a $${r.spread.toFixed(2)} price range. ${isUp ? 'Sellers being absorbed — potential support zone.' : 'Buyers being absorbed — potential resistance zone.'} Watch $${r.close.toFixed(2)}.`
+      });
+    }
+    // 5. UP-THRUST / REJECTION — high vol up bar closing near low
+    else if (vr>1.3 && isUp && closePos<0.3 && sr>0.9) {
+      signals.push({ type:'warning', label: nl?'VALSE UITBRAAK':'UP-THRUST / REJECTION', date:d, strength: 'medium',
+        body: nl
+          ? `Op ${d} steeg de prijs naar $${r.high.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar sloot dicht bij het laagste punt op $${r.close.toFixed(2)}. Verkopers verwierpen de stijging — potentieel distributie- of keerpuntsignaal.`
+          : `On ${d}, price pushed to $${r.high.toFixed(2)} on high volume (${vr.toFixed(1)}× avg) but closed near the low at $${r.close.toFixed(2)}. Sellers rejected the move — potential distribution or reversal warning.`
+      });
+    }
+    // 6. LOW EFFORT MOVE — wide spread, very low volume
+    else if (vr<0.65 && sr>1.5) {
+      signals.push({ type: isUp?'bullish':'bearish', label: isUp?(nl?'LAGE WEERSTAND OMHOOG':'LOW EFFORT RISE'):(nl?'LAGE WEERSTAND OMLAAG':'LOW EFFORT DROP'), date:d, strength: 'low',
+        body: nl
+          ? `Op ${d} bewoog de prijs ${isUp?'omhoog':'omlaag'} met $${r.spread.toFixed(2)} op slechts ${vr.toFixed(1)}× gemiddeld volume. Weinig ${isUp?'weerstand':'steun'} — het pad van de minste weerstand is ${isUp?'omhoog':'omlaag'}. De trend gaat waarschijnlijk door.`
+          : `On ${d}, price moved ${isUp?'up':'down'} $${r.spread.toFixed(2)} on only ${vr.toFixed(1)}× avg volume. Very little ${isUp?'resistance':'support'} — path of least resistance is ${isUp?'up':'down'}. Trend likely continues.`
+      });
+    }
+    // 7. NO SUPPLY — narrow spread, low vol, up bar after a down move (strongest entry signal)
+    else if (vr<0.8 && sr<0.7 && isUp && prev && !prev.close>=prev.open) {
+      signals.push({ type:'bullish', label: nl?'GEEN AANBOD':'NO SUPPLY', date:d, strength: 'high',
+        body: nl
+          ? `Op ${d} steeg de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere daling toont dit dat verkopers zijn uitgeput — er is geen aanbod meer om de prijs omlaag te drukken. Dit is een van de sterkste VSA-instapsignalen. $${r.close.toFixed(2)} is een potentieel instappunt.`
+          : `On ${d}, price moved up on low volume (${vr.toFixed(1)}× avg) with a narrow $${r.spread.toFixed(2)} spread. After the prior down move, this shows sellers are exhausted — no supply left to push price down. One of the strongest VSA entry signals. $${r.close.toFixed(2)} is a potential entry zone.`
+      });
+    }
+    // 8. NO DEMAND — narrow spread, low vol, down bar after an up move (trend weakening)
+    else if (vr<0.8 && sr<0.7 && !isUp && prev && prev.close>=prev.open) {
+      signals.push({ type:'warning', label: nl?'GEEN VRAAG':'NO DEMAND', date:d, strength: 'medium',
+        body: nl
+          ? `Op ${d} daalde de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere stijging toont dit dat kopers zich terugtrekken — de stijgende trend heeft weinig kracht meer. Verkoop- of winstnemingssignaal. Pas op voor een ommekeer.`
+          : `On ${d}, price moved down on low volume (${vr.toFixed(1)}× avg) with a narrow $${r.spread.toFixed(2)} spread. After the prior up move, this shows buyers are pulling back — the uptrend is losing strength. Potential distribution or profit-taking signal. Watch for reversal.`
+      });
+    }
+    // 9. SHAKE OUT — sharp down bar that recovers, closing in top 40%, on high vol
+    else if (vr>1.8 && sr>1.4 && !isUp && closePos>0.5 && prev && prev.close > r.low) {
+      signals.push({ type:'bullish', label: nl?'UITSCHUDDING':'SHAKE OUT', date:d, strength: 'high',
+        body: nl
+          ? `Op ${d} daalde de prijs scherp naar $${r.low.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar herstelde en sloot in de bovenste helft op $${r.close.toFixed(2)}. Dit is een klassieke "uitschudding" — zwakke houders worden eruit gegooid terwijl slimme actoren kopen. Bullish omkeersignaal.`
+          : `On ${d}, price sharply dropped to $${r.low.toFixed(2)} on high volume (${vr.toFixed(1)}× avg) but recovered to close in the upper half at $${r.close.toFixed(2)}. Classic "shake out" — weak holders flushed while smart money buys. Strong bullish reversal signal.`
+      });
+    }
+    // 10. CLIMACTIC ACTION — extreme volume (3x+), wide spread, potential exhaustion
+    else if (vr>3 && sr>1.8) {
+      signals.push({ type:'absorption', label: nl?'KLIMACTISCHE ACTIE':'CLIMACTIC ACTION', date:d, strength: 'high',
+        body: nl
+          ? `Op ${d} explodeerde het volume naar ${vr.toFixed(1)}× gemiddeld met een brede range van $${r.spread.toFixed(2)}. Zulk extreme activiteit duidt vaak op een klimactisch einde van een trend. ${isUp ? 'Grote kopers kunnen uitgeput raken — pas op voor een ommekeer.' : 'Massale capitulatie mogelijk — let op stop-volume op de volgende dag.'} Afwachten is verstandig.`
+          : `On ${d}, volume exploded to ${vr.toFixed(1)}× average with a wide $${r.spread.toFixed(2)} range. Such extreme activity often marks a climactic end to a trend. ${isUp ? 'Large buyers may be exhausted — watch for reversal.' : 'Mass capitulation possible — watch for stopping volume next session.'} Wait for confirmation before acting.`
+      });
+    }
+  });
+
+  // ── CONSECUTIVE SIGNAL MOMENTUM ──
+  const all = signals.slice().reverse(); // chronological
+  let streak = 1, streakType = all[all.length-1]?.type;
+  for (let i = all.length-2; i >= 0; i--) {
+    if (all[i].type === streakType) streak++;
+    else break;
+  }
+  if (streak >= 3 && streakType !== 'absorption') {
+    const streakLabel = streakType === 'bullish'
+      ? (nl ? `🔥 ${streak}× BULLISH OP RIJ — HOGE OVERTUIGING` : `🔥 ${streak}× BULLISH IN A ROW — HIGH CONVICTION`)
+      : (nl ? `🔥 ${streak}× BEARISH OP RIJ — HOGE OVERTUIGING` : `🔥 ${streak}× BEARISH IN A ROW — HIGH CONVICTION`);
+    signals.unshift({ type: streakType, label: streakLabel, date: nl ? 'Recente trend' : 'Recent trend', strength: 'high',
+      body: nl
+        ? `De laatste ${streak} VSA-signalen wijzen allemaal in dezelfde richting (${streakType}). Dit is een sterke aanwijzing dat de trend goed ingebed is. Handel alleen met de richting — ${streakType === 'bullish' ? 'koop op terugval' : 'vermijd long posities'}.`
+        : `The last ${streak} VSA signals all point in the same direction (${streakType}). This is strong evidence the trend is well-established. Only trade with it — ${streakType === 'bullish' ? 'buy on pullbacks' : 'avoid long positions'}.`
+    });
+  }
+
+  return signals.slice(-10).reverse();
+}
+
+// ── SUPPORT / RESISTANCE ZONES from signal history ──
+function computeKeyZones(rows, signals) {
+  const zones = [];
+  // Find rows matching key signal indices
+  const allRows = rows.slice().reverse();
+  signals.forEach(sig => {
+    const matchRow = rows.find(r => {
+      const nl = lang === 'nl';
+      const d = r.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'});
+      return d === sig.date;
+    });
+    if (!matchRow) return;
+    if (sig.type === 'bullish' || sig.type === 'absorption') {
+      zones.push({ price: matchRow.low, type: 'support', label: sig.label });
+    }
+    if (sig.type === 'bearish' || sig.type === 'warning') {
+      zones.push({ price: matchRow.high, type: 'resistance', label: sig.label });
+    }
+  });
+  // Deduplicate zones within 1% of each other
+  const merged = [];
+  zones.forEach(z => {
+    const near = merged.find(m => Math.abs(m.price - z.price) / z.price < 0.015);
+    if (!near) merged.push(z);
+  });
+  return merged.slice(0, 6);
+}
+
+// ── TREND STRENGTH SCORE (1-10) ──
+function computeTrendStrength(rows, signals, biasObj) {
+  let score = 5; // neutral baseline
+  const nl = lang === 'nl';
+  const bull = signals.filter(s=>s.type==='bullish').length;
+  const bear = signals.filter(s=>s.type==='bearish').length;
+  const highStrength = signals.filter(s=>s.strength==='high').length;
+  const last10 = rows.slice(-10);
+  const pct = (last10[last10.length-1].close - last10[0].close) / last10[0].close * 100;
+  const avgVol = rows.reduce((s,r)=>s+r.volume,0)/rows.length;
+  const recentVol = rows.slice(-5).reduce((s,r)=>s+r.volume,0)/5;
+  const volRising = recentVol > avgVol * 1.1;
+
+  if (biasObj.bias === 'BULLISH') { score += 1.5; if (bull > 2) score += 1; }
+  if (biasObj.bias === 'BEARISH') { score -= 1.5; if (bear > 2) score -= 1; }
+  if (pct > 3) score += 1; if (pct < -3) score -= 1;
+  if (pct > 7) score += 0.5; if (pct < -7) score -= 0.5;
+  if (highStrength > 1) score += (biasObj.bias==='BULLISH' ? 0.5 : -0.5);
+  if (volRising && biasObj.bias==='BULLISH') score += 0.5;
+  if (volRising && biasObj.bias==='BEARISH') score -= 0.5;
+
+  score = Math.max(1, Math.min(10, Math.round(score * 2) / 2));
+  const label = score >= 7.5 ? (nl?'Zeer sterk':'Very Strong')
+              : score >= 6   ? (nl?'Sterk':'Strong')
+              : score >= 4.5 ? (nl?'Neutraal':'Neutral')
+              : score >= 3   ? (nl?'Zwak':'Weak')
+              :                (nl?'Zeer zwak':'Very Weak');
+  const color = score >= 7 ? 'var(--accent)' : score >= 5 ? 'var(--accent3)' : 'var(--accent2)';
+  return { score, label, color };
+}
+
+function computeBias(rows, signals) {
+  const last = rows.slice(-10);
+  const pct = (last[last.length-1].close - last[0].close) / last[0].close * 100;
+  const recent = signals.slice(0,5);
+  const bull = recent.filter(s=>s.type==='bullish').length;
+  const bear = recent.filter(s=>s.type==='bearish').length;
+  const absorb = recent.filter(s=>s.type==='absorption').length;
+  const nl = lang === 'nl';
+
+  if (bull>bear && pct>1) return { bias:'BULLISH', text: nl
+    ? `De prijs is de afgelopen 10 sessies met ${pct.toFixed(1)}% gestegen en recente signalen tonen kopers in controle (${bull} bullish vs ${bear} bearish). Favoriseer lange posities — wacht op terugval naar groene signaalzones.`
+    : `Price is up ${pct.toFixed(1)}% over the last 10 sessions and recent signals show buyers in control (${bull} bullish vs ${bear} bearish). Favour long setups — wait for pullbacks to green signal zones.` };
+  if (bear>bull && pct<-1) return { bias:'BEARISH', text: nl
+    ? `De prijs is de afgelopen 10 sessies met ${Math.abs(pct).toFixed(1)}% gedaald en verkopers domineren (${bear} bearish vs ${bull} bullish). Vermijd kopen — wacht eerst op een duidelijk keerpuntsignaal.`
+    : `Price is down ${Math.abs(pct).toFixed(1)}% over the last 10 sessions and sellers are dominating (${bear} bearish vs ${bull} bullish). Avoid buying — wait for a clear reversal signal first.` };
+  if (absorb>=2) return { bias:'NEUTRAL', text: nl
+    ? `Meerdere absorptiesignalen gevonden — de markt verwerkt vraag en aanbod. Geen duidelijke richtingskans. Wacht op een uitbraak met volume voordat je handelt.`
+    : `Multiple absorption signals detected — market is digesting supply and demand. No clear directional edge. Wait for a breakout with volume before committing.` };
+  if (pct>2) return { bias:'BULLISH', text: nl
+    ? `De prijs is recentelijk met ${pct.toFixed(1)}% gestegen. Matig bullish — nog geen sterke volumebevestiging. Wacht op een test van een triggerzone voor instap.`
+    : `Price has trended up ${pct.toFixed(1)}% recently. Moderate bullish lean — no strong volume confirmation yet. Wait for a trigger zone test before entering.` };
+  if (pct<-2) return { bias:'BEARISH', text: nl
+    ? `De prijs is recentelijk met ${Math.abs(pct).toFixed(1)}% gedaald. Matig bearish. Probeer geen vallend mes te vangen — wacht op stop-volume of absorptie voor long posities.`
+    : `Price has dropped ${Math.abs(pct).toFixed(1)}% recently. Moderate bearish lean. Don't catch falling knives — wait for stopping volume or absorption before considering longs.` };
+  return { bias:'NEUTRAL', text: nl
+    ? `Gemengde signalen — geen duidelijke kans op dit moment. VSA zegt: als je geen duidelijke kans ziet, wacht dan af. Geduld is ook een positie.`
+    : `Mixed signals — no clear directional edge right now. VSA says: if you can't see a clear edge, sit on your hands. Patience is a position.` };
+}
+
+function buildChecklist(rows, signals, biasObj) {
+  const last = rows[rows.length-1];
+  const avgVol = rows.reduce((s,r)=>s+r.volume,0)/rows.length;
+  const vr = last.volume/avgVol;
+  const closes = rows.map(r=>r.close);
+  const hi = Math.max(...closes), lo = Math.min(...closes);
+  const pos = ((last.close-lo)/(hi-lo)*100).toFixed(0);
+  const bull = signals.filter(s=>s.type==='bullish').length;
+  const bear = signals.filter(s=>s.type==='bearish').length;
+  const recentSpread = rows.slice(-5).reduce((s,r)=>s+r.spread,0)/5;
+  const lastBig = last.spread > recentSpread*1.6;
+  const nl = lang === 'nl';
+
+  // CVD divergence check
+  const cvd = computeCVD(rows);
+  const cvdTrendCheck = cvd[cvd.length-1].cvd - cvd[0].cvd;
+  const priceTrendCheck = last.close - rows[0].close;
+  const hasDivergence = (priceTrendCheck > 0 && cvdTrendCheck < 0) || (priceTrendCheck < 0 && cvdTrendCheck > 0);
+
+  return [
+    { text: nl
+        ? `Algemene richting is ${biasObj.bias} — handel alleen in deze richting`
+        : `Overall bias is ${biasObj.bias} — only take trades in this direction`,
+      status: biasObj.bias!=='NEUTRAL'?'pass':'warn' },
+    { text: bull>bear
+        ? (nl?`VSA-signalen neigen bullish (${bull} bullish vs ${bear} bearish) — signalen ondersteunen stijging`:`VSA signals lean bullish (${bull} bullish vs ${bear} bearish) — signals support upside`)
+        : bear>bull
+        ? (nl?`VSA-signalen neigen bearish (${bear} bearish vs ${bull} bullish) — signalen waarschuwen voor daling`:`VSA signals lean bearish (${bear} bearish vs ${bull} bullish) — signals warn of downside`)
+        : (nl?`VSA-signalen zijn gemengd (${bull} bullish, ${bear} bearish) — geen duidelijke overeenstemming`:`VSA signals are mixed (${bull} bullish, ${bear} bearish) — no clear agreement`),
+      status: (biasObj.bias==='BULLISH'&&bull>=bear)||(biasObj.bias==='BEARISH'&&bear>=bull)?'pass':'warn' },
+    { text: hasDivergence
+        ? (nl?`⚠️ CVD-divergentie gedetecteerd — prijs en koopdruk bewegen in tegengestelde richting. Wees voorzichtig!`:`⚠️ CVD divergence detected — price and buying pressure moving opposite directions. Caution!`)
+        : (nl?`CVD bevestigt prijsrichting — koopdruk en prijs bewegen in lijn`:`CVD confirms price direction — buying pressure aligned with price`),
+      status: hasDivergence ? 'warn' : 'pass' },
+    { text: vr>2.2
+        ? (nl?`⚠️ Laatste staaf volume is ${vr.toFixed(1)}× gemiddeld — mogelijke klimactische uitputting. Voorzichtig instappen.`:`⚠️ Last bar volume is ${vr.toFixed(1)}× average — possible climactic exhaustion. Be careful entering here.`)
+        : (nl?`Laatste staaf volume is normaal (${vr.toFixed(1)}× gem.) — geen uitputtingswaarschuwing`:`Last bar volume is normal (${vr.toFixed(1)}× avg) — no exhaustion warning`),
+      status: vr>2.2?'warn':'pass' },
+    { text: pos>70
+        ? (nl?`Prijs is dicht bij de periodeHOOGSTE (${pos}% van range) — als bullish is dit sterk; als bearish is shorten hier riskant`:`Price is near the period HIGH (${pos}% of range) — if bullish this is strong; if bearish it's risky to short here`)
+        : pos<30
+        ? (nl?`Prijs is dicht bij de periodeLAAGSTE (${pos}% van range) — potentiële steunzone, betere verhouding voor long`:`Price is near the period LOW (${pos}% of range) — potential support zone, better risk/reward for longs`)
+        : (nl?`Prijs is midden in de range (${pos}%) — randen van de range geven betere kansen. Wacht indien mogelijk.`:`Price is mid-range (${pos}% of range) — edges of the range give better risk/reward. Wait if possible.`),
+      status: pos>70||pos<30?'pass':'warn' },
+    { text: lastBig
+        ? (nl?`Laatste staaf is breed en uitgerekt — niet achterna rennen. Wacht op een terugval naar een signaalzone.`:`Last bar is wide and extended — avoid chasing. Wait for a pullback to a signal zone.`)
+        : (nl?`Laatste staaf is niet uitgerekt — instapomstandigheden zijn redelijk`:`Last bar is not over-extended — entry conditions are reasonable`),
+      status: lastBig?'warn':'pass' }
+  ];
+}
+
+function computeStats(rows) {
+  const avgVol = rows.reduce((s,r)=>s+r.volume,0)/rows.length;
+  const last5vol = rows.slice(-5).reduce((s,r)=>s+r.volume,0)/5;
+  const vt = last5vol/avgVol;
+  const closes = rows.map(r=>r.close);
+  const hi=Math.max(...closes), lo=Math.min(...closes);
+  const pos=((closes[closes.length-1]-lo)/(hi-lo)*100).toFixed(0);
+  const fmt=n=>n>=1e9?(n/1e9).toFixed(1)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':(n/1e3).toFixed(0)+'K';
+  const nl = lang==='nl';
+  return {
+    avgVolStr:fmt(avgVol), volTrend:vt,
+    volTrendStr: vt>1.1?(nl?`Boven gem. (+${((vt-1)*100).toFixed(0)}%)`:`Above avg (+${((vt-1)*100).toFixed(0)}%)`):vt<0.9?(nl?`Onder gem. (${(((vt-1)*100)).toFixed(0)}%)`:`Below avg (${(((vt-1)*100)).toFixed(0)}%)`):(nl?'Gemiddeld':'Average'),
+    rangePos:pos,
+    rangePosStr: pos>70?(nl?`Dicht bij hoogste (${pos}%)`:`Near highs (${pos}%)`):pos<30?(nl?`Dicht bij laagste (${pos}%)`:`Near lows (${pos}%)`):(nl?`Midden range (${pos}%)`:`Mid-range (${pos}%)`)
+  };
+}
+
+let priceChart=null, volChart=null, cvdChart=null;
+
+// ── CUMULATIVE VOLUME DELTA ──
+function computeCVD(rows) {
+  // Approximate delta: if close > open, volume is "buy" pressure; if close < open, "sell" pressure
+  // Partial allocation by close position within bar
+  let cumDelta = 0;
+  return rows.map(r => {
+    const closePos = (r.close - r.low) / (r.spread || 0.001);
+    const buyVol  = r.volume * closePos;
+    const sellVol = r.volume * (1 - closePos);
+    const delta   = buyVol - sellVol;
+    cumDelta += delta;
+    return { date: r.date, cvd: cumDelta, delta };
+  });
+}
+
+// ── VOLUME PROFILE (price bucket → total volume) ──
+function computeVolumeProfile(rows, buckets = 20) {
+  const hi = Math.max(...rows.map(r => r.high));
+  const lo = Math.min(...rows.map(r => r.low));
+  const step = (hi - lo) / buckets;
+  const profile = Array.from({length: buckets}, (_, i) => ({
+    price: lo + (i + 0.5) * step,
+    vol: 0
+  }));
+  rows.forEach(r => {
+    profile.forEach(b => {
+      if (b.price >= r.low && b.price <= r.high) b.vol += r.volume / buckets;
+    });
+  });
+  const poc = profile.reduce((a, b) => b.vol > a.vol ? b : a);
+  return { profile, poc, hi, lo };
+}
+
+async function runAnalysis(ticker) {
+  const btn=document.getElementById('analyzeBtn');
+  const output=document.getElementById('output');
+  const nl=lang==='nl';
+  btn.disabled=true;
+  output.innerHTML=`<div class="loading-box"><div class="spinner"></div>
+    <div class="loading-text">${nl?'ANALYSEREN':'ANALYSING'} ${ticker}...</div>
+    <div class="loading-sub">→ ${nl?'Data ophalen...':'Fetching data...'}<br>→ ${nl?'Handelsdagen laden':'Loading trading days'}<br>→ ${nl?'VSA-engine uitvoeren':'Running VSA engine'}</div></div>`;
+  try {
+    const result = await fetchData(ticker, currentRange);
+    const rows = parseRows(result);
+    if (rows.length<8) throw new Error(nl?'Onvoldoende data. Probeer een langere periode (3M of 6M).':'Not enough data. Try a longer range (3M or 6M).');
+    const signals = runVSA(rows);
+    const biasObj = computeBias(rows, signals);
+    const checklist = buildChecklist(rows, signals, biasObj);
+    const stats = computeStats(rows);
+    const cvdData = computeCVD(rows);
+    const vpData  = computeVolumeProfile(rows);
+    const zones   = computeKeyZones(rows, signals);
+    const trendStrength = computeTrendStrength(rows, signals, biasObj);
+    window._rawResult = { ticker, rows, meta: result };
+    renderResult(ticker, rows, signals, biasObj, checklist, stats, result, cvdData, vpData, zones, trendStrength);
+  } catch(err) {
+    const nl=lang==='nl';
+    output.innerHTML=`<div class="error-box">⚠️ <strong>${err.message}</strong><br><br>
+      <strong>${nl?'Tips:':'Tips:'}</strong><br>
+      · ${nl?'Amerikaanse aandelen: AAPL, TSLA, NVDA, MSFT':'US stocks: AAPL, TSLA, NVDA, MSFT'}<br>
+      · ${nl?'Nederlandse aandelen (AEX): ASML.AS, PHIA.AS, HEIA.AS, SHELL.AS':'Dutch stocks (AEX): ASML.AS, PHIA.AS, HEIA.AS, SHELL.AS'}<br>
+      · ${nl?'Controleer of het symbool correct is':'Verify the symbol is correct'}<br><br>
+      <a href="https://finance.yahoo.com/lookup" target="_blank">🔍 ${nl?'Symbool opzoeken op Yahoo Finance':'Look up symbol on Yahoo Finance'}</a></div>`;
+  } finally { btn.disabled=false; }
+}
+
+function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cvdData, vpData, zones, trendStrength) {
+  const output=document.getElementById('output');
+  const last=rows[rows.length-1], prev=rows[rows.length-2];
+  const change=last.close-prev.close, changePct=(change/prev.close*100).toFixed(2);
+  const isUp=change>=0;
+  const avgVol=rows.reduce((s,r)=>s+r.volume,0)/rows.length;
+  const nl=lang==='nl';
+
+  // CVD divergence analysis
+  const cvdLast = cvdData[cvdData.length-1]?.cvd || 0;
+  const cvdFirst = cvdData[0]?.cvd || 0;
+  const cvdTrend = cvdLast - cvdFirst;
+  const priceTrend = last.close - rows[0].close;
+  const cvdDivergence = (priceTrend > 0 && cvdTrend < 0) ? 'bearish_div' :
+                        (priceTrend < 0 && cvdTrend > 0) ? 'bullish_div' : 'aligned';
+  const cvdBadgeHTML = cvdDivergence === 'bearish_div'
+    ? `<span class="cvd-badge div-warn">⚠️ ${nl?'BEARISH DIVERGENTIE — verborgen zwakte':'BEARISH DIVERGENCE — hidden weakness'}</span>`
+    : cvdDivergence === 'bullish_div'
+    ? `<span class="cvd-badge div-warn">⚠️ ${nl?'BULLISH DIVERGENTIE — verborgen kracht':'BULLISH DIVERGENCE — hidden strength'}</span>`
+    : cvdTrend >= 0
+    ? `<span class="cvd-badge pos">${nl?'KOOPDRUK DOMINANT':'BUY PRESSURE DOMINANT'}</span>`
+    : `<span class="cvd-badge neg">${nl?'VERKOOPDRUK DOMINANT':'SELL PRESSURE DOMINANT'}</span>`;
+
+  // Volume Profile POC price
+  const pocPrice = vpData?.poc?.price?.toFixed(2) || null;
+
+  const volColors=rows.map(r=>{
+    const vr=r.volume/avgVol, sr=r.spread/(rows.reduce((s,x)=>s+x.spread,0)/rows.length);
+    const up=r.close>=r.open;
+    if(vr>1.5&&sr<0.55) return 'rgba(184,134,11,0.75)';
+    if(vr>1.6&&sr>1.3&&up) return 'rgba(45,122,79,0.85)';
+    if(vr>1.6&&sr>1.3&&!up) return 'rgba(192,57,43,0.85)';
+    if(vr<0.65&&sr>1.5) return 'rgba(37,99,168,0.7)';
+    return up?'rgba(45,122,79,0.35)':'rgba(192,57,43,0.35)';
+  });
+
+  const labels=rows.map(r=>r.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'}));
+  const closes=rows.map(r=>r.close);
+  const volumes=rows.map(r=>r.volume);
+
+  const noSignalsMsg = nl ? 'Geen sterke VSA-signalen gevonden in deze periode. De markt lijkt in balans — wacht op een duidelijker signaal.' : 'No strong VSA signals detected in this period. Market may be in balance — wait for a clearer setup.';
+  const signalsHTML = signals.length===0
+    ? `<div style="color:var(--muted);font-size:13px;padding:10px 0;">${noSignalsMsg}</div>`
+    : signals.map(s=>{
+        const strengthDots = s.strength === 'high' ? '●●●' : s.strength === 'medium' ? '●●○' : '●○○';
+        const strengthColor = s.strength === 'high' ? 'var(--accent)' : s.strength === 'medium' ? 'var(--accent3)' : 'var(--muted)';
+        const nl = lang==='nl';
+        const strengthLabel = s.strength === 'high' ? (nl?'Sterk':'Strong') : s.strength === 'medium' ? (nl?'Gemiddeld':'Medium') : (nl?'Zwak':'Weak');
+        return `<div class="signal-card ${s.type}" onclick="openSignalModal('${s.label.replace(/'/g,"\\'")}')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div class="signal-type">${s.label} <span class="signal-learn-btn">📖 Uitleg</span></div>
+            <div style="font-family:'Space Mono',monospace;font-size:9px;color:${strengthColor};letter-spacing:1px;" title="${strengthLabel}">${strengthDots}</div>
+          </div>
+          <div class="signal-body">${s.body}</div>
+          <div class="signal-date">${s.date}</div>
+        </div>`;
+      }).join('');
+
+  const checklistHTML=checklist.map(c=>`<div class="check-item"><div class="dot ${c.status}"></div><div>${c.text}</div></div>`).join('');
+
+  const dateRange = `${rows[0].date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'})} – ${last.date.toLocaleDateString(nl?'nl-NL':'en-GB',{day:'numeric',month:'short'})}`;
+
+  output.innerHTML=`
+    <div class="result-header">
+      <div class="ticker-big">${ticker}</div>
+      <div class="price-big">$${last.close.toFixed(2)}</div>
+      <div class="price-change ${isUp?'up':'down'}">${isUp?'▲':'▼'} $${Math.abs(change).toFixed(2)} (${isUp?'+':''}${changePct}%)</div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;">${meta?.exchange ? meta.exchange + ' · ' : ''}${dateRange}</div>
+    </div>
+    <div class="bias-strip">
+      <div class="bias-label">${nl?'ALGEMENE RICHTING':'OVERALL BIAS'}</div>
+      <div class="bias-pill ${biasObj.bias}">${biasObj.bias}</div>
+      <div class="bias-text">${biasObj.text}</div>
+      <button class="help-btn" id="helpbtn-bias" onclick="toggleHelp('bias')">Uitleg</button>
+    </div>
+    <div class="help-box" id="help-bias" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04)">
+      ${nl
+        ? `<strong>Wat is de Overall Bias?</strong> Een samenvatting van de afgelopen 4–6 weken koersactie in één richting. Controleer dit altijd <em>eerst</em> — handel alleen in deze richting.<br><br>
+          <span style="color:var(--accent);font-weight:700;">BULLISH</span> → Kopers hebben de leiding. Alleen koopmomenten zoeken.<br>
+          <span style="color:var(--accent2);font-weight:700;">BEARISH</span> → Verkopers hebben de leiding. Wacht op een ommekeer voor je koopt.<br>
+          <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → Geen duidelijke richting. Veiligste keuze: afwachten.`
+        : `<strong>What is the Overall Bias?</strong> A summary of the last 4–6 weeks of price action in one direction. Always check this <em>first</em> — only trade in this direction.<br><br>
+          <span style="color:var(--accent);font-weight:700;">BULLISH</span> → Buyers in control. Only look for buy setups.<br>
+          <span style="color:var(--accent2);font-weight:700;">BEARISH</span> → Sellers in control. Wait for a reversal before buying.<br>
+          <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → No clear direction. Safest choice: sit out.`}
+    </div>
+    <div style="padding:14px 22px;border-bottom:2px solid var(--border);display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--surface);">
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;">
+          ${nl?'TRENDSTERKTE':'TREND STRENGTH'}
+          <button class="help-btn" id="helpbtn-trend" onclick="toggleHelp('trend')">Uitleg</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="flex:1;background:var(--surface2);border-radius:20px;height:10px;overflow:hidden;border:1px solid var(--border);">
+            <div style="height:100%;width:${trendStrength.score * 10}%;background:${trendStrength.color};border-radius:20px;transition:width 0.5s;"></div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:${trendStrength.color};white-space:nowrap;">${trendStrength.score}/10 — ${trendStrength.label}</div>
+        </div>
+        <div class="help-box" id="help-trend">
+          ${nl
+            ? `Een score van 1 tot 10 voor de kracht van de huidige trend.<br><strong>7–10</strong> = Sterke, verhandelbare trend. <strong>4–6</strong> = Matige trend, voorzichtig zijn. <strong>1–3</strong> = Zwakke trend, weinig richting — overweeg te wachten.`
+            : `A score from 1–10 for the strength of the current trend.<br><strong>7–10</strong> = Strong, tradeable trend. <strong>4–6</strong> = Moderate, proceed with caution. <strong>1–3</strong> = Weak trend, little direction — consider waiting.`}
+        </div>
+      </div>
+      ${zones.length > 0 ? `
+      <div style="flex:1 1 100%;">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;">
+          ${nl?'SLEUTELZONES (STEUN/WEERSTAND)':'KEY ZONES (SUPPORT / RESISTANCE)'}
+          <button class="help-btn" id="helpbtn-zones" onclick="toggleHelp('zones')">Uitleg</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${zones.map(z=>`
+            <div style="background:${z.type==='support'?'rgba(45,122,79,0.1)':'rgba(192,57,43,0.08)'};border:1px solid ${z.type==='support'?'rgba(45,122,79,0.3)':'rgba(192,57,43,0.25)'};border-radius:6px;padding:5px 10px;display:flex;gap:8px;align-items:center;">
+              <span style="font-family:'Space Mono',monospace;font-size:9px;color:${z.type==='support'?'var(--accent)':'var(--accent2)'};font-weight:700;">${z.type==='support'?(nl?'STEUN':'SUPP'):(nl?'WEERSTAND':'RES')}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;">$${z.price.toFixed(2)}</span>
+              <span style="font-size:10px;color:var(--muted);">${z.label}</span>
+            </div>`).join('')}
+        </div>
+        <div class="help-box" id="help-zones">
+          ${nl
+            ? `Prijsniveaus waar eerder belangrijke VSA-signalen plaatsvonden. Prijzen keren hier vaak terug.<br><strong style="color:var(--accent)">Groen (STEUN)</strong> = prijs stuiterde hier eerder omhoog — goede plek voor je stop-loss eronder.<br><strong style="color:var(--accent2)">Rood (WEERSTAND)</strong> = prijs werd hier eerder teruggedrukt — wees voorzichtig bij het benaderen.`
+            : `Price levels where important VSA signals happened before. Price tends to return to these levels.<br><strong style="color:var(--accent)">Green (SUPPORT)</strong> = price bounced up here before — good place to put stop-loss just below.<br><strong style="color:var(--accent2)">Red (RESISTANCE)</strong> = price was rejected here before — be cautious as price approaches.`}
+        </div>
+      </div>` : ''}
+    </div>
+    <div class="chart-area">
+      <div class="chart-title">${nl?'KOERS':'PRICE'} — ${rows.length} ${nl?'HANDELSDAGEN':'TRADING DAYS'}</div>
+      <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
+      <div class="chart-title" style="margin-top:14px;">${nl?'VOLUME — GEKLEURD OP VSA-SIGNAAL':'VOLUME — COLOURED BY VSA SIGNAL'}</div>
+      <div class="vol-wrap"><canvas id="volChart"></canvas></div>
+      <div class="cvd-row-label">${nl?'CUMULATIEVE VOLUME DELTA (CVD)':'CUMULATIVE VOLUME DELTA (CVD)'} ${cvdBadgeHTML} <button class="help-btn" id="helpbtn-cvd" onclick="toggleHelp('cvd')">Uitleg</button></div>
+      <div class="help-box" id="help-cvd">
+        ${nl
+          ? `<strong>Wat is CVD?</strong> De paarse lijn toont de opgebouwde koopdruk vs verkoopdruk over tijd. Stijgend = meer kopers dan verkopers. Dalend = meer verkopers.<br><br>
+            ⚠️ <strong>CVD Divergentie:</strong> Als de prijs omhoog gaat maar CVD daalt (of andersom) — pas op. De prijsbeweging heeft geen volume achter zich en kan snel omdraaien.`
+          : `<strong>What is CVD?</strong> The purple line tracks cumulative buying vs selling pressure over time. Rising = more buyers than sellers. Falling = more sellers.<br><br>
+            ⚠️ <strong>CVD Divergence:</strong> If price goes up but CVD falls (or vice versa) — caution. The price move has no volume backing it and may quickly reverse.`}
+      </div>
+      <div class="cvd-wrap"><canvas id="cvdChart"></canvas></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(45,122,79,0.85)"></div>${nl?'Vraagstijging':'Demand surge'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(192,57,43,0.85)"></div>${nl?'Aanbodstijging':'Supply surge'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(184,134,11,0.75)"></div>${nl?'Absorptie':'Absorption'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(37,99,168,0.7)"></div>${nl?'Lage weerstand beweging':'Low effort move'}</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--purple);opacity:0.7"></div>${nl?'CVD-lijn':'CVD line'}</div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="col">
+        <div class="col-title">
+          <span>${nl?'VSA-SIGNALEN':'VSA SIGNALS'} <button class="help-btn" id="helpbtn-signals" onclick="toggleHelp('signals')">Uitleg</button></span>
+          <span style="color:var(--accent)">${signals.length} ${nl?'GEVONDEN':'FOUND'}</span>
+        </div>
+        <div class="help-box" id="help-signals">
+          ${nl
+            ? `<strong>VSA Signalen</strong> zijn specifieke combinaties van prijs en volume die vertellen wat er achter de schermen gebeurt.<br><br>
+              <strong style="color:var(--accent)">🟢 Groen</strong> = Bullish — kopers winnen. <strong style="color:var(--accent2)">🔴 Rood</strong> = Bearish — verkopers winnen.<br>
+              <strong style="color:var(--accent3)">🟡 Geel</strong> = Absorptie — iemand groot absorbeert stilletjes. <strong style="color:var(--blue)">🔵 Blauw</strong> = Waarschuwing — twijfelachtige beweging.<br><br>
+              De sterkte-stipjes (●○○ zwak → ●●● sterk) geven aan hoe overtuigend het signaal is.<br>
+              🔥 <strong>HIGH CONVICTION</strong> = 3+ signalen op rij in dezelfde richting — het sterkste signaal.`
+            : `<strong>VSA Signals</strong> are specific price + volume combinations that reveal what's happening behind the scenes.<br><br>
+              <strong style="color:var(--accent)">🟢 Green</strong> = Bullish — buyers winning. <strong style="color:var(--accent2)">🔴 Red</strong> = Bearish — sellers winning.<br>
+              <strong style="color:var(--accent3)">🟡 Yellow</strong> = Absorption — someone big absorbing quietly. <strong style="color:var(--blue)">🔵 Blue</strong> = Warning — suspicious move.<br><br>
+              Strength dots (●○○ weak → ●●● strong) show how convincing the signal is.<br>
+              🔥 <strong>HIGH CONVICTION</strong> = 3+ signals in a row same direction — the strongest possible confirmation.`}
+        </div>
+        ${signalsHTML}
+      </div>
+      <div class="col">
+        <div class="col-title">
+          ${nl?'CONTROLELIJST VOOR TRADE':'PRE-TRADE CHECKLIST'}
+          <button class="help-btn" id="helpbtn-checklist" onclick="toggleHelp('checklist')">Uitleg</button>
+        </div>
+        <div class="help-box" id="help-checklist">
+          ${nl
+            ? `<strong>6 automatische checks</strong> voor elke trade. Als 2 of meer stipjes rood zijn — sla de trade over en wacht op een betere setup.<br><br>
+              <span style="color:var(--accent)">● Groen</span> = Voorwaarde voldaan. <span style="color:var(--accent3)">● Geel</span> = Grensgeval, let op. <span style="color:var(--accent2)">● Rood</span> = Probleem.<br><br>
+              De checklist controleert o.a.: is de bias duidelijk? bevestigt het volume de richting? is er CVD-divergentie? staat de prijs op een goed niveau?`
+            : `<strong>6 automatic checks</strong> before every trade. If 2 or more dots are red — skip the trade and wait for a cleaner setup.<br><br>
+              <span style="color:var(--accent)">● Green</span> = Condition met. <span style="color:var(--accent3)">● Yellow</span> = Borderline, watch out. <span style="color:var(--accent2)">● Red</span> = Problem.<br><br>
+              Checks include: is bias clear? does volume confirm direction? is there CVD divergence? is price at a good level?`}
+        </div>
+        ${checklistHTML}
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item" style="position:relative;">
+        <div class="stat-label" style="display:flex;align-items:center;gap:6px;">${nl?'Gem. Volume':'Avg Volume'} <button class="help-btn" id="helpbtn-stats" onclick="toggleHelp('stats')">Uitleg</button></div>
+        <div class="stat-val">${stats.avgVolStr}</div>
+      </div>
+      <div class="stat-item"><div class="stat-label">${nl?'Volume Trend':'Vol Trend'}</div><div class="stat-val ${stats.volTrend>1.1?'up':stats.volTrend<0.9?'down':'neutral'}">${stats.volTrendStr}</div></div>
+      <div class="stat-item"><div class="stat-label">${nl?'Positie in Range':'Range Position'}</div><div class="stat-val">${stats.rangePosStr}</div></div>
+      <div class="stat-item"><div class="stat-label">${nl?'Periode Hoogste':'Period High'}</div><div class="stat-val">$${Math.max(...rows.map(r=>r.high)).toFixed(2)}</div></div>
+      <div class="stat-item"><div class="stat-label">${nl?'Periode Laagste':'Period Low'}</div><div class="stat-val">$${Math.min(...rows.map(r=>r.low)).toFixed(2)}</div></div>
+      ${pocPrice ? `<div class="stat-item"><div class="stat-label">${nl?'Volume POC':'Volume POC'}</div><div class="stat-val neutral">$${pocPrice}</div></div>` : ''}
+    </div>
+    <div id="help-stats" class="help-box" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04);">
+      ${nl
+        ? `<strong>Gem. Volume</strong> — gemiddeld dagelijks verhandeld. Hoog = liquide aandeel (makkelijk kopen/verkopen).<br>
+          <strong>Volume Trend</strong> — neemt volume toe of af? Stijgend bevestigt de prijsbeweging. Dalend = trend verzwakt.<br>
+          <strong>Positie in Range</strong> — 100% = dicht bij de periode-hoogste. 0% = dicht bij de laagste.<br>
+          <strong>Volume POC</strong> — het prijsniveau waar het meeste volume werd verhandeld. Prijs keert hier vaak naar terug. Goede referentie voor stop-loss.`
+        : `<strong>Avg Volume</strong> — average daily shares traded. High = liquid stock (easy to buy/sell).<br>
+          <strong>Vol Trend</strong> — is volume increasing or decreasing? Rising confirms the price move. Falling = trend weakening.<br>
+          <strong>Range Position</strong> — 100% = near the period high. 0% = near the period low.<br>
+          <strong>Volume POC</strong> — the price level with the most volume traded. Price often returns here. Good stop-loss reference.`}
+    </div>
+    <div class="risk-calc">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;width:100%;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+        ⚖️ ${nl?'POSITIEGROOTTEBEREKENING':'POSITION SIZE CALCULATOR'}
+        <button class="help-btn" id="helpbtn-risk" onclick="toggleHelp('risk')">Uitleg</button>
+      </div>
+      <div class="help-box" id="help-risk" style="width:100%;margin-bottom:10px;">
+        ${nl
+          ? `<strong>Waarom is dit belangrijk?</strong> Dit voorkomt dat je te veel riskeert op één trade. Vul je accountgrootte en risico % in — de tool berekent exact hoeveel aandelen je mag kopen.<br><br>
+            <strong>Gouden regel: riskeer nooit meer dan 1–2% van je account per trade.</strong> Bij een account van €10.000 en 1% risico = max €100 verlies op één trade.<br><br>
+            Zet de stop-loss net onder een groene steunzone die de tool heeft gevonden.`
+          : `<strong>Why does this matter?</strong> This stops you from risking too much on a single trade. Enter your account size and risk % — the tool calculates exactly how many shares to buy.<br><br>
+            <strong>Golden rule: never risk more than 1–2% of your account per trade.</strong> With a $10,000 account at 1% risk = max $100 loss per trade.<br><br>
+            Set your stop-loss just below a green support zone the tool identified.`}
+      </div>
+      <div class="risk-field">
+        <div class="risk-label">${nl?'Accountgrootte':'Account size'} ($)</div>
+        <input class="risk-input" id="riskAccount" type="number" placeholder="10000" value="10000" oninput="calcRisk()">
+      </div>
+      <div class="risk-field">
+        <div class="risk-label">${nl?'Risico per trade':'Risk per trade'} (%)</div>
+        <input class="risk-input" id="riskPct" type="number" placeholder="1" value="1" step="0.5" oninput="calcRisk()">
+      </div>
+      <div class="risk-field">
+        <div class="risk-label">${nl?'Instapprijs':'Entry price'} ($)</div>
+        <input class="risk-input" id="riskEntry" type="number" placeholder="${last.close.toFixed(2)}" value="${last.close.toFixed(2)}" oninput="calcRisk()">
+      </div>
+      <div class="risk-field">
+        <div class="risk-label">${nl?'Stop-loss prijs':'Stop-loss price'} ($)</div>
+        <input class="risk-input" id="riskStop" type="number" placeholder="${(last.close * 0.98).toFixed(2)}" value="${(last.close * 0.98).toFixed(2)}" oninput="calcRisk()">
+      </div>
+      <div class="risk-divider-label">→</div>
+      <div class="risk-result">
+        <div class="risk-result-label">${nl?'MAX RISICOBEDRAG':'MAX RISK AMOUNT'}</div>
+        <div class="risk-result-val" id="riskAmount">$100</div>
+      </div>
+      <div class="risk-result">
+        <div class="risk-result-label">${nl?'AANTAL AANDELEN':'SHARES TO BUY'}</div>
+        <div class="risk-result-val" id="riskShares">—</div>
+      </div>
+      <div class="risk-result">
+        <div class="risk-result-label">${nl?'TOTALE POSITIE':'TOTAL POSITION'}</div>
+        <div class="risk-result-val" id="riskTotal">—</div>
+      </div>
+    </div>`;
+
+  if(priceChart) priceChart.destroy();
+  if(volChart) volChart.destroy();
+  if(cvdChart) cvdChart.destroy();
+
+  // Build candlestick dataset — each bar: {x: timestamp ms, o, h, l, c}
+  const candleData = rows.map(r=>({
+    x: r.date.getTime(),
+    o: r.open, h: r.high, l: r.low, c: r.close
+  }));
+
+  const tooltipStyle = {
+    backgroundColor:'#faf7f2', borderColor:'#ddd6c8', borderWidth:1,
+    titleColor:'#8a7d6b', bodyColor:'#2c2416',
+    titleFont:{family:'Space Mono',size:9}, bodyFont:{family:'Space Mono',size:11}
+  };
+
+  priceChart = new Chart(document.getElementById('priceChart').getContext('2d'), {
+    type: 'candlestick',
+    data: {
+      datasets: [{
+        label: ticker,
+        data: candleData,
+        color: {
+          up:   '#2d7a4f',
+          down: '#c0392b',
+          unchanged: '#8a7d6b'
+        },
+        borderColor: {
+          up:   '#2d7a4f',
+          down: '#c0392b',
+          unchanged: '#8a7d6b'
+        }
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipStyle,
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              const nl = lang==='nl';
+              return [
+                `${nl?'Open':'Open'}: $${d.o?.toFixed(2)}`,
+                `${nl?'Hoog':'High'}: $${d.h?.toFixed(2)}`,
+                `${nl?'Laag':'Low'}: $${d.l?.toFixed(2)}`,
+                `${nl?'Sluit':'Close'}: $${d.c?.toFixed(2)}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: currentRange==='6mo'?'week':'day', tooltipFormat:'dd MMM yyyy' },
+          ticks: { color:'#8a7d6b', font:{family:'Space Mono',size:8}, maxTicksLimit:10 },
+          grid: { color:'#ede8df' }
+        },
+        y: {
+          ticks: { color:'#8a7d6b', font:{family:'Space Mono',size:9}, callback: v=>'$'+v.toFixed(0) },
+          grid: { color:'#ede8df' }
+        }
+      }
+    }
+  });
+
+  // Volume bar chart with VSA colours
+  volChart = new Chart(document.getElementById('volChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: volumes, backgroundColor: volColors, borderWidth:0, borderRadius:2 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipStyle,
+          callbacks: { label: ctx => ` ${(ctx.raw/1e6).toFixed(2)}M` }
+        }
+      },
+      scales: {
+        x: { ticks:{display:false}, grid:{display:false} },
+        y: { ticks:{color:'#8a7d6b',font:{family:'Space Mono',size:8},callback:v=>(v/1e6).toFixed(0)+'M'}, grid:{color:'#ede8df'} }
+      }
+    }
+  });
+
+  // CVD line chart
+  const cvdValues = cvdData.map(d => d.cvd);
+  const cvdMin = Math.min(...cvdValues), cvdMax = Math.max(...cvdValues);
+  const cvdColors = cvdValues.map((v, i) =>
+    i === 0 ? 'rgba(109,63,168,0.6)' :
+    v > cvdValues[i-1] ? 'rgba(45,122,79,0.7)' : 'rgba(192,57,43,0.7)'
+  );
+  cvdChart = new Chart(document.getElementById('cvdChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: cvdValues,
+        borderColor: 'rgba(109,63,168,0.8)',
+        backgroundColor: cvdTrend >= 0 ? 'rgba(45,122,79,0.07)' : 'rgba(192,57,43,0.07)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: '#6d3fa8'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipStyle,
+          callbacks: { label: ctx => ` CVD: ${(ctx.raw/1e6).toFixed(2)}M` }
+        }
+      },
+      scales: {
+        x: { ticks:{display:false}, grid:{display:false} },
+        y: {
+          ticks:{color:'#8a7d6b',font:{family:'Space Mono',size:8},callback:v=>(v/1e6).toFixed(1)+'M'},
+          grid:{color:'#ede8df'}
+        }
+      }
+    }
+  });
+
+  // Init risk calculator
+  setTimeout(calcRisk, 50);
+}
+
+function calcRisk() {
+  const account = parseFloat(document.getElementById('riskAccount')?.value) || 0;
+  const pct     = parseFloat(document.getElementById('riskPct')?.value) || 1;
+  const entry   = parseFloat(document.getElementById('riskEntry')?.value) || 0;
+  const stop    = parseFloat(document.getElementById('riskStop')?.value) || 0;
+  const riskAmt = account * (pct / 100);
+  const riskPerShare = Math.abs(entry - stop);
+  const shares  = riskPerShare > 0 ? Math.floor(riskAmt / riskPerShare) : 0;
+  const total   = shares * entry;
+  const fmt = n => n >= 1000 ? '$' + (n/1000).toFixed(1) + 'K' : '$' + n.toFixed(2);
+  const el = id => document.getElementById(id);
+  if(el('riskAmount')) el('riskAmount').textContent = fmt(riskAmt);
+  if(el('riskShares'))  el('riskShares').textContent  = shares > 0 ? shares + ' shares' : '—';
+  if(el('riskTotal'))   el('riskTotal').textContent   = shares > 0 ? fmt(total) : '—';
+}
+
+
+// ── TICKER LOOKUP — volledige NYSE + NASDAQ lijst via GitHub ──
+let lookupTimer = null;
+let stockDB = [];      // [{s, n, e}] — gevuld bij opstarten
+let stockDBready = false;
+
+// Laad NYSE + NASDAQ lijsten van GitHub (gratis, geen API key)
+async function loadStockDB() {
+  // Probeer uit localStorage cache (max 24 uur oud)
+  try {
+    const cached = localStorage.getItem('vsa_stockdb');
+    const cachedAt = +(localStorage.getItem('vsa_stockdb_ts') || 0);
+    if (cached && Date.now() - cachedAt < 24 * 3600 * 1000) {
+      stockDB = JSON.parse(cached);
+      stockDBready = true;
+      console.log(`StockDB loaded from cache: ${stockDB.length} stocks`);
+      return;
+    }
+  } catch(e) {}
+
+  const sources = [
+    { url: 'https://raw.githubusercontent.com/datasets/nasdaq-listings/main/data/nasdaq-listed.csv', exch: 'NASDAQ', symCol: 0, nameCol: 1 },
+    { url: 'https://raw.githubusercontent.com/datasets/nyse-listings/master/data/nyse-listed.csv',   exch: 'NYSE',   symCol: 0, nameCol: 1 },
+  ];
+
+  const proxies = [
+    u => u,                                                          // direct
+    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  ];
+
+  let combined = [];
+
+  for (const src of sources) {
+    let text = null;
+    for (const proxy of proxies) {
+      try {
+        const r = await fetch(proxy(src.url), { signal: makeAbortSignal(12000) });
+        if (r.ok) { text = await r.text(); break; }
+      } catch(e) {}
+    }
+    if (!text) continue;
+
+    const lines = text.trim().split('\n').slice(1); // skip header
+    for (const line of lines) {
+      // CSV parse — handle quoted fields
+      const cols = parseCSVLine(line);
+      const sym  = cols[src.symCol]?.trim().replace(/^"|"$/g,'');
+      const name = cols[src.nameCol]?.trim().replace(/^"|"$/g,'').replace(/ - Common Stock.*$/i,'').replace(/ Common Stock.*$/i,'').trim();
+      if (!sym || sym.length > 8 || /\s/.test(sym)) continue;
+      // Skip warrants, units, rights, preferred shares
+      if (/[WRU]$/.test(sym) && sym.length > 4) continue;
+      combined.push({ s: sym, n: name || sym, e: src.exch });
+    }
+  }
+
+  // Deduplicate by symbol
+  const seen = new Set();
+  stockDB = combined.filter(x => { if (seen.has(x.s)) return false; seen.add(x.s); return true; });
+
+  stockDBready = true;
+  console.log(`StockDB loaded: ${stockDB.length} stocks`);
+
+  // Cache for 24 hours
+  try {
+    localStorage.setItem('vsa_stockdb', JSON.stringify(stockDB));
+    localStorage.setItem('vsa_stockdb_ts', Date.now());
+  } catch(e) {}
+}
+
+function parseCSVLine(line) {
+  const cols = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { cols.push(cur); cur = ''; }
+    else cur += c;
+  }
+  cols.push(cur);
+  return cols;
+}
+
+// Zoek in lokale DB — prioriteit: exacte match > begint met > bevat naam
+function searchStockDB(q) {
+  const qU = q.toUpperCase();
+  const qL = q.toLowerCase();
+  const exact   = stockDB.filter(s => s.s === qU);
+  const starts  = stockDB.filter(s => s.s !== qU && s.s.startsWith(qU));
+  const nameHit = stockDB.filter(s => !s.s.startsWith(qU) && s.n.toLowerCase().includes(qL));
+  return [...exact, ...starts, ...nameHit].slice(0, 14);
+}
+
+function onTickerInput(val) {
+  clearTimeout(lookupTimer);
+  const q = val.trim();
+  if (q.length < 1) { closeLookup(); return; }
+  lookupTimer = setTimeout(() => showLookup(q), 200);
+}
+
+let lastLookupQuery = '';
+
+async function showLookup(q) {
+  const box = document.getElementById('lookupResults');
+  const nl = lang === 'nl';
+  const qTrim = q.trim();
+  if (!qTrim) { closeLookup(); return; }
+
+  box.classList.add('open');
+  lastLookupQuery = qTrim;
+
+  // If DB not ready yet, show loading
+  if (!stockDBready) {
+    box.innerHTML = `<div class="lookup-searching">⏳ ${nl ? 'Aandelenlijst laden...' : 'Loading stock list...'}</div>`;
+    // Wait max 8s for DB
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => setTimeout(r, 200));
+      if (stockDBready) break;
+    }
+  }
+
+  if (lastLookupQuery !== qTrim) return; // stale
+
+  let results = [];
+
+  if (stockDBready && stockDB.length > 0) {
+    results = searchStockDB(qTrim);
+  }
+
+  // If local DB empty or no results, fall back to Yahoo autocomplete
+  if (results.length === 0) {
+    results = await fetchYahooAutocomplete(qTrim);
+  }
+
+  if (lastLookupQuery !== qTrim) return; // stale after async
+
+  if (results.length === 0) {
+    box.innerHTML = `
+      <div class="lookup-searching" style="color:var(--muted);font-size:11px;padding:8px 14px;">
+        ${nl ? 'Geen resultaten — probeer het exacte symbool.' : 'No results — try the exact symbol.'}
+      </div>
+      <div class="lookup-item" onmousedown="selectTicker('${qTrim.toUpperCase().replace(/'/g,"\\'")}')">
+        <span class="lookup-exch">→</span>
+        <div class="lookup-sym">${qTrim.toUpperCase()}</div>
+        <div class="lookup-name">${nl ? 'Direct analyseren' : 'Analyse directly'}</div>
+      </div>`;
+  } else {
+    box.innerHTML = results.map(t => `
+      <div class="lookup-item" onmousedown="selectTicker('${t.s.replace(/'/g,"\\'")}')">
+        <span class="lookup-exch">${t.e}</span>
+        <div class="lookup-sym">${t.s}</div>
+        <div class="lookup-name">${t.n}</div>
+      </div>`).join('');
+  }
+}
+
+// Yahoo autocomplete fallback
+async function fetchYahooAutocomplete(q) {
+  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=12&newsCount=0&enableFuzzyQuery=true`;
+  const proxies = [
+    url,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  ];
+  for (const u of proxies) {
+    try {
+      const r = await fetch(u, { signal: makeAbortSignal(5000) });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const quotes = j?.quotes || [];
+      return quotes
+        .filter(q => q.symbol && q.quoteType !== 'OPTION')
+        .slice(0, 12)
+        .map(q => ({ s: q.symbol, n: q.longname || q.shortname || q.symbol, e: q.exchDisp || q.exchange || '' }));
+    } catch(e) {}
+  }
+  return [];
+}
+
+function selectTicker(sym) {
+  document.getElementById('tickerInput').value = sym;
+  closeLookup();
+  document.getElementById('analyzeBtn').click();
+}
+
+function closeLookup() {
+  document.getElementById('lookupResults').classList.remove('open');
+}
+
+// Start loading stock DB in background immediately
+loadStockDB();
+
+// Apply saved language on load
+applyLang();
+if(lang==='nl') { document.querySelector(".lang-btn[onclick=\"setLang('en')\"]").classList.remove('active'); document.querySelector(".lang-btn[onclick=\"setLang('nl')\"]").classList.add('active'); }
+
+// ══════════════════════════════════════════════
+// ── MARKET STATE — calculated from local time, no Yahoo dependency ──
+function getMarketState(exchange, currency) {
+  const now = new Date();
+  const day = now.getUTCDay(); // 0=Sun, 6=Sat
+  if (day === 0 || day === 6) return 'CLOSED';
+
+  // Get current time in ET using Intl (most reliable, handles DST automatically)
+  const etParts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: 'numeric', minute: 'numeric', hour12: false
+  }).formatToParts(now);
+  const etH = parseInt(etParts.find(p => p.type === 'hour').value);
+  const etM = parseInt(etParts.find(p => p.type === 'minute').value);
+  const etMinutes = etH * 60 + etM;
+
+  const isEU = ['EUR','GBP','CHF','SEK','NOK','DKK'].includes(currency);
+
+  if (!isEU) {
+    // US markets (NYSE, NASDAQ etc)
+    if (etMinutes >= 4*60   && etMinutes < 9*60+30)  return 'PRE';
+    if (etMinutes >= 9*60+30 && etMinutes < 16*60)   return 'REGULAR';
+    if (etMinutes >= 16*60  && etMinutes < 20*60)    return 'POST';
+    return 'CLOSED';
+  } else {
+    // EU markets: 09:00–17:30 CET/CEST
+    const euParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Amsterdam',
+      hour: 'numeric', minute: 'numeric', hour12: false
+    }).formatToParts(now);
+    const euH = parseInt(euParts.find(p => p.type === 'hour').value);
+    const euM = parseInt(euParts.find(p => p.type === 'minute').value);
+    const euMinutes = euH * 60 + euM;
+    if (euMinutes >= 9*60 && euMinutes < 17*60+30) return 'REGULAR';
+    return 'CLOSED';
+  }
+}
+
+// ── LIVE WATCHLIST TICKER ──
+// ══════════════════════════════════════════════
+
+const MAX_WATCH = 7;
+const REFRESH_INTERVAL = 60; // seconds between price updates
+let watchlist = JSON.parse(localStorage.getItem('vsa_watchlist') || '[]');
+let watchCountdown = REFRESH_INTERVAL;
+let watchIntervalId = null;
+let prevPrices = {}; // track previous prices for flash animation
+
+function saveWatchlist() {
+  localStorage.setItem('vsa_watchlist', JSON.stringify(watchlist));
+}
+
+function renderWatchlist() {
+  const container = document.getElementById('watchlistCards');
+  const slotsEl   = document.getElementById('watchSlots');
+  const nl = lang === 'nl';
+
+  slotsEl.textContent = `${watchlist.length} / ${MAX_WATCH}`;
+  const saveBtn = document.getElementById('watchAddBtn');
+  if (saveBtn) {
+    saveBtn.disabled = watchlist.length >= MAX_WATCH;
+    saveBtn.textContent = nl ? '📌 Opslaan' : '📌 Save';
+  }
+
+  container.innerHTML = '';
+
+  if (watchlist.length === 0) {
+    container.innerHTML = `<div class="watch-empty">${nl
+      ? 'Sla een aandeel op na analyse om de prijs hier te volgen.'
+      : 'Save a stock after analysing it to track prices here.'}</div>`;
+    return;
+  }
+
+  watchlist.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'watch-card';
+    card.id = `watch-card-${w.sym}`;
+    card.title = nl ? 'Klik om te analyseren' : 'Click to analyse';
+
+    const cls = w.change > 0 ? 'up' : w.change < 0 ? 'down' : 'flat';
+    const sign = w.change > 0 ? '+' : '';
+    const currency = w.currency === 'EUR' ? '€' : w.currency === 'GBP' ? '£' : '$';
+
+    // Calculate market state from local time — don't rely on Yahoo returning marketState
+    // Works for NYSE/NASDAQ (ET), most EU exchanges (CET), LSE (GMT/BST)
+    const computedState = getMarketState(w.exchange || 'NYQ', w.currency || 'USD');
+    const marketState = computedState; // use computed, ignore Yahoo's (often missing via proxy)
+
+    const marketLabel = marketState === 'REGULAR' ? 'OPEN'
+                      : marketState === 'PRE'     ? 'PRE-MARKET'
+                      : marketState === 'POST'    ? (nl ? 'NA-MARKET' : 'AFTER-HRS')
+                      : (nl ? 'GESLOTEN' : 'CLOSED');
+    const marketCls = marketState === 'REGULAR' ? 'open'
+                    : (marketState === 'PRE' || marketState === 'POST') ? 'pre' : 'closed';
+
+    // Build extra pre/post market line
+    let extraLine = '';
+    if (w.loaded && marketState === 'PRE' && w.prePrice != null) {
+      const preCls = w.preChangePct > 0 ? 'up' : w.preChangePct < 0 ? 'down' : 'flat';
+      const preSign = w.preChangePct > 0 ? '+' : '';
+      extraLine = `
+        <div class="watch-extra-row">
+          <span class="watch-extra-label">PRE</span>
+          <span class="watch-extra-price ${preCls}">${currency}${w.prePrice.toFixed(2)}</span>
+          <span class="watch-extra-chg ${preCls}">${preSign}${w.preChangePct.toFixed(2)}%</span>
+        </div>`;
+    } else if (w.loaded && marketState === 'POST' && w.postPrice != null) {
+      const postCls = w.postChangePct > 0 ? 'up' : w.postChangePct < 0 ? 'down' : 'flat';
+      const postSign = w.postChangePct > 0 ? '+' : '';
+      extraLine = `
+        <div class="watch-extra-row">
+          <span class="watch-extra-label">${nl ? 'NA' : 'AH'}</span>
+          <span class="watch-extra-price ${postCls}">${currency}${w.postPrice.toFixed(2)}</span>
+          <span class="watch-extra-chg ${postCls}">${postSign}${w.postChangePct.toFixed(2)}%</span>
+        </div>`;
+    }
+
+    card.innerHTML = `
+      <button class="watch-remove" onclick="removeFromWatchlist(${i},event)" title="${nl?'Verwijderen':'Remove'}">✕</button>
+      <div class="watch-card-top">
+        <span class="watch-sym">${w.sym}</span>
+        ${w.loaded ? `<span class="watch-market ${marketCls}">${marketLabel}</span>` : ''}
+      </div>
+      ${w.loaded
+        ? `<span class="watch-price ${cls}" id="wp-${w.sym}">${currency}${w.price != null ? w.price.toFixed(2) : '—'}</span>
+           <span class="watch-chg ${cls}" id="wc-${w.sym}">${sign}${w.changePct != null ? w.changePct.toFixed(2) : '0.00'}%</span>
+           ${extraLine}`
+        : `<span class="watch-price flat">—</span>
+           <span class="watch-chg flat">—</span>`}
+      <a href="https://finance.yahoo.com/quote/${w.sym}" target="_blank" rel="noopener"
+         onclick="event.stopPropagation()"
+         style="font-size:10px;font-family:'Space Mono',monospace;color:var(--blue);text-decoration:none;margin-top:4px;display:inline-block;opacity:0.7;">
+        Yahoo →
+      </a>
+    `;
+
+    card.addEventListener('click', e => {
+      if (e.target.classList.contains('watch-remove')) return;
+      document.getElementById('tickerInput').value = w.sym;
+      runAnalysis(w.sym);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    container.appendChild(card);
+  });
+}
+
+async function fetchAllQuotes() {
+  if (watchlist.length === 0) return;
+  // Fetch each ticker via stooq first, then Yahoo via proxies
+  const fetches = watchlist.map(async (w, i) => {
+    try {
+      // Try Yahoo via proxy for live price (stooq doesn't give real-time)
+      let meta = null;
+      const yUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(w.sym)}?interval=1d&range=5d&events=history`;
+
+      // Try corsproxy.io
+      try {
+        const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(yUrl)}`, { signal: makeAbortSignal(8000) });
+        if (r.ok) { const d = await r.json(); meta = d?.chart?.result?.[0]?.meta; }
+      } catch(e) {}
+
+      // Try allorigins if no meta yet
+      if (!meta) {
+        try {
+          const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yUrl)}`, { signal: makeAbortSignal(8000) });
+          if (r.ok) { const w2 = await r.json(); const d = JSON.parse(w2.contents); meta = d?.chart?.result?.[0]?.meta; }
+        } catch(e) {}
+      }
+
+      // Try direct
+      if (!meta) {
+        try {
+          const r = await fetch(yUrl, { signal: makeAbortSignal(5000) });
+          if (r.ok) { const d = await r.json(); meta = d?.chart?.result?.[0]?.meta; }
+        } catch(e) {}
+      }
+
+      if (!meta) return; // all sources failed, keep existing data
+      const marketState  = meta.marketState || calcUSMarketState();
+      const regularPrice = meta.regularMarketPrice ?? null;
+      const prevClose    = meta.chartPreviousClose ?? meta.previousClose ?? null;
+      const displayChange    = (regularPrice!=null&&prevClose!=null) ? regularPrice-prevClose : 0;
+      const displayChangePct = (regularPrice!=null&&prevClose!=null&&prevClose!==0) ? ((regularPrice-prevClose)/prevClose)*100 : 0;
+      if (w.loaded && w.price!=null && regularPrice!=null && regularPrice!==w.price) {
+        const dir = regularPrice > w.price ? 'up' : 'down';
+        const card = document.getElementById(`watch-card-${w.sym}`);
+        if (card) { card.classList.remove('watch-flash-up','watch-flash-down'); void card.offsetWidth; card.classList.add(dir==='up'?'watch-flash-up':'watch-flash-down'); }
+      }
+      watchlist[i] = { ...w, price:regularPrice, change:displayChange, changePct:displayChangePct, regularPrice, prevClose, prePrice:null, preChangePct:null, postPrice:null, postChangePct:null, currency:meta.currency||'USD', marketState, loaded:true };
+    } catch(e) { console.warn(`Quote failed ${w.sym}:`, e.message); }
+  });
+  await Promise.all(fetches);
+  saveWatchlist();
+  renderWatchlist();
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString(lang==='nl'?'nl-NL':'en-GB',{hour:'2-digit',minute:'2-digit'});
+  const el = document.getElementById('watchLastUpdate');
+  if (el) el.textContent = (lang==='nl' ? 'bijgewerkt ' : 'updated ') + timeStr;
+}
+
+function calcUSMarketState() {
+  try {
+    const nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const mins = nowET.getHours() * 60 + nowET.getMinutes();
+    const day  = nowET.getDay();
+    if (day === 0 || day === 6) return 'CLOSED';
+    if (mins >= 240 && mins < 570)  return 'PRE';
+    if (mins >= 570 && mins < 960)  return 'REGULAR';
+    if (mins >= 960 && mins < 1200) return 'POST';
+    return 'CLOSED';
+  } catch(e) { return 'CLOSED'; }
+}
+
+function startLiveTicker() {
+  if (watchIntervalId) clearInterval(watchIntervalId);
+  fetchAllQuotes(); // fetch immediately on start
+
+  watchCountdown = REFRESH_INTERVAL;
+  watchIntervalId = setInterval(() => {
+    watchCountdown--;
+    const el = document.getElementById('watchLastUpdate');
+    if (el && watchCountdown > 0) {
+      el.textContent = (lang==='nl' ? `verversen in ${watchCountdown}s` : `refresh in ${watchCountdown}s`);
+    }
+    if (watchCountdown <= 0) {
+      watchCountdown = REFRESH_INTERVAL;
+      fetchAllQuotes();
+    }
+  }, 1000);
+}
+
+function addCurrentToWatchlist() {
+  const ticker = document.getElementById('tickerInput').value.trim().toUpperCase();
+  if (!ticker) {
+    alert(lang==='nl' ? 'Analyseer eerst een aandeel om het op te slaan.' : 'Analyse a stock first to save it.');
+    return;
+  }
+  if (watchlist.find(w => w.sym === ticker)) {
+    alert(lang==='nl' ? `${ticker} staat al in je watchlijst.` : `${ticker} is already in your watchlist.`);
+    return;
+  }
+  if (watchlist.length >= MAX_WATCH) return;
+
+  watchlist.push({ sym: ticker, loaded: false, price: null, change: 0, changePct: 0 });
+  saveWatchlist();
+  renderWatchlist();
+  fetchAllQuotes();
+  updateNewsSection();
+}
+
+function removeFromWatchlist(i, e) {
+  e.stopPropagation();
+  watchlist.splice(i, 1);
+  saveWatchlist();
+  renderWatchlist();
+  updateNewsSection();
+}
+
+// Init on load
+renderWatchlist();
+startLiveTicker();
+
+// ══════════════════════════════════════════════
+// ── NEWS SECTION ──
+// ══════════════════════════════════════════════
+
+let newsData = {}; // { AAPL: [...articles], TSLA: [...] }
+let activeNewsTab = null;
+
+function updateNewsSection() {
+  const section = document.getElementById('newsSection');
+  if (watchlist.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  loadAllNews();
+}
+
+async function loadAllNews() {
+  if (watchlist.length === 0) return;
+  const btn = document.getElementById('newsRefreshBtn');
+  btn.disabled = true;
+  newsData = {};
+  activeNewsTab = watchlist[0].sym;
+
+  renderNewsTabs();
+  showNewsLoading();
+
+  // Fetch news for all watchlist tickers in parallel
+  await Promise.all(watchlist.map(w => fetchNewsForTicker(w.sym)));
+
+  btn.disabled = false;
+  renderNewsTab(activeNewsTab);
+}
+
+async function fetchNewsForTicker(sym) {
+  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
+  let json = null;
+  // Try corsproxy.io
+  try {
+    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { signal: makeAbortSignal(8000) });
+    if (r.ok) json = await r.json();
+  } catch(e) {}
+  // Try allorigins
+  if (!json) {
+    try {
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(8000) });
+      if (r.ok) { const w = await r.json(); json = JSON.parse(w.contents); }
+    } catch(e) {}
+  }
+  // Try direct
+  if (!json) {
+    try {
+      const r = await fetch(url, { signal: makeAbortSignal(5000) });
+      if (r.ok) json = await r.json();
+    } catch(e) {}
+  }
+  const rawNews = json?.news || [];
+  newsData[sym] = rawNews.filter(n=>n.title&&n.link).slice(0,15).map(n=>({
+    title: n.title, url: n.link, source: n.publisher||'', published: n.providerPublishTime||null, thumbnail: n.thumbnail?.resolutions?.[0]?.url||null,
+  }));
+}
+
+function renderNewsTabs() {
+  const tabs = document.getElementById('newsTickerTabs');
+  const nl = lang === 'nl';
+  tabs.innerHTML = [
+    { sym: 'ALL', label: nl ? 'Alles' : 'All' },
+    ...watchlist.map(w => ({ sym: w.sym, label: w.sym }))
+  ].map(t => `
+    <button class="news-tab ${t.sym === activeNewsTab ? 'active' : ''}"
+      onclick="switchNewsTab('${t.sym}')">${t.label}</button>
+  `).join('');
+}
+
+function switchNewsTab(sym) {
+  activeNewsTab = sym;
+  renderNewsTabs();
+  renderNewsTab(sym);
+}
+
+function showNewsLoading() {
+  const nl = lang === 'nl';
+  document.getElementById('newsContent').innerHTML =
+    `<div class="news-loading"><div class="news-spinner"></div><span>${nl ? 'Nieuws laden...' : 'Loading news...'}</span></div>`;
+}
+
+function renderNewsTab(sym) {
+  const nl = lang === 'nl';
+  const content = document.getElementById('newsContent');
+  const cutoff48h = (Date.now() / 1000) - (48 * 3600);
+
+  let articles = [];
+  if (sym === 'ALL') {
+    const seen = new Set();
+    watchlist.forEach(w => {
+      (newsData[w.sym] || []).forEach(a => {
+        if (!seen.has(a.title)) { seen.add(a.title); articles.push({...a, ticker: w.sym}); }
+      });
+    });
+    articles.sort((a, b) => b.published - a.published);
+    articles = articles.slice(0, 20);
+  } else {
+    articles = (newsData[sym] || []).map(a => ({...a, ticker: sym}));
+  }
+
+  // Filter to last 48 hours only
+  const recent = articles.filter(a => a.published && a.published >= cutoff48h);
+
+  if (recent.length === 0) {
+    const msg = nl
+      ? 'Geen nieuws gevonden in de afgelopen 48 uur voor dit aandeel.'
+      : 'No news found in the last 48 hours for this stock.';
+    content.innerHTML = `<div class="news-empty">${msg}</div>`;
+    return;
+  }
+
+  content.innerHTML = `<div class="news-grid">${recent.map(a => {
+    const ago = timeAgo(a.published, nl);
+    return `<div class="news-card">
+      <div>
+        <span class="news-ticker-tag">${a.ticker}</span>
+      </div>
+      <a href="${a.url}" target="_blank" rel="noopener">
+        <div class="news-headline">${a.title}</div>
+      </a>
+      <div class="news-meta">
+        <span class="news-source">${a.source || ''}</span>
+        <span>${ago}</span>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function timeAgo(ts, nl) {
+  if (!ts) return '';
+  const diff = Math.floor((Date.now() / 1000) - ts);
+  if (diff < 3600)  return nl ? `${Math.floor(diff/60)}m geleden` : `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return nl ? `${Math.floor(diff/3600)}u geleden` : `${Math.floor(diff/3600)}h ago`;
+  return nl ? `${Math.floor(diff/86400)}d geleden` : `${Math.floor(diff/86400)}d ago`;
+}
+
+// Show news on load if watchlist has items
+if (watchlist.length > 0) updateNewsSection();
+
+// ══════════════════════════════════════════════
+// ── MARKET HOURS CLOCK ──
+// ══════════════════════════════════════════════
+
+const MARKETS = [
+  {
+    id: 'ams',
+    name: 'Euronext Amsterdam',
+    abbr: 'AEX · AMS',
+    tz: 'Europe/Amsterdam',
+    tzLabel: 'Amsterdam',
+    open:  { h: 9,  m: 0 },
+    close: { h: 17, m: 30 },
+    preOpen: null,
+    examples: 'ASML, SHELL, PHIA',
+    flag: '🇳🇱',
+  },
+  {
+    id: 'xetra',
+    name: 'Frankfurt / Xetra',
+    abbr: 'DAX · XETRA',
+    tz: 'Europe/Berlin',
+    tzLabel: 'Frankfurt',
+    open:  { h: 9,  m: 0 },
+    close: { h: 17, m: 30 },
+    preOpen: null,
+    examples: 'SAP, BMW, SIE',
+    flag: '🇩🇪',
+  },
+  {
+    id: 'lse',
+    name: 'London Stock Exchange',
+    abbr: 'FTSE · LSE',
+    tz: 'Europe/London',
+    tzLabel: 'Londen',
+    open:  { h: 8,  m: 0 },
+    close: { h: 16, m: 30 },
+    preOpen: null,
+    examples: 'BARC.L, BP.L, HSBA.L',
+    flag: '🇬🇧',
+  },
+  {
+    id: 'nyse',
+    name: 'New York (NYSE)',
+    abbr: 'NYSE · DOW · S&P',
+    tz: 'America/New_York',
+    tzLabel: 'New York',
+    open:  { h: 9,  m: 30 },
+    close: { h: 16, m: 0  },
+    preOpen: { h: 4, m: 0 },
+    postClose: { h: 20, m: 0 },
+    examples: 'JPM, KO, DIS, WMT',
+    flag: '🇺🇸',
+  },
+  {
+    id: 'nasdaq',
+    name: 'NASDAQ',
+    abbr: 'NASDAQ · NDX',
+    tz: 'America/New_York',
+    tzLabel: 'New York',
+    open:  { h: 9,  m: 30 },
+    close: { h: 16, m: 0  },
+    preOpen: { h: 4, m: 0 },
+    postClose: { h: 20, m: 0 },
+    examples: 'AAPL, NVDA, TSLA, MSFT',
+    flag: '🇺🇸',
+  },
+  {
+    id: 'tse',
+    name: 'Tokyo (TSE)',
+    abbr: 'TSE · NIKKEI',
+    tz: 'Asia/Tokyo',
+    tzLabel: 'Tokio',
+    open:  { h: 9,  m: 0  },
+    close: { h: 15, m: 30 },
+    preOpen: null,
+    examples: 'Toyota, Sony, SoftBank',
+    flag: '🇯🇵',
+  },
+  {
+    id: 'hkex',
+    name: 'Hong Kong (HKEX)',
+    abbr: 'HKEX · HSI',
+    tz: 'Asia/Hong_Kong',
+    tzLabel: 'Hong Kong',
+    open:  { h: 9,  m: 30 },
+    close: { h: 16, m: 0  },
+    preOpen: null,
+    examples: 'Alibaba, Tencent, HSBC',
+    flag: '🇭🇰',
+  },
+];
+
+function getTimeInZone(tz) {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: tz }));
+}
+
+function toMins(h, m) { return h * 60 + m; }
+
+function getMarketStatus(market) {
+  const local = getTimeInZone(market.tz);
+  const dow = local.getDay(); // 0=Sun, 6=Sat
+  const nowMins = toMins(local.getHours(), local.getMinutes());
+
+  // Weekend = always closed
+  if (dow === 0 || dow === 6) return { status: 'closed', reason: 'weekend' };
+
+  const openMins  = toMins(market.open.h, market.open.m);
+  const closeMins = toMins(market.close.h, market.close.m);
+  const preMins   = market.preOpen   ? toMins(market.preOpen.h,   market.preOpen.m)   : null;
+  const postMins  = market.postClose ? toMins(market.postClose.h, market.postClose.m) : null;
+
+  if (nowMins >= openMins && nowMins < closeMins) return { status: 'open' };
+  if (preMins  !== null && nowMins >= preMins  && nowMins < openMins)  return { status: 'pre' };
+  if (postMins !== null && nowMins >= closeMins && nowMins < postMins) return { status: 'post' };
+  return { status: 'closed', reason: 'buiten handelstijden' };
+}
+
+function minsUntil(targetH, targetM, tz) {
+  const local = getTimeInZone(tz);
+  const nowMins = toMins(local.getHours(), local.getMinutes());
+  const targetMins = toMins(targetH, targetM);
+  let diff = targetMins - nowMins;
+  if (diff < 0) diff += 1440; // next day
+  return diff;
+}
+
+function fmtMins(mins) {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h > 0) return `${h}u ${m}m`;
+  return `${m}m`;
+}
+
+function fmtTime(h, m) {
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function renderMarkets() {
+  const grid = document.getElementById('marketsGrid');
+  if (!grid) return;
+
+  grid.innerHTML = MARKETS.map(market => {
+    const { status } = getMarketStatus(market);
+    const local = getTimeInZone(market.tz);
+    const localTimeStr = local.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    const statusLabel = status === 'open'   ? 'OPEN'
+                      : status === 'pre'    ? 'PRE-MARKET'
+                      : status === 'post'   ? 'NA-MARKET'
+                      : 'GESLOTEN';
+
+    // Next event
+    let nextStr = '';
+    const dow = local.getDay();
+    const isWeekend = dow === 0 || dow === 6;
+
+    if (status === 'open') {
+      const mins = minsUntil(market.close.h, market.close.m, market.tz);
+      nextStr = `Sluit over <strong>${fmtMins(mins)}</strong> om ${fmtTime(market.close.h, market.close.m)}`;
+    } else if (status === 'pre') {
+      const mins = minsUntil(market.open.h, market.open.m, market.tz);
+      nextStr = `Opent over <strong>${fmtMins(mins)}</strong> om ${fmtTime(market.open.h, market.open.m)}`;
+    } else if (status === 'post') {
+      nextStr = `Na-markt tot ${fmtTime(market.postClose.h, market.postClose.m)}`;
+    } else if (isWeekend) {
+      const daysUntilMon = dow === 6 ? 2 : 1;
+      nextStr = `Opent maandag om ${fmtTime(market.open.h, market.open.m)}`;
+    } else {
+      // Closed but weekday — opens tomorrow or same day
+      const minsToOpen = minsUntil(market.open.h, market.open.m, market.tz);
+      if (minsToOpen < 720) {
+        nextStr = `Opent over <strong>${fmtMins(minsToOpen)}</strong> om ${fmtTime(market.open.h, market.open.m)}`;
+      } else {
+        nextStr = `Opent morgen om ${fmtTime(market.open.h, market.open.m)}`;
+      }
+    }
+
+    // Convert open/close to NL time for reference
+    const nlOpen  = new Date(new Date().toLocaleString('en-US', { timeZone: market.tz }));
+    nlOpen.setHours(market.open.h, market.open.m, 0, 0);
+    const nlClose = new Date(new Date().toLocaleString('en-US', { timeZone: market.tz }));
+    nlClose.setHours(market.close.h, market.close.m, 0, 0);
+
+    const nlOpenStr  = nlOpen.toLocaleTimeString('nl-NL',  { timeZone: 'Europe/Amsterdam', hour: '2-digit', minute: '2-digit' });
+    const nlCloseStr = nlClose.toLocaleTimeString('nl-NL', { timeZone: 'Europe/Amsterdam', hour: '2-digit', minute: '2-digit' });
+
+    return `
+      <div class="market-card ${status}">
+        <div class="market-card-top">
+          <div>
+            <div class="market-name">${market.flag} ${market.name}</div>
+            <div class="market-abbr">${market.abbr}</div>
+          </div>
+          <div class="market-status-pill ${status}">${statusLabel}</div>
+        </div>
+        <div class="market-time-row">
+          <div class="market-local-time ${status}" id="mtime-${market.id}">${localTimeStr}</div>
+          <div class="market-tz">${market.tzLabel}</div>
+        </div>
+        <div class="market-hours">
+          Lokaal: <strong>${fmtTime(market.open.h, market.open.m)} – ${fmtTime(market.close.h, market.close.m)}</strong>
+          &nbsp;·&nbsp; NL-tijd: <strong>${nlOpenStr} – ${nlCloseStr}</strong>
+        </div>
+        <div class="market-hours" style="margin-top:3px;font-size:11px;">Voorbeelden: ${market.examples}</div>
+        <div class="market-next">${nextStr}</div>
+      </div>`;
+  }).join('');
+}
+
+function updateMarketClocks() {
+  // Update NL clock
+  const nlNow = getTimeInZone('Europe/Amsterdam');
+  const clockEl = document.getElementById('nlClock');
+  const dateEl  = document.getElementById('nlDate');
+  const dstEl   = document.getElementById('dstStatus');
+  const utcEl   = document.getElementById('utcOffset');
+
+  if (clockEl) clockEl.textContent = nlNow.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  if (dateEl) {
+    dateEl.textContent = nlNow.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  // Detect DST (Amsterdam is UTC+1 in winter, UTC+2 in summer)
+  const jan = new Date(nlNow.getFullYear(), 0, 1);
+  const jul = new Date(nlNow.getFullYear(), 6, 1);
+  const janOffset = -new Date(jan.toLocaleString('en-US', {timeZone:'Europe/Amsterdam'})).getTimezoneOffset?.() ?? 60;
+  // Simpler: check if offset is +2 (summer) or +1 (winter)
+  const nowUtc = new Date();
+  const nlStr = new Date(nowUtc.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }));
+  const diffH = Math.round((nlStr - nowUtc) / 3600000);
+  const isDST = diffH === 2;
+
+  if (dstEl) dstEl.textContent = isDST ? 'Zomertijd (CEST)' : 'Wintertijd (CET)';
+  if (utcEl) utcEl.textContent = isDST ? 'UTC+2' : 'UTC+1';
+
+  // Update individual market times only (not full re-render every second, only status every 30s)
+  MARKETS.forEach(market => {
+    const el = document.getElementById(`mtime-${market.id}`);
+    if (el) {
+      const t = getTimeInZone(market.tz);
+      el.textContent = t.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+  });
+}
+
+// Full re-render every 30 seconds (status changes), clock update every second
+renderMarkets();
+updateMarketClocks();
+setInterval(updateMarketClocks, 1000);
+setInterval(renderMarkets, 30000);
+
+// ── SIGNAL LEARN MODAL ──
+const SIGNAL_INFO = {
+  'STOPPING VOLUME': {
+    type:'bullish',
+    what: 'Extreem hoog volume op een dalende candle, maar de koers sluit niet veel lager. Grote spelers (instellingen) kopen massaal op terwijl kleine beleggers in paniek verkopen. Het aanbod wordt "gestopt".',
+    action: 'Dit is een vroeg teken van een mogelijke bodem. <strong>Wacht op bevestiging</strong> — de volgende candle moet omhoog sluiten met lager volume. Pas daarna overweeg je een longpositie.',
+    tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Bodem signaal',c:'green'},{l:'Wacht op bevestiging',c:'amber'}],
+    candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
+  },
+  'STOP-VOLUME': {
+    type:'bullish',
+    what: 'Extreem hoog volume op een dalende candle, maar de koers sluit niet veel lager. Grote spelers kopen massaal in terwijl anderen verkopen. Het aanbod wordt "gestopt".',
+    action: '<strong>Wacht op bevestiging</strong> — de volgende candle moet omhoog sluiten met lager volume. Pas dan overweeg je een longpositie.',
+    tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Bodem signaal',c:'green'}],
+    candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
+  },
+  'DEMAND SURGE': {
+    type:'bullish',
+    what: 'Grote bullish candle met hoog volume en brede spread (groot verschil tussen high en low). Vraag overweldigt het aanbod — kopers nemen de controle over.',
+    action: 'Sterke kooopsignaal, maar wacht niet op instap op de candle zelf — die is al te ver gestegen. <strong>Wacht op een kleine pullback</strong> met laag volume daarna.',
+    tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Momentum',c:'green'}],
+    candles: [{o:45,h:47,l:44,c:46,v:4},{o:46,h:47,l:45,c:46,v:3},{o:46,h:48,l:45,c:47,v:5},{o:47,h:56,l:46,c:55,v:14},{o:55,h:57,l:54,c:56,v:7}],
+  },
+  'VRAAGSTIJGING': {
+    type:'bullish',
+    what: 'Grote bullish candle met hoog volume en brede spread. Vraag overweldigt het aanbod — kopers nemen de controle over.',
+    action: 'Sterk koopsignaal. <strong>Wacht op een kleine pullback</strong> met laag volume voor instap.',
+    tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Momentum',c:'green'}],
+    candles: [{o:45,h:47,l:44,c:46,v:4},{o:46,h:47,l:45,c:46,v:3},{o:46,h:48,l:45,c:47,v:5},{o:47,h:56,l:46,c:55,v:14},{o:55,h:57,l:54,c:56,v:7}],
+  },
+  'SUPPLY SURGE': {
+    type:'bearish',
+    what: 'Grote bearish candle met hoog volume. Aanbod overweldigt de vraag — verkopers nemen de leiding. Instellingen dumpen hun posities.',
+    action: '<strong>Niet kopen.</strong> Als je al long zit, overweeg je positie te verkleinen of een stop te plaatsen. Wacht tot het aanbod uitgewerkt is.',
+    tags: [{l:'Bearish',c:'red'},{l:'Hoog volume',c:'amber'},{l:'Verkopen signaal',c:'red'}],
+    candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
+  },
+  'AANBODSTIJGING': {
+    type:'bearish',
+    what: 'Grote bearish candle met hoog volume. Verkopers nemen de leiding — instellingen dumpen posities.',
+    action: '<strong>Niet kopen.</strong> Wacht tot het aanbod uitgewerkt is voor je een positie overweegt.',
+    tags: [{l:'Bearish',c:'red'},{l:'Hoog volume',c:'amber'},{l:'Verkopen signaal',c:'red'}],
+    candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
+  },
+  'NO SUPPLY': {
+    type:'bullish',
+    what: 'Kleine bearish candle met heel laag volume. Er zijn bijna geen verkopers meer actief. Het aanbod is "opgedroogd" — als er nu kopers komen, gaat de prijs snel omhoog.',
+    action: 'Krachtig bullish signaal, <strong>vooral na een daling</strong>. Als de volgende candle bullish is met normaal volume, is dit een goede instap.',
+    tags: [{l:'Bullish',c:'green'},{l:'Laag volume',c:'amber'},{l:'Aanbod droogt op',c:'green'}],
+    candles: [{o:55,h:56,l:52,c:53,v:8},{o:53,h:54,l:51,c:52,v:6},{o:52,h:53,l:50,c:51,v:5},{o:51,h:52,l:50,c:51,v:2},{o:51,h:55,l:50,c:54,v:7}],
+  },
+  'GEEN AANBOD': {
+    type:'bullish',
+    what: 'Kleine bearish candle met heel laag volume. Er zijn bijna geen verkopers meer. Het aanbod is uitgedroogd.',
+    action: 'Krachtig bullish signaal na een daling. Als de volgende candle bullish is, goede instapkans.',
+    tags: [{l:'Bullish',c:'green'},{l:'Laag volume',c:'amber'},{l:'Aanbod droogt op',c:'green'}],
+    candles: [{o:55,h:56,l:52,c:53,v:8},{o:53,h:54,l:51,c:52,v:6},{o:52,h:53,l:50,c:51,v:5},{o:51,h:52,l:50,c:51,v:2},{o:51,h:55,l:50,c:54,v:7}],
+  },
+  'NO DEMAND': {
+    type:'warning',
+    what: 'Kleine bullish candle met heel laag volume na een stijging. Er zijn bijna geen kopers actief. De opwaartse beweging heeft geen kracht — de rally is zwak.',
+    action: '<strong>Niet kopen op deze candle.</strong> Als je al long zit, overweeg je stop aan te scherpen. Institutionele kopers zijn afwezig.',
+    tags: [{l:'Waarschuwing',c:'amber'},{l:'Laag volume',c:'amber'},{l:'Vraag ontbreekt',c:'red'}],
+    candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
+  },
+  'GEEN VRAAG': {
+    type:'warning',
+    what: 'Kleine bullish candle met heel laag volume. De rally heeft geen kracht — institutionele kopers zijn afwezig.',
+    action: '<strong>Niet kopen.</strong> Als je al long zit, scherp je stop aan.',
+    tags: [{l:'Waarschuwing',c:'amber'},{l:'Laag volume',c:'amber'},{l:'Geen momentum',c:'red'}],
+    candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
+  },
+  'UP-THRUST / REJECTION': {
+    type:'warning',
+    what: 'De prijs gaat omhoog door een weerstandsniveau (nieuwe high), maar sluit dicht bij de opening of lager. Met relatief hoog volume. Dit toont dat "slimme spelers" verkopen aan degenen die de uitbraak kochten.',
+    action: '<strong>Valse uitbraak.</strong> Dit is een bearish signaal. Niet kopen. Als je al long zit: stop verlies strak plaatsen of positie sluiten.',
+    tags: [{l:'Bearish',c:'red'},{l:'Valse uitbraak',c:'red'},{l:'Gevaarlijk',c:'red'}],
+    candles: [{o:54,h:56,l:53,c:55,v:5},{o:55,h:57,l:54,c:56,v:6},{o:56,h:63,l:54,c:55,v:12},{o:55,h:57,l:53,c:54,v:7},{o:54,h:55,l:50,c:51,v:8}],
+  },
+  'VALSE UITBRAAK': {
+    type:'warning',
+    what: 'Koers breekt omhoog maar sluit laag terug. Grote spelers verkopen aan de kopers van de uitbraak.',
+    action: '<strong>Niet kopen.</strong> Stop verlies strak plaatsen als je long zit.',
+    tags: [{l:'Bearish',c:'red'},{l:'Valse uitbraak',c:'red'}],
+    candles: [{o:54,h:56,l:53,c:55,v:5},{o:55,h:57,l:54,c:56,v:6},{o:56,h:63,l:54,c:55,v:12},{o:55,h:57,l:53,c:54,v:7},{o:54,h:55,l:50,c:51,v:8}],
+  },
+  'SHAKE OUT': {
+    type:'bullish',
+    what: 'Scherpe daling door een steunniveau, laag volume, maar koers herstelt snel en sluit hoger. Zwakke beleggers worden "uitgeschud" zodat grote spelers goedkoop kunnen bijkopen.',
+    action: 'Krachtig bullish signaal. Als de volgende candle omhoog gaat: <strong>dit is een uitstekend instapmoment</strong>. Stop onder het dieptepunt van de shake-out candle.',
+    tags: [{l:'Bullish',c:'green'},{l:'Valkuil voor beginners',c:'amber'},{l:'Koop kans',c:'green'}],
+    candles: [{o:52,h:54,l:51,c:53,v:5},{o:53,h:54,l:52,c:53,v:4},{o:53,h:54,l:46,c:53,v:7},{o:53,h:57,l:52,c:56,v:9},{o:56,h:59,l:55,c:58,v:8}],
+  },
+  'UITSCHUDDING': {
+    type:'bullish',
+    what: 'Scherpe daling door steun, laag volume, maar koers herstelt snel. Zwakke beleggers worden uitgeschud zodat grote spelers kunnen bijkopen.',
+    action: 'Als de volgende candle omhoog gaat: <strong>uitstekend instapmoment.</strong>',
+    tags: [{l:'Bullish',c:'green'},{l:'Koop kans',c:'green'}],
+    candles: [{o:52,h:54,l:51,c:53,v:5},{o:53,h:54,l:52,c:53,v:4},{o:53,h:54,l:46,c:53,v:7},{o:53,h:57,l:52,c:56,v:9},{o:56,h:59,l:55,c:58,v:8}],
+  },
+  'CLIMACTIC ACTION': {
+    type:'absorption',
+    what: 'Extreem hoog volume met een brede candle — maar de koers sluit midden in de range. Dit toont dat het aanbod of de vraag "geabsorbeerd" wordt. Na een lange trend is dit een waarschuwing dat de trend op zijn einde loopt.',
+    action: 'Na een lange <strong>stijging</strong>: wees voorzichtig, distributie kan beginnen. Na een lange <strong>daling</strong>: kans op bodem, maar wacht op bevestiging.',
+    tags: [{l:'Let op',c:'amber'},{l:'Trend einde?',c:'amber'},{l:'Hoog volume',c:'amber'}],
+    candles: [{o:62,h:66,l:61,c:65,v:6},{o:65,h:68,l:64,c:67,v:7},{o:67,h:70,l:66,c:69,v:8},{o:69,h:76,l:63,c:67,v:22},{o:67,h:69,l:64,c:65,v:9}],
+  },
+  'KLIMACTISCHE ACTIE': {
+    type:'absorption',
+    what: 'Extreem hoog volume, brede candle, maar sluit midden in de range. Aanbod of vraag wordt geabsorbeerd. Waarschuwing dat de huidige trend op zijn einde loopt.',
+    action: 'Na stijging: distributie kan beginnen, voorzichtig. Na daling: mogelijke bodem, wacht op bevestiging.',
+    tags: [{l:'Let op',c:'amber'},{l:'Trend einde?',c:'amber'}],
+    candles: [{o:62,h:66,l:61,c:65,v:6},{o:65,h:68,l:64,c:67,v:7},{o:67,h:70,l:66,c:69,v:8},{o:69,h:76,l:63,c:67,v:22},{o:67,h:69,l:64,c:65,v:9}],
+  },
+  'BULLISH ABSORPTION': {
+    type:'absorption',
+    what: 'Hoog volume, maar de koers daalt nauwelijks. Instellingen absorberen al het aanbod — ze kopen alles op dat er verkocht wordt.',
+    action: 'Bullish. Grote spelers willen omhoog — <strong>bereid je voor op een stijging</strong>. Wacht op bevestiging.',
+    tags: [{l:'Bullish',c:'green'},{l:'Institutioneel kopen',c:'green'}],
+    candles: [{o:50,h:52,l:46,c:47,v:5},{o:47,h:49,l:44,c:48,v:12},{o:48,h:50,l:46,c:49,v:14},{o:49,h:53,l:48,c:52,v:9},{o:52,h:56,l:51,c:55,v:8}],
+  },
+  'BULLISH ABSORPTIE': {
+    type:'absorption',
+    what: 'Hoog volume maar koers daalt nauwelijks. Instellingen kopen alles op dat verkocht wordt.',
+    action: '<strong>Bereid je voor op een stijging.</strong> Wacht op bevestiging.',
+    tags: [{l:'Bullish',c:'green'},{l:'Institutioneel kopen',c:'green'}],
+    candles: [{o:50,h:52,l:46,c:47,v:5},{o:47,h:49,l:44,c:48,v:12},{o:48,h:50,l:46,c:49,v:14},{o:49,h:53,l:48,c:52,v:9},{o:52,h:56,l:51,c:55,v:8}],
+  },
+  'BEARISH ABSORPTION': {
+    type:'bearish',
+    what: 'Hoog volume maar de koers stijgt nauwelijks. Instellingen absorberen alle vraag — ze verkopen alles wat er gekocht wordt.',
+    action: '<strong>Distributie fase.</strong> Niet kopen. Grote spelers verlaten hun posities.',
+    tags: [{l:'Bearish',c:'red'},{l:'Institutioneel verkopen',c:'red'}],
+    candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
+  },
+  'BEARISH ABSORPTIE': {
+    type:'bearish',
+    what: 'Hoog volume maar koers stijgt nauwelijks. Instellingen verkopen alles wat er gekocht wordt.',
+    action: '<strong>Niet kopen.</strong> Distributie fase — grote spelers verlaten posities.',
+    tags: [{l:'Bearish',c:'red'},{l:'Distributie',c:'red'}],
+    candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
+  },
+};
+
+let modalChartInst = null;
+
+function openSignalModal(label) {
+  // Find best match in SIGNAL_INFO
+  const key = Object.keys(SIGNAL_INFO).find(k =>
+    label.toUpperCase().includes(k) || k.includes(label.toUpperCase())
+  ) || label.toUpperCase();
+  const info = SIGNAL_INFO[key] || SIGNAL_INFO[label];
+  if (!info) return;
+
+  document.getElementById('modalTitle').textContent = label;
+  document.getElementById('modalBody').innerHTML = info.what;
+  document.getElementById('modalAction').innerHTML = info.action;
+  document.getElementById('modalTags').innerHTML = (info.tags||[])
+    .map(t=>`<span class="modal-tag ${t.c}">${t.l}</span>`).join('');
+
+  // Draw mini candlestick chart
+  if (modalChartInst) { modalChartInst.destroy(); modalChartInst = null; }
+  const ctx = document.getElementById('modalChart').getContext('2d');
+  const candles = info.candles;
+  const maxV = Math.max(...candles.map(c=>c.v));
+  modalChartInst = new Chart(ctx, {
+    data: {
+      labels: candles.map((_,i)=>i+1),
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Volume',
+          data: candles.map(c=>c.v),
+          backgroundColor: candles.map(c=>c.c>=c.o ? 'rgba(45,122,79,0.3)' : 'rgba(192,57,43,0.3)'),
+          yAxisID: 'vol',
+          order: 2,
+        },
+        {
+          type: 'candlestick',
+          label: 'Price',
+          data: candles.map((c,i)=>({x:i+1,o:c.o,h:c.h,l:c.l,c:c.c})),
+          color: { up:'#2d7a4f', down:'#c0392b', unchanged:'#8a7d6b' },
+          yAxisID: 'price',
+          order: 1,
+        },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{ legend:{display:false}, tooltip:{enabled:false} },
+      scales: {
+        x:{ display:false },
+        price:{ position:'right', grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{size:10},maxTicksLimit:4} },
+        vol:{ position:'left', display:false, max: maxV*4 },
+      }
+    }
+  });
+
+  document.getElementById('signalModal').classList.remove('hidden');
+}
+
+function closeSignalModal(e) {
+  if (e.target === document.getElementById('signalModal')) {
+    document.getElementById('signalModal').classList.add('hidden');
+  }
+}
+
+// ── VSA QUIZ ──
+const QUIZ_QUESTIONS = [
+  {
+    q: 'Je ziet een candle met extreem hoog volume maar de koers sluit nauwelijks lager dan de opening. Wat is dit signaal?',
+    opts: ['Supply Surge', 'Stopping Volume', 'No Demand', 'Up-Thrust'],
+    correct: 1,
+    explain: '✅ <strong>Stopping Volume</strong> — hoog volume + koers sluit niet lager = grote spelers kopen het aanbod op. Het aanbod wordt "gestopt".',
+    candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
+  },
+  {
+    q: 'Na een stijging zie je een kleine bullish candle met heel laag volume. Wat betekent dit?',
+    opts: ['Demand Surge', 'Shake Out', 'No Demand', 'Bullish Absorption'],
+    correct: 2,
+    explain: '✅ <strong>No Demand</strong> — lage volume na een stijging = geen echte kopers. De rally heeft geen kracht. Niet kopen!',
+    candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
+  },
+  {
+    q: 'De koers valt plotseling door een steunniveau maar herstelt snel en sluit omhoog, met relatief laag volume. Wat is dit?',
+    opts: ['Supply Surge', 'Climactic Action', 'Shake Out', 'Up-Thrust'],
+    correct: 2,
+    explain: '✅ <strong>Shake Out</strong> — zwakke beleggers worden uitgeschud zodat grote spelers goedkoop kunnen kopen. Na bevestiging is dit een uitstekend instapmoment.',
+    candles: [{o:52,h:54,l:51,c:53,v:5},{o:53,h:54,l:52,c:53,v:4},{o:53,h:54,l:46,c:53,v:7},{o:53,h:57,l:52,c:56,v:9},{o:56,h:59,l:55,c:58,v:8}],
+  },
+  {
+    q: 'Een aandeel breekt uit boven weerstand met een grote candle maar sluit terug dicht bij de opening. Volume is hoog. Wat signaleert dit?',
+    opts: ['Demand Surge', 'Up-Thrust / Rejection', 'Stopping Volume', 'No Supply'],
+    correct: 1,
+    explain: '✅ <strong>Up-Thrust / Rejection</strong> — valse uitbraak. Grote spelers verkopen aan kopers van de uitbraak. Gevaarlijk voor longs.',
+    candles: [{o:54,h:56,l:53,c:55,v:5},{o:55,h:57,l:54,c:56,v:6},{o:56,h:63,l:54,c:55,v:12},{o:55,h:57,l:53,c:54,v:7},{o:54,h:55,l:50,c:51,v:8}],
+  },
+  {
+    q: 'Na een daling zie je een kleine bearish candle met heel laag volume. Wat betekent dit voor de koper?',
+    opts: ['Bearish Absorption', 'Climactic Action', 'No Supply', 'Supply Surge'],
+    correct: 2,
+    explain: '✅ <strong>No Supply</strong> — laag volume + kleine bearish candle = bijna niemand wil nog verkopen. Als er nu kopers komen, gaat de prijs snel omhoog. Goed instapsignaal!',
+    candles: [{o:55,h:56,l:52,c:53,v:8},{o:53,h:54,l:51,c:52,v:6},{o:52,h:53,l:50,c:51,v:5},{o:51,h:52,l:50,c:51,v:2},{o:51,h:55,l:50,c:54,v:7}],
+  },
+  {
+    q: 'Grote bearish candle met extreem hoog volume — de koers valt hard. Wat is dit?',
+    opts: ['Stopping Volume', 'Supply Surge', 'No Demand', 'Shake Out'],
+    correct: 1,
+    explain: '✅ <strong>Supply Surge</strong> — grote verkopers dumpen posities. Niet kopen, wacht tot het aanbod uitgewerkt is.',
+    candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
+  },
+  {
+    q: 'Hoog volume maar de koers beweegt nauwelijks omhoog tijdens een rally. Wat absorberen grote spelers?',
+    opts: ['Vraag (ze kopen)', 'Aanbod (ze kopen)', 'Aanbod (ze verkopen)', 'Vraag (ze verkopen)'],
+    correct: 2,
+    explain: '✅ <strong>Bearish Absorption</strong> — hoog volume + nauwelijks stijging = instellingen verkopen alles wat er gekocht wordt. Distributie fase.',
+    candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
+  },
+  {
+    q: 'Wat betekent een BULLISH bias in de VSA analyse?',
+    opts: ['Koop direct alles', 'Kopers hebben de leiding, zoek koopmomenten', 'De koers daalt binnenkort', 'Volume is laag'],
+    correct: 1,
+    explain: '✅ <strong>Bullish bias</strong> = de algemene richting is opwaarts. Dit betekent NIET dat je direct koopt — je zoekt naar instapkansen (No Supply, Shake Out) in deze richting.',
+    candles: [{o:46,h:48,l:45,c:47,v:5},{o:47,h:50,l:46,c:49,v:7},{o:49,h:53,l:48,c:52,v:9},{o:52,h:54,l:51,c:53,v:6},{o:53,h:57,l:52,c:56,v:8}],
+  },
+];
+
+let quizIdx = 0;
+let quizScore = 0;
+let quizTotal = 0;
+let quizAnswered = false;
+let quizChartInst = null;
+const shuffledQuiz = [...QUIZ_QUESTIONS].sort(() => Math.random() - 0.5);
+
+function initQuiz() {
+  quizIdx = 0; quizScore = 0; quizTotal = 0;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const body = document.getElementById('quizBody');
+  if (quizIdx >= shuffledQuiz.length) {
+    body.innerHTML = `
+      <div style="text-align:center;padding:24px 0;">
+        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">Quiz voltooid!</div>
+        <div style="font-size:14px;color:var(--muted);margin-bottom:20px;">Score: <strong>${quizScore} van de ${shuffledQuiz.length}</strong> goed</div>
+        <div style="font-size:13px;margin-bottom:20px;">${quizScore >= 6 ? '🏆 Uitstekend! Je kent de VSA signalen goed.' : quizScore >= 4 ? '👍 Goed gedaan! Nog een keer oefenen om nog beter te worden.' : '📚 Blijf oefenen! Lees de uitleg bij elke fout antwoord goed door.'}</div>
+        <button onclick="initQuiz()" style="padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;">Opnieuw spelen 🔄</button>
+      </div>`;
+    if (quizChartInst) { quizChartInst.destroy(); quizChartInst = null; }
+    return;
+  }
+
+  const q = shuffledQuiz[quizIdx];
+  quizAnswered = false;
+  document.getElementById('quizScore').textContent = `Score: ${quizScore} / ${quizTotal}`;
+
+  body.innerHTML = `
+    <div class="quiz-progress">Vraag ${quizIdx+1} van ${shuffledQuiz.length}</div>
+    <div class="quiz-chart-wrap"><canvas id="quizChart"></canvas></div>
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuizQ()">Volgende vraag →</button>
+  `;
+
+  // Draw chart
+  if (quizChartInst) { quizChartInst.destroy(); quizChartInst = null; }
+  const ctx = document.getElementById('quizChart')?.getContext('2d');
+  if (!ctx) return;
+  const candles = q.candles;
+  const maxV = Math.max(...candles.map(c=>c.v));
+  quizChartInst = new Chart(ctx, {
+    data: {
+      labels: candles.map((_,i)=>i+1),
+      datasets: [
+        { type:'bar', data:candles.map(c=>c.v), backgroundColor:candles.map(c=>c.c>=c.o?'rgba(45,122,79,0.3)':'rgba(192,57,43,0.3)'), yAxisID:'vol', order:2 },
+        { type:'candlestick', data:candles.map((c,i)=>({x:i+1,o:c.o,h:c.h,l:c.l,c:c.c})), color:{up:'#2d7a4f',down:'#c0392b',unchanged:'#8a7d6b'}, yAxisID:'price', order:1 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{
+        x:{display:false},
+        price:{position:'right',grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},maxTicksLimit:4}},
+        vol:{position:'left',display:false,max:maxV*4},
+      }
+    }
+  });
+}
+
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  quizTotal++;
+  const q = shuffledQuiz[quizIdx];
+  const correct = idx === q.correct;
+  if (correct) quizScore++;
+
+  document.getElementById('quizScore').textContent = `Score: ${quizScore} / ${quizTotal}`;
+
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && !correct) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('quizFeedback');
+  fb.className = `quiz-feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.innerHTML = correct ? q.explain : `❌ Niet helemaal. Het juiste antwoord is: <strong>${q.opts[q.correct]}</strong><br><br>${q.explain}`;
+
+  document.getElementById('quizNext').classList.add('show');
+}
+
+function nextQuizQ() {
+  quizIdx++;
+  renderQuizQuestion();
+}
+
+// Init quiz when panel opens
+const origTogglePanel = window.togglePanel;
+window.togglePanel = function(id) {
+  origTogglePanel(id);
+  if (id === 'quiz' && quizIdx === 0 && quizTotal === 0) {
+    setTimeout(renderQuizQuestion, 100);
+  }
+};
+
+</script>
+</body>
+</html>
