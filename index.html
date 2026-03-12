@@ -1210,13 +1210,16 @@ async function fetchData(ticker, range) {
   const safeRange = ['1mo','3mo','6mo'].includes(range) ? range : '1mo';
   const interval  = safeRange === '6mo' ? '1wk' : '1d';
 
-  const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history`;
+  // Yahoo v8 via query1 en query2 (beide proberen — soms werkt de ene, soms de andere)
+  const yahooUrl1 = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
+  const yahooUrl2 = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
 
-  // Probeer in volgorde: direct → corsproxy → allorigins → stooq
+  // Probeer in volgorde: query2 direct → query1 direct → corsproxy → allorigins → stooq
   const attempts = [
-    () => fetchYahooDirect(yahooUrl, sym),
-    () => fetchYahooViaProxy(yahooUrl, `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`, sym),
-    () => fetchYahooViaProxy(yahooUrl, `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`, sym),
+    () => fetchYahooDirect(yahooUrl2, sym),
+    () => fetchYahooDirect(yahooUrl1, sym),
+    () => fetchYahooViaProxy(yahooUrl2, `https://corsproxy.io/?${encodeURIComponent(yahooUrl2)}`, sym),
+    () => fetchYahooViaProxy(yahooUrl1, `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl1)}`, sym),
     () => fetchStooq(sym, safeRange),
   ];
 
@@ -1233,8 +1236,15 @@ async function fetchData(ticker, range) {
 }
 
 async function fetchYahooDirect(url, sym) {
-  const res = await fetch(url, { signal: makeAbortSignal(8000) });
+  const res = await fetch(url, {
+    signal: makeAbortSignal(10000),
+    headers: { 'Accept': 'application/json' }
+  });
+  if (res.status === 401 || res.status === 403) throw new Error(`Yahoo auth ${res.status}`);
+  if (res.status === 429) throw new Error('Yahoo rate limit');
   if (!res.ok) throw new Error(`Yahoo direct HTTP ${res.status}`);
+  const ct = res.headers.get('content-type') || '';
+  if (!ct.includes('json')) throw new Error('Yahoo: geen JSON response');
   return parseYahooJSON(await res.json(), sym);
 }
 
