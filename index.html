@@ -1205,61 +1205,72 @@ function makeAbortSignal(ms) {
   return ctrl.signal;
 }
 
+// ── FETCH LAAG ──
+// Yahoo blokkeert directe verzoeken. We gebruiken gratis proxies + Stooq als fallback.
+
 async function fetchData(ticker, range) {
   const sym = ticker.toUpperCase().trim();
   const safeRange = ['1mo','3mo','6mo'].includes(range) ? range : '1mo';
   const interval  = safeRange === '6mo' ? '1wk' : '1d';
 
-  // Yahoo v8 via query1 en query2 (beide proberen — soms werkt de ene, soms de andere)
-  const yahooUrl1 = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
-  const yahooUrl2 = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
+  const yUrl2 = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
+  const yUrl1 = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=${interval}&range=${safeRange}&events=history&includePrePost=false`;
 
-  // Probeer in volgorde: query2 direct → query1 direct → corsproxy → allorigins → stooq
   const attempts = [
-    () => fetchYahooDirect(yahooUrl2, sym),
-    () => fetchYahooDirect(yahooUrl1, sym),
-    () => fetchYahooViaProxy(yahooUrl2, `https://corsproxy.io/?${encodeURIComponent(yahooUrl2)}`, sym),
-    () => fetchYahooViaProxy(yahooUrl1, `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl1)}`, sym),
+    // allorigins /get — geeft { contents: "<json>" }
+    () => fetchViaAllorigins(yUrl2, sym),
+    () => fetchViaAllorigins(yUrl1, sym),
+    // jsonp.afeld.me — open CORS proxy
+    () => fetchViaJsonpAfeld(yUrl2, sym),
+    // corsproxy.io
+    () => fetchViaGenericProxy(`https://corsproxy.io/?${encodeURIComponent(yUrl2)}`, sym, 'json'),
+    // Stooq CSV (werkt voor US & EU aandelen) — via allorigins als CORS blokkeert
     () => fetchStooq(sym, safeRange),
   ];
 
   for (const attempt of attempts) {
     try {
       const data = await attempt();
-      if (data && data.rows.length >= 5) return data;
+      if (data && data.rows && data.rows.length >= 5) return data;
     } catch(e) {
       console.log('fetch attempt failed:', e.message);
     }
   }
 
-  throw new Error(`Geen data voor "${sym}". Controleer het symbool.<br><small>Werkt het op <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">Yahoo Finance</a>? Dan is het symbool correct.<br>Op GitHub Pages werkt de app het beste — lokaal kan CORS problemen geven.</small>`);
+  throw new Error(`Geen data voor "${sym}". Controleer het symbool.<br><small>Werkt het op <a href="https://finance.yahoo.com/quote/${sym}" target="_blank">Yahoo Finance →</a>? Dan is het symbool correct.</small>`);
 }
 
-async function fetchYahooDirect(url, sym) {
-  const res = await fetch(url, {
-    signal: makeAbortSignal(10000),
-    headers: { 'Accept': 'application/json' }
-  });
-  if (res.status === 401 || res.status === 403) throw new Error(`Yahoo auth ${res.status}`);
-  if (res.status === 429) throw new Error('Yahoo rate limit');
-  if (!res.ok) throw new Error(`Yahoo direct HTTP ${res.status}`);
-  const ct = res.headers.get('content-type') || '';
-  if (!ct.includes('json')) throw new Error('Yahoo: geen JSON response');
-  return parseYahooJSON(await res.json(), sym);
+async function fetchViaAllorigins(yahooUrl, sym) {
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooUrl)}`;
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
+  if (!res.ok) throw new Error(`allorigins HTTP ${res.status}`);
+  const wrapper = await res.json();
+  if (!wrapper?.contents) throw new Error('allorigins: geen contents');
+  const data = JSON.parse(wrapper.contents);
+  return parseYahooJSON(data, sym);
 }
 
-async function fetchYahooViaProxy(originalUrl, proxyUrl, sym) {
-  const res = await fetch(proxyUrl, { signal: makeAbortSignal(12000) });
-  if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
-  const json = await res.json();
-  // allorigins wraps in {contents: "..."}
-  const data = json?.contents ? JSON.parse(json.contents) : json;
+async function fetchViaJsonpAfeld(yahooUrl, sym) {
+  const proxyUrl = `https://jsonp.afeld.me/?url=${encodeURIComponent(yahooUrl)}`;
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
+  if (!res.ok) throw new Error(`afeld HTTP ${res.status}`);
+  const data = await res.json();
+  return parseYahooJSON(data, sym);
+}
+
+async function fetchViaGenericProxy(proxyUrl, sym, type) {
+  const res = await fetch(proxyUrl, { signal: makeAbortSignal(15000) });
+  if (!res.ok) throw new Error(`proxy HTTP ${res.status}`);
+  const data = type === 'json' ? await res.json() : await res.text();
   return parseYahooJSON(data, sym);
 }
 
 function parseYahooJSON(data, sym) {
   const result = data?.chart?.result?.[0];
-  if (!result) throw new Error('Yahoo: no result');
+  if (!result) {
+    const err = data?.chart?.error?.description || 'geen result';
+    throw new Error(`Yahoo: ${err}`);
+  }
   const ts = result.timestamp || [];
   const q  = result.indicators?.quote?.[0] || {};
   const rows = [];
@@ -1267,16 +1278,16 @@ function parseYahooJSON(data, sym) {
     if (q.close?.[i] == null || q.high?.[i] == null || q.low?.[i] == null) continue;
     rows.push({
       t: ts[i],
-      o: q.open?.[i] ?? q.close[i],
+      o: q.open?.[i]   ?? q.close[i],
       h: q.high[i],
       l: q.low[i],
       c: q.close[i],
       v: q.volume?.[i] ?? 0
     });
   }
-  if (rows.length < 5) throw new Error('Yahoo: too few rows');
+  if (rows.length < 5) throw new Error('Yahoo: te weinig rijen');
   return {
-    ticker:   result.meta?.symbol || sym,
+    ticker:   result.meta?.symbol   || sym,
     exchange: result.meta?.exchangeName || '',
     currency: result.meta?.currency || 'USD',
     rows
@@ -1284,25 +1295,48 @@ function parseYahooJSON(data, sym) {
 }
 
 async function fetchStooq(sym, range) {
-  // Stooq werkt zonder CORS — goed fallback voor US en EU stocks
-  if (sym.includes('-USD') || sym.startsWith('^')) throw new Error('stooq: skip crypto/index');
+  if (sym.startsWith('^')) throw new Error('stooq: geen index');
   const stooqSym = sym.includes('.') ? sym.toLowerCase() : sym.toLowerCase() + '.us';
   const days = range === '6mo' ? 210 : range === '3mo' ? 105 : 45;
   const fmt  = d => d.toISOString().slice(0,10).replace(/-/g,'');
   const to   = new Date();
   const from = new Date(Date.now() - days * 86400000);
-  const url  = `https://stooq.com/q/d/l/?s=${stooqSym}&d1=${fmt(from)}&d2=${fmt(to)}&i=d`;
-  const res  = await fetch(url, { signal: makeAbortSignal(10000) });
-  if (!res.ok) throw new Error(`stooq HTTP ${res.status}`);
-  const csv = await res.text();
-  if (!csv || csv.includes('No data') || csv.trim().length < 50) throw new Error('stooq: no data');
+  const stooqUrl = `https://stooq.com/q/d/l/?s=${stooqSym}&d1=${fmt(from)}&d2=${fmt(to)}&i=d`;
+
+  let csv = null;
+
+  // Altijd via allorigins proberen eerst (Stooq direct geblokkeerd door CORS op GitHub Pages)
+  const proxyUrls = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(stooqUrl)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(stooqUrl)}`,
+  ];
+
+  for (const proxyUrl of proxyUrls) {
+    try {
+      const res = await fetch(proxyUrl, { signal: makeAbortSignal(18000) });
+      if (!res.ok) continue;
+      const body = await res.json().catch(() => null) || await res.text().catch(() => null);
+      if (typeof body === 'string') { csv = body; break; }
+      if (body?.contents) { csv = body.contents; break; }
+    } catch(e) { console.log('stooq proxy failed:', e.message); }
+  }
+
+  // Direct proberen als proxy ook faalt
+  if (!csv) {
+    try {
+      const res = await fetch(stooqUrl, { signal: makeAbortSignal(10000) });
+      if (res.ok) csv = await res.text();
+    } catch(e) { /* CORS geblokkeerd */ }
+  }
+
+  if (!csv || csv.includes('No data') || csv.trim().length < 50) throw new Error('stooq: geen data');
   const lines = csv.trim().split('\n').slice(1);
   const rows = lines.map(line => {
     const [date, open, high, low, close, vol] = line.split(',');
     if (!close || isNaN(+close)) return null;
     return { t: Math.floor(new Date(date).getTime()/1000), o:+open, h:+high, l:+low, c:+close, v:+(vol||0) };
   }).filter(Boolean);
-  if (rows.length < 5) throw new Error('stooq: too few rows');
+  if (rows.length < 5) throw new Error('stooq: te weinig rijen');
   return {
     ticker:   sym,
     exchange: sym.includes('.AS') ? 'AEX' : 'NYSE/NASDAQ',
@@ -2025,9 +2059,9 @@ async function loadStockDB() {
   ];
 
   const proxies = [
-    u => u,                                                          // direct
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u => u,                                                                    // direct (GitHub raw werkt zonder CORS)
     u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   ];
 
   let combined = [];
@@ -2156,17 +2190,17 @@ async function showLookup(q) {
 
 // Yahoo autocomplete fallback
 async function fetchYahooAutocomplete(q) {
-  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=12&newsCount=0&enableFuzzyQuery=true`;
+  const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(q)}&quotesCount=12&newsCount=0&enableFuzzyQuery=true`;
   const proxies = [
-    url,
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
   ];
   for (const u of proxies) {
     try {
-      const r = await fetch(u, { signal: makeAbortSignal(5000) });
+      const r = await fetch(u, { signal: makeAbortSignal(7000) });
       if (!r.ok) continue;
-      const j = await r.json();
+      const wrapper = await r.json();
+      const j = wrapper?.contents ? JSON.parse(wrapper.contents) : wrapper;
       const quotes = j?.quotes || [];
       return quotes
         .filter(q => q.symbol && q.quoteType !== 'OPTION')
@@ -2486,27 +2520,21 @@ async function loadAllNews() {
 }
 
 async function fetchNewsForTicker(sym) {
-  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
+  const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(sym)}&quotesCount=0&newsCount=20&enableFuzzyQuery=false`;
   let json = null;
-  // Try corsproxy.io
-  try {
-    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { signal: makeAbortSignal(8000) });
+
+  // allorigins /get
+  if (!json) try {
+    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(10000) });
+    if (r.ok) { const w = await r.json(); json = JSON.parse(w.contents); }
+  } catch(e) {}
+
+  // codetabs
+  if (!json) try {
+    const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, { signal: makeAbortSignal(10000) });
     if (r.ok) json = await r.json();
   } catch(e) {}
-  // Try allorigins
-  if (!json) {
-    try {
-      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { signal: makeAbortSignal(8000) });
-      if (r.ok) { const w = await r.json(); json = JSON.parse(w.contents); }
-    } catch(e) {}
-  }
-  // Try direct
-  if (!json) {
-    try {
-      const r = await fetch(url, { signal: makeAbortSignal(5000) });
-      if (r.ok) json = await r.json();
-    } catch(e) {}
-  }
+
   const rawNews = json?.news || [];
   newsData[sym] = rawNews.filter(n=>n.title&&n.link).slice(0,15).map(n=>({
     title: n.title, url: n.link, source: n.publisher||'', published: n.providerPublishTime||null, thumbnail: n.thumbnail?.resolutions?.[0]?.url||null,
