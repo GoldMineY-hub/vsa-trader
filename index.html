@@ -645,6 +645,33 @@
   .news-x-btn.fin{border-color:var(--blue);color:var(--blue);}
   .news-x-btn.fin:hover{background:var(--blue);color:#fff;}
 
+  /* ── LEERBIBLIOTHEEK ── */
+  .learn-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+  .learn-tab{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-family:'Space Mono',monospace;cursor:pointer;background:var(--surface2);color:var(--muted);transition:all 0.15s;}
+  .learn-tab:hover{border-color:var(--accent);color:var(--accent);}
+  .learn-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .learn-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:12px;}
+  .learn-card h3{font-size:15px;font-weight:700;margin:0 0 6px;color:var(--text);}
+  .learn-card h4{font-size:13px;font-weight:700;margin:14px 0 5px;color:var(--accent);}
+  .learn-card p{font-size:13px;line-height:1.75;margin:0 0 8px;color:var(--text);}
+  .learn-card ul{margin:4px 0 8px 18px;font-size:13px;line-height:1.9;color:var(--text);}
+  .learn-rule{background:var(--surface);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0;font-size:13px;line-height:1.7;}
+  .learn-rule.warn{border-left-color:var(--accent2);}
+  .learn-rule.amber{border-left-color:var(--accent3);}
+  .learn-example{background:rgba(45,122,79,0.07);border:1.5px solid rgba(45,122,79,0.2);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;line-height:1.75;}
+  .learn-example.bear{background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.2);}
+  .learn-sig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px;}
+  .learn-sig-card{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px;}
+  .learn-sig-card.bull{border-left:3px solid var(--accent);}
+  .learn-sig-card.bear{border-left:3px solid var(--accent2);}
+  .learn-sig-card.neutral{border-left:3px solid var(--accent3);}
+  .learn-sig-name{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;margin-bottom:4px;}
+  .learn-sig-desc{font-size:12px;line-height:1.6;color:var(--muted);}
+  .learn-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;margin-right:4px;}
+  .learn-badge.bull{background:rgba(45,122,79,0.12);color:var(--accent);}
+  .learn-badge.bear{background:rgba(192,57,43,0.1);color:var(--accent2);}
+  .learn-badge.neutral{background:rgba(184,134,11,0.1);color:var(--accent3);}
+
 </style>
 </head>
 <body>
@@ -3822,6 +3849,442 @@ function copyWorkerCode() {
     if (btn) { btn.textContent = '✅ Gekopieerd!'; setTimeout(() => btn.textContent = '📋 Kopieer', 2000); }
   });
 }
+
+// ══════════════════════════════════════════════
+// ── LEERBIBLIOTHEEK ──
+// ══════════════════════════════════════════════
+
+const LEARN_CONTENT = {
+
+vsa: `
+<div class="learn-card">
+  <h3>📊 Wat is VSA — Volume Spread Analysis?</h3>
+  <p>VSA is een methode om te begrijpen wat de <strong>grote spelers</strong> (banken, fondsen, institutionele traders) aan het doen zijn. Kleine traders zoals wij hebben geen invloed op de markt — maar grote spelers wel. Hun acties laten sporen achter in het <strong>volume en de spread</strong> van elke candle.</p>
+  <p>VSA kijkt naar drie dingen per candle:</p>
+  <ul>
+    <li><strong>Spread</strong> — hoe groot is het verschil tussen de hoogste en laagste prijs?</li>
+    <li><strong>Sluitprijs</strong> — sluit de candle hoog, midden of laag in de bar?</li>
+    <li><strong>Volume</strong> — hoeveel werd er verhandeld? Meer dan normaal of minder?</li>
+  </ul>
+  <div class="learn-rule">💡 <strong>Gouden regel VSA:</strong> Hoog volume = grote spelers zijn actief. Laag volume = grote spelers doen niks. Volume is de brandstof van de markt.</div>
+</div>
+
+<div class="learn-card">
+  <h3>🧠 Het concept: Vraag en Aanbod</h3>
+  <p>De prijs stijgt als er meer vraag is dan aanbod. De prijs daalt als er meer aanbod is dan vraag. VSA helpt je te zien <em>wanneer</em> vraag of aanbod op het punt staat te winnen.</p>
+  <ul>
+    <li><strong>Aanbod aanwezig</strong> = grote spelers verkopen → prijs gaat moeilijk omhoog</li>
+    <li><strong>Geen aanbod</strong> = weg vrij voor kopers → prijs kan makkelijk stijgen</li>
+    <li><strong>Vraag aanwezig</strong> = grote spelers kopen → prijs heeft steun</li>
+    <li><strong>Geen vraag</strong> = kopers haken af → prijs kan dalen</li>
+  </ul>
+  <div class="learn-rule amber">⏳ VSA kijkt naar de <strong>afgelopen 20–30 handelsdagen</strong> — niet alleen vandaag. Het leest de geschiedenis van het aandeel als een verhaal.</div>
+</div>
+
+<div class="learn-card">
+  <h3>📈 Bias: de algemene richting</h3>
+  <p>De app berekent automatisch een <strong>BULLISH / BEARISH / NEUTRAL</strong> bias. Dit is jouw kompas:</p>
+  <ul>
+    <li><span class="learn-badge bull">BULLISH</span> — grote kans op stijging, zoek koopmomenten</li>
+    <li><span class="learn-badge bear">BEARISH</span> — grote kans op daling, vermijd long trades</li>
+    <li><span class="learn-badge neutral">NEUTRAL</span> — geen duidelijke richting, wacht af</li>
+  </ul>
+  <div class="learn-rule warn">🚫 <strong>Handel NOOIT tegen de bias in.</strong> Als de bias BEARISH is, koop dan niet — ook niet als een signaal er verleidelijk uitziet.</div>
+</div>`,
+
+signals: `
+<div class="learn-card">
+  <h3>🎯 De 10 VSA signalen</h3>
+  <p>Dit zijn de patronen die de app herkent. Elk signaal vertelt een verhaal over wat grote spelers aan het doen zijn.</p>
+</div>
+
+<div class="learn-sig-grid">
+  <div class="learn-sig-card bull">
+    <div class="learn-sig-name">📦 Stopping Volume</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Extreem hoog volume op een dalende candle die hoog sluit. Grote kopers absorberen alle verkopen. De daling stopt hier waarschijnlijk.</div>
+  </div>
+  <div class="learn-sig-card bull">
+    <div class="learn-sig-name">🚀 Demand Surge</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Brede stijgende candle op hoog volume die dicht bij het hoogste punt sluit. Agressieve kopers nemen de controle over.</div>
+  </div>
+  <div class="learn-sig-card bull">
+    <div class="learn-sig-name">🌊 Bullish Absorption</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Heel hoog volume maar smalle spread. Verkopers worden opgekocht — aanbod wordt geabsorbeerd. Steunzone in de making.</div>
+  </div>
+  <div class="learn-sig-card bull">
+    <div class="learn-sig-name">✨ No Supply</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Dalende candle op laag volume en smalle spread. Niemand wil meer verkopen — aanbod is uitgeput. Sterk koopmomenent.</div>
+  </div>
+  <div class="learn-sig-card bull">
+    <div class="learn-sig-name">💥 Shake Out</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Prijs valt scherp op hoog volume maar herstelt snel en sluit hoog. Zwakke houders worden eruit gegooid — grote spelers kopen op de dip.</div>
+  </div>
+  <div class="learn-sig-card bear">
+    <div class="learn-sig-name">📉 Supply Surge</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Brede dalende candle op hoog volume die dicht bij het laagste punt sluit. Verkopers domineren volledig.</div>
+  </div>
+  <div class="learn-sig-card bear">
+    <div class="learn-sig-name">🔻 Bearish Absorption</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Heel hoog volume, smalle spread, dalend. Kopers worden geabsorbeerd — weerstandszone in de making.</div>
+  </div>
+  <div class="learn-sig-card bear">
+    <div class="learn-sig-name">⚠️ Up-Thrust / Rejection</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Prijs stijgt op hoog volume maar sluit laag. Verkopers wierpen de stijging terug. Distributiesignaal.</div>
+  </div>
+  <div class="learn-sig-card bear">
+    <div class="learn-sig-name">😴 No Demand</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Stijgende candle op laag volume en smalle spread. Kopers hebben geen overtuiging — de stijging heeft geen kracht.</div>
+  </div>
+  <div class="learn-sig-card neutral">
+    <div class="learn-sig-name">🌋 Climactic Action</div>
+    <div class="learn-sig-desc"><span class="learn-badge neutral">WAARSCHUWING</span> Extreem hoog volume én brede spread. Kan het einde van een trend zijn — wacht op bevestiging voor je handelt.</div>
+  </div>
+</div>
+
+<div class="learn-card" style="margin-top:12px;">
+  <h4>Hoe gebruik je de signalen?</h4>
+  <ul>
+    <li>Kijk altijd eerst naar de <strong>bias</strong> — handel alleen in die richting</li>
+    <li>De <strong>sterkste setup</strong>: bias BULLISH + No Supply of Shake Out signaal + prijs boven VWAP</li>
+    <li>Meerdere bullish signalen achter elkaar = hogere overtuiging</li>
+    <li>Één signaal alleen is niet genoeg — combineer altijd met bias en checklist</li>
+  </ul>
+</div>`,
+
+vwap: `
+<div class="learn-card">
+  <h3>📍 VWAP — Volume Weighted Average Price</h3>
+  <p>VWAP is de <strong>gemiddelde prijs gewogen naar volume</strong>. Het is het eerlijkste antwoord op de vraag: "wat is de gemiddelde prijs die iedereen betaald heeft?"</p>
+  <p>Grote institutionele traders (pensioenfondsen, banken) gebruiken VWAP als benchmark — ze proberen onder VWAP te kopen en boven VWAP te verkopen.</p>
+</div>
+
+<div class="learn-card">
+  <h4>📐 Hoe wordt het berekend?</h4>
+  <p>Voor elke candle: <strong>(Hoog + Laag + Sluit) ÷ 3 × Volume</strong>, dan gedeeld door het totale volume. Dit geeft een prijs die zwaarder weegt naar momenten met veel handel.</p>
+  <div class="learn-rule">💡 VWAP is cumulatief over de periode — het begint elke nieuwe periode opnieuw. In onze app berekenen we het over de geselecteerde periode (1M/3M/6M).</div>
+</div>
+
+<div class="learn-card">
+  <h4>📖 Hoe lees je VWAP?</h4>
+  <ul>
+    <li><strong>Prijs boven VWAP</strong> → bulls hebben de controle, institutionele kopers actief</li>
+    <li><strong>Prijs onder VWAP</strong> → bears hebben de controle, verkopers domineren</li>
+    <li><strong>Prijs beweegt naar VWAP</strong> → mogelijke steun of weerstand op VWAP-niveau</li>
+    <li><strong>Prijs stuitert van VWAP omhoog</strong> → bevestiging van bullish bias, potentieel instapmoment</li>
+  </ul>
+  <div class="learn-example">
+    ✅ <strong>Bullish setup voorbeeld:</strong> Bias BULLISH + prijs daalt terug naar VWAP + No Supply signaal verschijnt op VWAP niveau → potentieel sterk instapmoment
+  </div>
+  <div class="learn-example bear">
+    ❌ <strong>Vermijd:</strong> Prijs ver boven VWAP kopen — je koopt "duur". Wacht op een terugval naar VWAP.
+  </div>
+</div>
+
+<div class="learn-card">
+  <h4>🔗 VWAP + VSA combineren</h4>
+  <ul>
+    <li>No Supply signaal + prijs op VWAP = heel sterk</li>
+    <li>Stopping Volume op VWAP = grote kans op ommekeer</li>
+    <li>Up-Thrust op VWAP = bevestiging dat VWAP weerstand is</li>
+  </ul>
+  <div class="learn-rule amber">⚠️ VWAP is een <strong>contextuele indicator</strong> — het werkt het best als bevestiging, niet als enig signaal.</div>
+</div>`,
+
+ema: `
+<div class="learn-card">
+  <h3>📈 EMA — Exponential Moving Average</h3>
+  <p>Een EMA is een <strong>voortschrijdend gemiddelde</strong> van de sluitprijzen. Het geeft meer gewicht aan recente prijzen — het reageert dus sneller op nieuwe bewegingen dan een gewoon gemiddelde (SMA).</p>
+  <p>Wij gebruiken <strong>EMA 20</strong> (korte termijn) en <strong>EMA 50</strong> (middellange termijn).</p>
+</div>
+
+<div class="learn-card">
+  <h4>📖 Wat betekent elke EMA?</h4>
+  <ul>
+    <li><strong>EMA 20</strong> — gemiddelde van de laatste 20 handelsdagen (~1 maand). Geeft de korte termijn trend aan.</li>
+    <li><strong>EMA 50</strong> — gemiddelde van de laatste 50 handelsdagen (~2,5 maand). Geeft de middellange termijn trend aan.</li>
+  </ul>
+  <div class="learn-rule">💡 <strong>Vuistregel:</strong> Handel in de richting van de EMA's. Als de prijs boven beide EMA's zit en EMA20 boven EMA50 staat → alles wijst omhoog.</div>
+</div>
+
+<div class="learn-card">
+  <h4>🔑 De vier situaties</h4>
+  <div class="learn-example">
+    ✅ <strong>Sterkste setup:</strong> Prijs &gt; EMA20 &gt; EMA50 → opwaartse trend bevestigd op twee tijdframes
+  </div>
+  <div class="learn-example">
+    ⚠️ <strong>Zwakke opwaarts:</strong> Prijs &gt; EMA20, maar EMA20 &lt; EMA50 → kortetermijn herstel in dalende trend
+  </div>
+  <div class="learn-example bear">
+    ❌ <strong>Bearish:</strong> Prijs &lt; EMA20 → korte termijn trend is neerwaarts, vermijd long trades
+  </div>
+  <div class="learn-example bear">
+    ❌ <strong>Sterkste bearish:</strong> Prijs &lt; EMA20 &lt; EMA50 → trend neerwaarts op alle tijdframes
+  </div>
+</div>
+
+<div class="learn-card">
+  <h4>🔗 EMA + VSA combineren</h4>
+  <ul>
+    <li>No Supply signaal + prijs net boven EMA20 = potentieel instapmoment</li>
+    <li>Shake Out naar EMA50 + herstel = klassieke "test van steun" setup</li>
+    <li>EMA20 kruist EMA50 van onder naar boven (Golden Cross) = trendwisseling signaal</li>
+  </ul>
+  <div class="learn-rule warn">🚫 Koop nooit als prijs ver boven EMA20 zit. Wacht op een terugval — dat geeft een betere prijs en kleiner risico.</div>
+</div>`,
+
+atr: `
+<div class="learn-card">
+  <h3>📐 ATR — Average True Range</h3>
+  <p>ATR meet de <strong>gemiddelde dagelijkse beweging</strong> van een aandeel. Het zegt niks over richting — alleen over <em>hoeveel</em> een aandeel gemiddeld beweegt per dag.</p>
+  <p>Een ATR van $1.50 betekent: dit aandeel beweegt gemiddeld $1.50 per dag van hoog naar laag.</p>
+</div>
+
+<div class="learn-card">
+  <h4>🛡️ Waarvoor gebruik je ATR?</h4>
+  <p><strong>Stop loss berekenen</strong> — dit is de #1 toepassing. In plaats van willekeurig een stop te zetten, gebruik je ATR als maatstaf voor hoe ver de markt normaal "ruis" maakt.</p>
+  <div class="learn-rule">💡 <strong>Professionele methode:</strong> Stop loss = entry prijs − 1.5× ATR<br>Dit geeft de markt genoeg ruimte om te bewegen zonder dat je gestopt wordt door normale volatiliteit.</div>
+</div>
+
+<div class="learn-card">
+  <h4>📊 Praktisch voorbeeld</h4>
+  <ul>
+    <li>Aandeel: SOFI, prijs: $8.50, ATR(14): $0.40</li>
+    <li>Stop loss = $8.50 − (1.5 × $0.40) = $8.50 − $0.60 = <strong>$7.90</strong></li>
+    <li>Risico per aandeel = $0.60</li>
+    <li>Als je max $100 wilt riskeren → $100 ÷ $0.60 = <strong>166 aandelen</strong></li>
+  </ul>
+  <div class="learn-example">
+    ✅ De app berekent dit automatisch in de <strong>Positiegrootteberekening</strong> sectie — ATR wordt direct ingevuld als stop loss suggestie.
+  </div>
+</div>
+
+<div class="learn-card">
+  <h4>📈 ATR en volatiliteit</h4>
+  <ul>
+    <li><strong>Hoge ATR</strong> → volatiel aandeel, grotere stops nodig, maar ook grotere winst mogelijk</li>
+    <li><strong>Lage ATR</strong> → rustig aandeel, kleinere stops, geschikt voor beginners</li>
+    <li>ATR stijgt vaak voor en tijdens grote nieuwsgebeurtenissen</li>
+  </ul>
+  <div class="learn-rule amber">⚠️ Stel je stop nooit strakker in dan 1× ATR — dan wordt je gestopt door gewone marktbewegingen, niet door echte keringen.</div>
+</div>`,
+
+cvd: `
+<div class="learn-card">
+  <h3>🌊 CVD — Cumulative Volume Delta</h3>
+  <p>CVD toont het <strong>verschil tussen koopvolume en verkoopvolume</strong> over tijd. Het accumuleert dit verschil — vandaar "cumulatief".</p>
+  <p>Als de CVD stijgt, betekent dit dat er meer gekocht wordt dan verkocht. Als CVD daalt, domineren verkopers.</p>
+  <div class="learn-rule">💡 CVD is de "druk onder de oppervlakte" — het vertelt je wie er echt wint, ook als de prijs dat nog niet laat zien.</div>
+</div>
+
+<div class="learn-card">
+  <h4>🔍 CVD Divergentie — het krachtigste signaal</h4>
+  <p>Een <strong>divergentie</strong> ontstaat als de prijs en CVD in tegengestelde richting bewegen:</p>
+  <div class="learn-example">
+    🔴 <strong>Bearish divergentie:</strong> Prijs stijgt, maar CVD daalt → verkopers winnen in het geheim. Prijs kan binnenkort dalen.
+  </div>
+  <div class="learn-example">
+    🟢 <strong>Bullish divergentie:</strong> Prijs daalt, maar CVD stijgt → kopers absorberen stilletjes. Prijs kan binnenkort stijgen.
+  </div>
+  <div class="learn-rule warn">⚠️ De app waarschuwt automatisch bij CVD divergentie in de checklist. Neem deze waarschuwing serieus — het is een van de betrouwbaarste signalen.</div>
+</div>
+
+<div class="learn-card">
+  <h4>📖 Hoe lees je de CVD grafiek?</h4>
+  <ul>
+    <li><strong>CVD stijgt samen met prijs</strong> → bevestiging, trend is sterk</li>
+    <li><strong>CVD daalt terwijl prijs stijgt</strong> → waarschuwing, stijging verliest kracht</li>
+    <li><strong>CVD stijgt terwijl prijs daalt</strong> → mogelijke bodem, kopers komen erin</li>
+    <li><strong>CVD vlak</strong> → evenwicht, wacht op doorbraak</li>
+  </ul>
+</div>`,
+
+volume: `
+<div class="learn-card">
+  <h3>🔊 Volume — de brandstof van de markt</h3>
+  <p>Volume is het <strong>aantal aandelen dat verhandeld wordt</strong> in een periode. Het is de meest fundamentele indicator — zonder volume heeft een prijsbeweging geen kracht.</p>
+  <div class="learn-rule">💡 <strong>Gouden regel:</strong> Een prijsbeweging op hoog volume is betrouwbaar. Een prijsbeweging op laag volume is verdacht.</div>
+</div>
+
+<div class="learn-card">
+  <h4>📊 Volume lezen</h4>
+  <ul>
+    <li><strong>Hoog volume + stijgende prijs</strong> → sterke vraag, bevestigde stijging</li>
+    <li><strong>Hoog volume + dalende prijs</strong> → sterke verkoop druk, of grote kopers die absorberen</li>
+    <li><strong>Laag volume + stijgende prijs</strong> → zwakke stijging, geen overtuiging (No Demand)</li>
+    <li><strong>Laag volume + dalende prijs</strong> → zwakke daling, verkopers uitgeput (No Supply)</li>
+  </ul>
+</div>
+
+<div class="learn-card">
+  <h4>📍 Volume Profile & POC</h4>
+  <p>De app toont een <strong>Volume Profile</strong> — een horizontaal overzicht van hoeveel volume er op elk prijsniveau verhandeld is.</p>
+  <p>De <strong>POC (Point of Control)</strong> is het prijsniveau met het meeste volume. Dit is het "eerlijkste" niveau — de prijs keert hier vaak naar terug.</p>
+  <div class="learn-example">
+    ✅ Als de prijs ver van de POC af staat, is er een grotere kans dat hij terugkeert naar dat niveau. De POC werkt als een magneet.
+  </div>
+  <div class="learn-rule">💡 Gebruik de POC als referentie voor je stop loss en target. Stop net onder POC (bij long), target = afstand naar POC × 2.</div>
+</div>
+
+<div class="learn-card">
+  <h4>⚡ Volume Ratio</h4>
+  <p>De app toont het volume als een veelvoud van het gemiddelde volume. Een ratio van 2.5× betekent dat er 2,5 keer meer verhandeld wordt dan normaal.</p>
+  <ul>
+    <li><strong>0.5× of minder</strong> → heel rustig, grote spelers doen niks</li>
+    <li><strong>1.0–1.5×</strong> → normaal</li>
+    <li><strong>2.0–3.0×</strong> → verhoogde activiteit, letten op</li>
+    <li><strong>3.0×+</strong> → extreem, mogelijke klimactische actie</li>
+  </ul>
+</div>`,
+
+candles: `
+<div class="learn-card">
+  <h3>🕯️ Candlesticks lezen</h3>
+  <p>Een candlestick toont <strong>vier prijzen</strong> in één oogopslag: Open, Hoog, Laag en Sluit. De kleur vertelt of de dag positief (groen) of negatief (rood) was.</p>
+</div>
+
+<div class="learn-card">
+  <h4>🔑 Anatomie van een candle</h4>
+  <ul>
+    <li><strong>Body</strong> — het dikke deel, van open naar sluit</li>
+    <li><strong>Upper wick (staartje boven)</strong> — tot waar de prijs steeg maar terugviel</li>
+    <li><strong>Lower wick (staartje onder)</strong> — tot waar de prijs daalde maar herstelde</li>
+    <li><strong>Breed body, geen wicks</strong> → sterke beweging, één richting domineerde</li>
+    <li><strong>Kleine body, lange wicks</strong> → onzekerheid, strijd tussen kopers en verkopers</li>
+  </ul>
+</div>
+
+<div class="learn-card">
+  <h4>📖 Belangrijke candlestick patronen</h4>
+  <div class="learn-sig-grid">
+    <div class="learn-sig-card bull">
+      <div class="learn-sig-name">Hammer</div>
+      <div class="learn-sig-desc">Kleine body bovenaan, lange lower wick. Na een daling: kopers verwierpen de lage prijzen. Bullish omkeersignaal.</div>
+    </div>
+    <div class="learn-sig-card bear">
+      <div class="learn-sig-name">Shooting Star</div>
+      <div class="learn-sig-desc">Kleine body onderaan, lange upper wick. Na een stijging: verkopers verwierpen de hoge prijzen. Bearish omkeersignaal.</div>
+    </div>
+    <div class="learn-sig-card bull">
+      <div class="learn-sig-name">Bullish Engulfing</div>
+      <div class="learn-sig-desc">Grote groene candle omsluit de vorige rode candle volledig. Krachtige overname door kopers.</div>
+    </div>
+    <div class="learn-sig-card bear">
+      <div class="learn-sig-name">Bearish Engulfing</div>
+      <div class="learn-sig-desc">Grote rode candle omsluit de vorige groene candle volledig. Krachtige overname door verkopers.</div>
+    </div>
+    <div class="learn-sig-card neutral">
+      <div class="learn-sig-name">Doji</div>
+      <div class="learn-sig-desc">Open en sluit bijna gelijk. Niemand wint — onzekerheid. Let op de volgende candle voor richting.</div>
+    </div>
+    <div class="learn-sig-card bull">
+      <div class="learn-sig-name">Dragonfly Doji</div>
+      <div class="learn-sig-desc">Doji met lange lower wick. Verkopers probeerden te duwen maar kopers namen volledig over. Sterk bullish.</div>
+    </div>
+  </div>
+  <div class="learn-rule">💡 In VSA zijn candlestick patronen bevestiging — gebruik ze altijd samen met volume. Een Hammer op laag volume is zwak. Een Hammer op hoog volume is sterk.</div>
+</div>`,
+
+setup: `
+<div class="learn-card">
+  <h3>⚡ Een complete trade setup bouwen</h3>
+  <p>Een goede setup heeft <strong>meerdere bevestigingen</strong> uit verschillende bronnen die allemaal dezelfde kant op wijzen. Hoe meer bevestigingen, hoe beter.</p>
+</div>
+
+<div class="learn-card">
+  <h4>✅ De perfecte bullish setup — checklist</h4>
+  <ul>
+    <li>☐ <strong>Bias = BULLISH</strong> (verplicht)</li>
+    <li>☐ <strong>Prijs boven VWAP</strong> of stuitert van VWAP omhoog</li>
+    <li>☐ <strong>Prijs boven EMA20</strong> en EMA20 boven EMA50</li>
+    <li>☐ <strong>VSA signaal = No Supply, Shake Out of Stopping Volume</strong></li>
+    <li>☐ <strong>CVD geen divergentie</strong> — of bullish divergentie</li>
+    <li>☐ <strong>Volume normaal of laag</strong> bij het signaal (bevestigt "geen aanbod")</li>
+    <li>☐ <strong>Prijs dicht bij steunzone</strong> (laag in de range)</li>
+  </ul>
+  <div class="learn-rule">💡 5 of meer vinkjes = sterke setup. 3–4 vinkjes = matige setup. Minder dan 3 = wachten.</div>
+</div>
+
+<div class="learn-card">
+  <h4>📐 Entry, Stop en Target bepalen</h4>
+  <ul>
+    <li><strong>Entry</strong> — koop bij de opening van de volgende candle na het signaal, of bij een terugval naar de signaalzone</li>
+    <li><strong>Stop loss</strong> — gebruik ATR: entry − 1.5× ATR. Of zet net onder de laagste wick van het signaal.</li>
+    <li><strong>Target</strong> — minimaal 2× je risico (Risk/Reward = 1:2). Voorbeeld: risico $0.50 → target $1.00 winst.</li>
+  </ul>
+  <div class="learn-example">
+    ✅ <strong>Voorbeeld:</strong> PLTR op $22.00. No Supply signaal. ATR = $0.40.<br>
+    Entry: $22.00 | Stop: $21.40 (1.5× ATR) | Target: $23.20 (2× risico = $1.20 winst)<br>
+    Risico/Reward = 1:2 ✅
+  </div>
+</div>
+
+<div class="learn-card">
+  <h4>💰 Positiegrootte — hoeveel aandelen?</h4>
+  <p>Gebruik de <strong>Positiegrootteberekening</strong> in de app. De formule:</p>
+  <div class="learn-rule">Aantal aandelen = (Account × Risico%) ÷ (Entry − Stop)<br>Voorbeeld: €5000 × 2% ÷ $0.60 = €100 ÷ $0.60 = <strong>166 aandelen</strong></div>
+  <div class="learn-rule warn">🚫 Riskeer nooit meer dan 1–2% van je account per trade. Bij €5000 is dat maximaal €50–100 verlies per trade.</div>
+</div>`,
+
+psych: `
+<div class="learn-card">
+  <h3>🧠 Trading Psychologie</h3>
+  <p>90% van de traders verliest geld — niet omdat ze geen goede strategie hebben, maar door <strong>emoties</strong>. Angst en hebzucht zijn de twee grootste vijanden van elke trader.</p>
+</div>
+
+<div class="learn-card">
+  <h4>😱 De 5 gevaarlijkste fouten</h4>
+  <ul>
+    <li><strong>FOMO (Fear of Missing Out)</strong> — een trade ingaan omdat de prijs al hard gestegen is. Je koopt dan altijd te duur.</li>
+    <li><strong>Hoop in plaats van stop</strong> — je stop niet uitvoeren en hopen dat de prijs terugkomt. Dit is hoe kleine verliezen grote verliezen worden.</li>
+    <li><strong>Revenge trading</strong> — na een verlies direct een nieuwe trade nemen om het terug te verdienen. Altijd verkeerd.</li>
+    <li><strong>Overtrade</strong> — te veel trades tegelijk, te groot posities. Eén slechte dag kan je account ruïneren.</li>
+    <li><strong>Winst te vroeg pakken</strong> — uit angst voor verlies je winst al nemen voordat je target bereikt is.</li>
+  </ul>
+</div>
+
+<div class="learn-card">
+  <h4>✅ De mindset van een winstgevende trader</h4>
+  <ul>
+    <li><strong>Denk in kansen, niet in zekerheid</strong> — geen enkele setup werkt 100%. Accepteer dat verliezen er gewoon bij horen.</li>
+    <li><strong>Bescherm kapitaal eerst</strong> — je doel is niet winnen, het is overleven. Als je kapitaal intact blijft, heb je morgen ook kansen.</li>
+    <li><strong>Volg je systeem altijd</strong> — als je setup niet klopt, handel je niet. Simpel.</li>
+    <li><strong>Journal alles</strong> — gebruik de Trade Journal in deze app. Na 20 trades zie je je echte patronen.</li>
+  </ul>
+  <div class="learn-rule">💡 <strong>Winstgevende traders</strong> hebben vaak een trefferpercentage van maar 40–50%. Ze winnen omdat hun winsten groter zijn dan hun verliezen (goed Risk/Reward).</div>
+</div>
+
+<div class="learn-card">
+  <h4>📓 Waarom een Trade Journal onmisbaar is</h4>
+  <p>De meeste beginners slaan dit over. Dat is een grote fout. Een journal laat je zien:</p>
+  <ul>
+    <li>Welke setups <em>echt</em> voor jou werken (niet wat je denkt)</li>
+    <li>Op welke tijden je beter en slechter presteert</li>
+    <li>Of je stop losses consequent uitvoert</li>
+    <li>Je emotionele patronen — trade je anders na een verlies?</li>
+  </ul>
+  <div class="learn-rule amber">⏳ Gebruik de <strong>Trade Journal</strong> bovenaan in de app. Na 30 trades heb je meer data over jezelf dan de meeste traders ooit hebben.</div>
+</div>`
+
+};
+
+function switchLearnTab(tab) {
+  document.querySelectorAll('.learn-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.learn-tab').forEach(b => {
+    if (b.getAttribute('onclick') === `switchLearnTab('${tab}')`) b.classList.add('active');
+  });
+  const content = document.getElementById('learnContent');
+  if (content) content.innerHTML = LEARN_CONTENT[tab] || '<p style="color:var(--muted);">Inhoud volgt binnenkort.</p>';
+}
+
+// Init leerbibliotheek when panel opens
+const _origToggle = window.togglePanel;
+window.togglePanel = function(id) {
+  _origToggle(id);
+  if (id === 'learn') {
+    const content = document.getElementById('learnContent');
+    if (content && !content.innerHTML.trim()) switchLearnTab('vsa');
+  }
+};
 
 // ── PROXY INSTELLINGEN ──
 function saveProxyUrl() {
