@@ -1123,32 +1123,106 @@
     </div>
   </div>
 
+  <!-- LEERBIBLIOTHEEK PANEL -->
+  <div class="panel" style="border-color:var(--purple);background:rgba(109,63,168,0.03);">
+    <div class="panel-toggle" onclick="togglePanel('learn')">
+      <div class="panel-left"><div class="panel-icon">📚</div><div>
+        <div class="panel-title">Leerbibliotheek — Alle indicatoren uitgelegd</div>
+        <div class="panel-sub">VSA · VWAP · EMA · ATR · CVD · Volume Profile · Candlesticks · Psychologie</div>
+      </div></div>
+      <div class="panel-arrow" id="learn-arrow">▼</div>
+    </div>
+    <div class="panel-body" id="learn-body">
+
+      <!-- Tab navigation -->
+      <div class="learn-tabs" id="learnTabs">
+        <button class="learn-tab active" onclick="switchLearnTab('vsa')">📊 VSA Basis</button>
+        <button class="learn-tab" onclick="switchLearnTab('signals')">🎯 VSA Signalen</button>
+        <button class="learn-tab" onclick="switchLearnTab('vwap')">📍 VWAP</button>
+        <button class="learn-tab" onclick="switchLearnTab('ema')">📈 EMA</button>
+        <button class="learn-tab" onclick="switchLearnTab('atr')">📐 ATR</button>
+        <button class="learn-tab" onclick="switchLearnTab('cvd')">🌊 CVD</button>
+        <button class="learn-tab" onclick="switchLearnTab('volume')">🔊 Volume</button>
+        <button class="learn-tab" onclick="switchLearnTab('candles')">🕯️ Candlesticks</button>
+        <button class="learn-tab" onclick="switchLearnTab('setup')">⚡ Setup bouwen</button>
+        <button class="learn-tab" onclick="switchLearnTab('psych')">🧠 Psychologie</button>
+      </div>
+
+      <div id="learnContent" style="margin-top:16px;"></div>
+
+    </div>
+  </div>
+
   <div class="panel" style="border-color:var(--accent3);background:rgba(184,134,11,0.03);">
     <div class="panel-toggle" onclick="togglePanel('proxysettings')">
       <div class="panel-left"><div class="panel-icon">⚙️</div><div>
         <div class="panel-title">Proxy Instellingen — Data ophalen</div>
-        <div class="panel-sub" id="proxyStatusSub">Data ophalen via allorigins proxy · klik voor eigen proxy instellen</div>
+        <div class="panel-sub" id="proxyStatusSub">Data ophalen via allorigins proxy · klik voor eigen proxy instellen (sneller)</div>
       </div></div>
       <div class="panel-arrow" id="proxysettings-arrow">▼</div>
     </div>
     <div class="panel-body" id="proxysettings-body">
-      <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;">
-        <p style="font-size:13px;line-height:1.7;margin:0 0 12px;">
-          Yahoo Finance blokkeert verzoeken vanuit de browser (CORS). De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt meestal maar kan traag zijn.<br><br>
-          Voor de <strong>snelste en meest betrouwbare</strong> verbinding: zet een gratis <strong>Cloudflare Worker</strong> op (5 minuten, geen creditcard nodig).
+
+      <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:1.8;">
+        <p style="margin:0 0 10px;">
+          Yahoo Finance blokkeert directe verzoeken vanuit de browser. De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt maar is soms traag (10–30 seconden).<br>
+          Voor de <strong>snelste verbinding</strong>: zet je eigen gratis <strong>Cloudflare Worker</strong> op. Duurt 5 minuten, geen creditcard nodig.
         </p>
-        <details style="font-size:12px;color:var(--muted);">
-          <summary style="cursor:pointer;font-weight:700;color:var(--text);margin-bottom:8px;">📋 Instructies: eigen proxy instellen</summary>
-          <ol style="margin:8px 0 0 16px;line-height:2;">
-            <li>Ga naar <a href="https://workers.cloudflare.com" target="_blank">workers.cloudflare.com</a> → gratis account</li>
-            <li>Klik <strong>Create Worker</strong> → plak de Worker-code erin (zie ZIP)</li>
-            <li>Klik <strong>Deploy</strong> → kopieer de URL (bijv. <code>https://vsa-proxy.jouw-naam.workers.dev</code>)</li>
-            <li>Plak die URL hieronder en klik Opslaan</li>
-          </ol>
+
+        <details style="font-size:12px;">
+          <summary style="cursor:pointer;font-weight:700;color:var(--accent);margin-bottom:12px;">📋 Stap-voor-stap instructie (klik om uit te klappen)</summary>
+
+          <div style="line-height:2.2;margin-bottom:12px;">
+            <strong>Stap 1</strong> — Ga naar <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--accent);">workers.cloudflare.com</a> en maak een gratis account aan<br>
+            <strong>Stap 2</strong> — Klik <strong>Create Worker</strong> → kies <strong>Start with Hello World!</strong> → klik <strong>Deploy</strong><br>
+            <strong>Stap 3</strong> — Je ziet nu een code-editor. Selecteer alle code (Ctrl+A) en verwijder het<br>
+            <strong>Stap 4</strong> — Kopieer de Worker-code hieronder en plak hem in de editor<br>
+            <strong>Stap 5</strong> — Klik rechtsboven op <strong>Deploy</strong><br>
+            <strong>Stap 6</strong> — Kopieer je Worker URL (bijv. <code style="background:var(--surface);padding:2px 6px;border-radius:4px;">https://vsatrader.jouwnaam.workers.dev</code>)<br>
+            <strong>Stap 7</strong> — Plak die URL hieronder en klik Opslaan
+          </div>
+
+          <div style="margin-bottom:8px;font-weight:700;color:var(--text);">Worker code (kopieer dit):</div>
+          <div style="position:relative;">
+            <pre id="workerCodeBlock" style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:11px;font-family:'Space Mono',monospace;overflow-x:auto;white-space:pre;line-height:1.6;margin:0;">export default {
+  async fetch(request) {
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        }
+      });
+    }
+    const url = new URL(request.url);
+    const target = url.searchParams.get('url');
+    if (!target) return new Response('no url', { status: 400 });
+    const allowed = ['query1.finance.yahoo.com','query2.finance.yahoo.com','stooq.com','finviz.com'];
+    const targetUrl = new URL(target);
+    if (!allowed.some(d => targetUrl.hostname.includes(d))) {
+      return new Response('not allowed', { status: 403 });
+    }
+    const resp = await fetch(target, {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    });
+    const body = await resp.text();
+    return new Response(body, {
+      status: resp.status,
+      headers: {
+        'Content-Type': resp.headers.get('content-type') || 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=300',
+      }
+    });
+  }
+};</pre>
+            <button onclick="copyWorkerCode()" style="position:absolute;top:8px;right:8px;padding:4px 12px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;" id="copyWorkerBtn">📋 Kopieer</button>
+          </div>
         </details>
       </div>
+
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <input id="proxyInput" type="url" placeholder="https://vsa-proxy.jouw-naam.workers.dev"
+        <input id="proxyInput" type="url" placeholder="https://vsatrader.jouwnaam.workers.dev"
           style="flex:1;min-width:260px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;background:var(--surface);color:var(--text);">
         <button onclick="saveProxyUrl()" style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">💾 Opslaan</button>
         <button onclick="clearProxyUrl()" style="padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">✕ Wissen</button>
@@ -3729,6 +3803,24 @@ function renderNewsXLinks(sym) {
     <a class="news-x-btn fin" href="${seeking}" target="_blank" rel="noopener">SeekingAlpha</a>
   `;
   row.style.display = 'flex';
+}
+
+function copyWorkerCode() {
+  const code = document.getElementById('workerCodeBlock')?.textContent || '';
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyWorkerBtn');
+    if (btn) { btn.textContent = '✅ Gekopieerd!'; setTimeout(() => btn.textContent = '📋 Kopieer', 2000); }
+  }).catch(() => {
+    // Fallback voor oudere browsers
+    const ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('copyWorkerBtn');
+    if (btn) { btn.textContent = '✅ Gekopieerd!'; setTimeout(() => btn.textContent = '📋 Kopieer', 2000); }
+  });
 }
 
 // ── PROXY INSTELLINGEN ──
