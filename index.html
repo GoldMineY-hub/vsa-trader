@@ -672,6 +672,19 @@
   .learn-badge.bear{background:rgba(192,57,43,0.1);color:var(--accent2);}
   .learn-badge.neutral{background:rgba(184,134,11,0.1);color:var(--accent3);}
 
+  .learn-video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:10px;}
+  .learn-video-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:all 0.15s;text-decoration:none;display:block;}
+  .learn-video-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 14px rgba(44,36,22,0.1);}
+  .learn-video-thumb{width:100%;aspect-ratio:16/9;background:var(--surface);position:relative;overflow:hidden;}
+  .learn-video-thumb img{width:100%;height:100%;object-fit:cover;}
+  .learn-video-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:rgba(255,0,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .learn-video-body{padding:10px 12px;}
+  .learn-video-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:4px;}
+  .learn-video-meta{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+  .learn-video-tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Space Mono',monospace;margin-right:4px;background:rgba(45,122,79,0.1);color:var(--accent);}
+  .learn-video-section{margin-bottom:20px;}
+  .learn-video-section-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:10px;}
+
 </style>
 </head>
 <body>
@@ -1173,6 +1186,7 @@
         <button class="learn-tab" onclick="switchLearnTab('candles')">🕯️ Candlesticks</button>
         <button class="learn-tab" onclick="switchLearnTab('setup')">⚡ Setup bouwen</button>
         <button class="learn-tab" onclick="switchLearnTab('psych')">🧠 Psychologie</button>
+        <button class="learn-tab" onclick="switchLearnTab('videos')">▶️ YouTube Videos</button>
       </div>
 
       <div id="learnContent" style="margin-top:16px;"></div>
@@ -4263,6 +4277,118 @@ psych: `
     <li>Je emotionele patronen — trade je anders na een verlies?</li>
   </ul>
   <div class="learn-rule amber">⏳ Gebruik de <strong>Trade Journal</strong> bovenaan in de app. Na 30 trades heb je meer data over jezelf dan de meeste traders ooit hebben.</div>
+</div>`,
+
+videos: `
+<div class="learn-card">
+  <h3>▶️ YouTube Videos — Leer van de beste traders</h3>
+  <p>Handgepickte videos voor beginners. Gesorteerd per onderwerp — bekijk ze in volgorde voor het beste leerpad.</p>
+  <p style="font-size:12px;color:var(--muted);">Alle videos openen in een nieuw tabblad op YouTube.</p>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">📊 VSA — VOLUME SPREAD ANALYSIS</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=3O7EVeHYvVE" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/3O7EVeHYvVE/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">VSA Explained for Beginners</div><div class="learn-video-meta"><span class="learn-video-tag">VSA</span>Beginners · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=RB92GZFtAVg" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/RB92GZFtAVg/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Volume Spread Analysis Full Course</div><div class="learn-video-meta"><span class="learn-video-tag">VSA</span>Uitgebreid · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=9bKFo5sPpHE" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/9bKFo5sPpHE/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">No Supply & No Demand Signals</div><div class="learn-video-meta"><span class="learn-video-tag">VSA</span><span class="learn-video-tag">Signalen</span>Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">📍 VWAP</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=7lkGz5BrNFI" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/7lkGz5BrNFI/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">VWAP Explained — How to Trade It</div><div class="learn-video-meta"><span class="learn-video-tag">VWAP</span>Beginners · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=GUYKTnCxrYU" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/GUYKTnCxrYU/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">VWAP Trading Strategy</div><div class="learn-video-meta"><span class="learn-video-tag">VWAP</span><span class="learn-video-tag">Strategie</span>Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">📈 EMA — MOVING AVERAGES</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=8x7vVMJkuJk" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/8x7vVMJkuJk/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">EMA vs SMA — Which is Better?</div><div class="learn-video-meta"><span class="learn-video-tag">EMA</span>Uitleg · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=ULW1CLHs_zo" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/ULW1CLHs_zo/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">How to Use Moving Averages</div><div class="learn-video-meta"><span class="learn-video-tag">EMA</span><span class="learn-video-tag">Strategie</span>Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">📐 ATR & RISICOBEHEER</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=L7KQRX_bSH4" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/L7KQRX_bSH4/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">ATR Indicator Explained Simply</div><div class="learn-video-meta"><span class="learn-video-tag">ATR</span>Beginners · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=J3FDsC0QPXM" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/J3FDsC0QPXM/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Risk Management — The 1% Rule</div><div class="learn-video-meta"><span class="learn-video-tag">Risico</span>Essentieel · Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">🔊 VOLUME & CANDLESTICKS</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=5C1gnhAQD-Y" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/5C1gnhAQD-Y/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">How to Read Volume in Trading</div><div class="learn-video-meta"><span class="learn-video-tag">Volume</span>Uitleg · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=r8Gn2ZJXRP0" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/r8Gn2ZJXRP0/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Candlestick Patterns for Beginners</div><div class="learn-video-meta"><span class="learn-video-tag">Candles</span>Beginners · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=pD4SrHhTIx8" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/pD4SrHhTIx8/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Top 10 Candlestick Patterns</div><div class="learn-video-meta"><span class="learn-video-tag">Candles</span>Top 10 · Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-video-section">
+  <div class="learn-video-section-title">🧠 PSYCHOLOGIE & MINDSET</div>
+  <div class="learn-video-grid">
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=PbYdmG8Z6Js" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/PbYdmG8Z6Js/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Trading Psychology — Why Traders Fail</div><div class="learn-video-meta"><span class="learn-video-tag">Psychologie</span>Beginners · Engels</div></div>
+    </a>
+    <a class="learn-video-card" href="https://www.youtube.com/watch?v=qWMbJB3SMGU" target="_blank" rel="noopener">
+      <div class="learn-video-thumb"><img src="https://img.youtube.com/vi/qWMbJB3SMGU/mqdefault.jpg" alt="" loading="lazy"><div class="learn-video-play">▶</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Why You Need a Trading Journal</div><div class="learn-video-meta"><span class="learn-video-tag">Journal</span>Engels</div></div>
+    </a>
+  </div>
+</div>
+
+<div class="learn-card" style="margin-top:4px;">
+  <h4>📺 Aanbevolen kijkvolgorde voor beginners</h4>
+  <ol style="font-size:13px;line-height:2.2;margin:6px 0 0 18px;">
+    <li>Candlestick Patterns for Beginners</li>
+    <li>How to Read Volume in Trading</li>
+    <li>VSA Explained for Beginners</li>
+    <li>VWAP Explained</li>
+    <li>ATR Indicator Explained</li>
+    <li>Risk Management — The 1% Rule</li>
+    <li>Trading Psychology — Why Traders Fail</li>
+  </ol>
 </div>`
 
 };
