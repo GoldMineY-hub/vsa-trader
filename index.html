@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#f5f0e8">
-<title>VSA Trader — Orderflow Intelligence</title>
+<title>VSA Trader · Orderflow Intelligence</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
@@ -28,13 +28,12 @@
     background:radial-gradient(ellipse at 10% 10%,rgba(255,248,230,0.6) 0%,transparent 50%),
                radial-gradient(ellipse at 90% 90%,rgba(230,240,255,0.3) 0%,transparent 50%);
     pointer-events:none;z-index:0;}
-  .header{padding:20px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;
-    justify-content:space-between;position:relative;z-index:1;background:var(--surface);box-shadow:var(--shadow);}
-  .logo-title{font-size:20px;font-weight:800;letter-spacing:-0.5px;font-family:'Inter',sans-serif;}
-  .logo-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-top:2px;}
+  .header{padding:10px 20px;border-bottom:none;display:flex;align-items:center;
+    justify-content:space-between;position:sticky;top:0;z-index:100;background:#1c1c1e;flex-wrap:wrap;gap:10px;}
+  .logo-title{font-size:14px;font-weight:700;letter-spacing:2px;font-family:'Space Mono',monospace;color:#fff;}
+  .logo-sub{display:none;}
   .header-right{display:flex;align-items:center;gap:12px;}
-  .free-badge{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);border:1.5px solid var(--accent);
-    padding:4px 12px;border-radius:20px;background:rgba(45,122,79,0.08);font-weight:700;}
+  .free-badge{display:none;}
   .lang-btn{display:none;padding:6px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
     cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
   .lang-btn.active{background:var(--accent);color:#fff;}
@@ -217,12 +216,11 @@
   .error-box{background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);color:var(--accent2);padding:24px;font-size:14px;line-height:1.85;font-family:'Inter',sans-serif;}
   .error-box a{color:var(--blue);}
   /* ══════════════════════════════════════════════
-     RESPONSIVE — TABLET (max 768px)
+     RESPONSIVE · TABLET (max 768px)
   ══════════════════════════════════════════════ */
   @media(max-width:768px){
     .main{padding:16px 14px;}
-    .header{padding:14px 16px;}
-    .logo-title{font-size:17px;}
+    .header{padding:8px 14px;}
     .header-right{gap:8px;}
 
     /* Search row */
@@ -267,16 +265,14 @@
   }
 
   /* ══════════════════════════════════════════════
-     RESPONSIVE — MOBILE (max 480px)
+     RESPONSIVE · MOBILE (max 480px)
   ══════════════════════════════════════════════ */
   @media(max-width:480px){
     /* Layout */
     .main{padding:12px 10px;}
-    .header{padding:12px 14px;flex-wrap:wrap;gap:8px;}
-    .logo-title{font-size:15px;}
-    .logo-sub{display:none;}
+    .header{padding:8px 12px;gap:6px;}
 
-    /* Search — full-width stack */
+    /* Search · full-width stack */
     .search-row{flex-direction:column;gap:8px;}
     .lookup-wrap{max-width:none;width:100%;}
     .ticker-input{max-width:none;width:100%;font-size:16px;} /* 16px = no iOS auto-zoom */
@@ -285,7 +281,7 @@
     .analyze-btn{width:100%;padding:14px;font-size:14px;}
     .save-btn{width:100%;padding:12px;text-align:center;}
 
-    /* Watchlist — horizontal scroll */
+    /* Watchlist · horizontal scroll */
     .watchlist-bar{padding:9px 12px;}
     .watchlist-refresh-info{font-size:8px;}
     .watchlist-cards{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding-bottom:4px;}
@@ -761,7 +757,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-section-title">VSA SIGNAAL UITLEG</div>
-        <div class="modal-title" id="modalTitle">—</div>
+        <div class="modal-title" id="modalTitle">·</div>
       </div>
       <button class="modal-close" onclick="document.getElementById('signalModal').classList.add('hidden')">✕</button>
     </div>
@@ -780,32 +776,22 @@
   </div>
 </div>
 
-<header class="header">
-  <div>
-    <div class="logo-title">VSA Trader</div>
-    <div class="logo-sub" data-en="ORDERFLOW INTELLIGENCE" data-nl="ORDERFLOW ANALYSE">ORDERFLOW INTELLIGENCE</div>
+<header class="header" style="background:#1c1c1e;border-bottom:none;padding:10px 20px;">
+  <div style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;">
+    VSA <span style="color:#2d7a4f;">TRADER</span>
   </div>
-  <div class="header-right">
-    <div class="free-badge">✓ 100% FREE</div>
-    
+  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+    <span class="app-mkt closed" id="msNYSE">NYSE</span>
+    <span class="app-mkt closed" id="msNASDAQ">NASDAQ</span>
+    <span class="app-mkt closed" id="msAEX">AEX</span>
+    <span class="app-mkt pre" id="msPremarket" style="display:none;">⏰ PREMARKET</span>
   </div>
+  <div style="font-family:'Space Mono',monospace;font-size:11px;color:#666;" id="msTime">--:--</div>
 </header>
 
 <main class="main">
 
-  <!-- PROFESSIONELE TOPBAR -->
-  <div class="app-topbar">
-    <div class="app-logo">VSA<span> TRADER</span></div>
-    <div class="app-topbar-markets">
-      <span class="app-mkt closed" id="msNYSE">NYSE —</span>
-      <span class="app-mkt closed" id="msNASDAQ">NASDAQ —</span>
-      <span class="app-mkt closed" id="msAEX">AEX —</span>
-      <span class="app-mkt pre" id="msPremarket" style="display:none;">⏰ PREMARKET</span>
-    </div>
-    <div class="app-topbar-time" id="msTime">--:--</div>
-  </div>
-
-  <!-- 1. SEARCH ROW — first thing you see, clear action -->
+  <!-- 1. SEARCH ROW · first thing you see, clear action -->
   <div class="search-row">
     <div class="lookup-wrap">
       <input class="ticker-input" id="tickerInput" type="text" placeholder="AAPL, TSLA, ASML..." maxlength="10" autocomplete="off" oninput="onTickerInput(this.value)" onblur="setTimeout(()=>closeLookup(),200)"/>
@@ -820,7 +806,7 @@
     <button class="save-btn" id="watchAddBtn" onclick="addCurrentToWatchlist()" data-en="📌 Save" data-nl="📌 Opslaan">📌 Opslaan</button>
   </div>
 
-  <!-- 2. WATCHLIST — live price ticker -->
+  <!-- 2. WATCHLIST · live price ticker -->
   <div class="watchlist-wrap" id="watchlistWrap">
     <div class="watchlist-bar">
       <div class="watchlist-bar-left">
@@ -837,18 +823,18 @@
     </div>
   </div>
 
-  <!-- 3. RESULTS — main analysis output -->
+  <!-- 3. RESULTS · main analysis output -->
   <div id="output">
     <div class="empty-state">
       <div class="empty-icon">📊</div>
       <div class="empty-title" data-en="Enter a stock ticker above" data-nl="Voer een aandelenticker in">Voer een aandelenticker in</div>
-      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds — geen account of API-sleutel nodig." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden — geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds — geen account of API-sleutel nodig.</div>
+      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds · geen account of API-sleutel nodig." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden · geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds · geen account of API-sleutel nodig.</div>
     </div>
   </div>
 
-  <!-- 4. NEWS — directly after results, same stock context -->
+  <!-- 4. NEWS · directly after results, same stock context -->
   <!-- ═══════════════════════════════════════════════════ -->
-  <!-- DASHBOARD TABS — professionele onderkant          -->
+  <!-- DASHBOARD TABS · professionele onderkant          -->
   <!-- ═══════════════════════════════════════════════════ -->
   <div id="dashboardSection" style="margin-top:16px;">
 
@@ -897,16 +883,16 @@
             <span id="alertNextScan" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);"></span>
             <button onclick="clearAlertHits()" style="font-size:11px;font-family:'Space Mono',monospace;background:none;border:none;color:var(--muted);cursor:pointer;">✕ Wis meldingen</button>
           </div>
-          <div id="alertHits"><div class="alert-empty">Start de scanner — hij checkt 40+ stocks op volume spikes.<br>Je krijgt een melding zodra iets beweegt.</div></div>
+          <div id="alertHits"><div class="alert-empty">Start de scanner · hij checkt 40+ stocks op volume spikes.<br>Je krijgt een melding zodra iets beweegt.</div></div>
         </div>
         <div class="dash-info-box">
           <div class="dash-info-title">📖 Hoe werkt het?</div>
           <p>De scanner checkt elke paar minuten een lijst van 40+ volatiele stocks onder $50.</p>
-          <p style="margin-top:8px;">Als een stock plotseling <strong>3× of meer volume</strong> heeft én <strong>+2% of meer</strong> stijgt — verschijnt er een melding.</p>
+          <p style="margin-top:8px;">Als een stock plotseling <strong>3× of meer volume</strong> heeft én <strong>+2% of meer</strong> stijgt · verschijnt er een melding.</p>
           <p style="margin-top:8px;">Klik op een melding → directe VSA analyse.</p>
           <div style="margin-top:12px;padding:10px;background:rgba(255,107,0,0.07);border-radius:6px;border-left:3px solid #ff6b00;">
             <span style="font-size:11px;font-weight:700;color:#ff6b00;">🔔 TIP</span>
-            <span style="font-size:12px;"> Laat de scanner draaien terwijl je iets anders doet — browser notificaties waarschuwen je automatisch.</span>
+            <span style="font-size:12px;"> Laat de scanner draaien terwijl je iets anders doet · browser notificaties waarschuwen je automatisch.</span>
           </div>
         </div>
       </div>
@@ -915,7 +901,7 @@
     <div class="dash-panel" id="dpanel-movers">
       <div class="dash-panel-header">
         <div>
-          <div class="dash-panel-title">Live Movers — Stocks onder $50</div>
+          <div class="dash-panel-title">Live Movers · Stocks onder $50</div>
           <div class="dash-panel-sub">Stocks die nu het meest bewegen · klik om te analyseren</div>
         </div>
         <div style="display:flex;gap:6px;">
@@ -966,7 +952,7 @@
               <div class="journal-field"><label class="journal-label">AANDELEN</label><input class="journal-input" id="jShares" type="number"></div>
               <div class="journal-field"><label class="journal-label">SIGNAAL</label>
                 <select class="journal-select" id="jSignal">
-                  <option value="">— kies —</option>
+                  <option value="">· kies ·</option>
                   <option>Stopping Volume</option><option>No Supply</option><option>Shake Out</option>
                   <option>Demand Surge</option><option>Bullish Absorption</option><option>No Demand</option>
                   <option>Up-Thrust / Rejection</option><option>Supply Surge</option><option>Climactic Action</option><option>Anders</option>
@@ -1027,16 +1013,16 @@
       <div class="dash-two-col">
         <div>
           <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:1.8;">
-            <p style="margin:0 0 10px;">Yahoo Finance blokkeert directe verzoeken vanuit de browser. De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt maar is soms traag (10–30 seconden).<br>Voor de <strong>snelste verbinding</strong>: zet je eigen gratis <strong>Cloudflare Worker</strong> op. Duurt 5 minuten, geen creditcard nodig.</p>
+            <p style="margin:0 0 10px;">Yahoo Finance blokkeert directe verzoeken vanuit de browser. De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy · dit werkt maar is soms traag (10–30 seconden).<br>Voor de <strong>snelste verbinding</strong>: zet je eigen gratis <strong>Cloudflare Worker</strong> op. Duurt 5 minuten, geen creditcard nodig.</p>
             <details style="font-size:12px;">
               <summary style="cursor:pointer;font-weight:700;color:var(--accent);margin-bottom:12px;">📋 Stap-voor-stap instructie</summary>
               <div style="line-height:2.2;margin-bottom:12px;">
-                <strong>Stap 1</strong> — Ga naar <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--accent);">workers.cloudflare.com</a> → gratis account<br>
-                <strong>Stap 2</strong> — Klik <strong>Create Worker</strong> → <strong>Start with Hello World!</strong> → <strong>Deploy</strong><br>
-                <strong>Stap 3</strong> — Selecteer alle code (Ctrl+A), verwijder het<br>
-                <strong>Stap 4</strong> — Kopieer de Worker-code rechts en plak hem in<br>
-                <strong>Stap 5</strong> — Klik <strong>Deploy</strong> → kopieer je Worker URL<br>
-                <strong>Stap 6</strong> — Plak de URL hieronder en klik Opslaan
+                <strong>Stap 1</strong> · Ga naar <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--accent);">workers.cloudflare.com</a> → gratis account<br>
+                <strong>Stap 2</strong> · Klik <strong>Create Worker</strong> → <strong>Start with Hello World!</strong> → <strong>Deploy</strong><br>
+                <strong>Stap 3</strong> · Selecteer alle code (Ctrl+A), verwijder het<br>
+                <strong>Stap 4</strong> · Kopieer de Worker-code rechts en plak hem in<br>
+                <strong>Stap 5</strong> · Klik <strong>Deploy</strong> → kopieer je Worker URL<br>
+                <strong>Stap 6</strong> · Plak de URL hieronder en klik Opslaan
               </div>
             </details>
           </div>
@@ -1098,7 +1084,7 @@
 const lang = 'nl';
 
 function applyLang() {
-  // Altijd Nederlands — pas alle data-nl attributen toe op zichtbare tekst
+  // Altijd Nederlands · pas alle data-nl attributen toe op zichtbare tekst
   document.querySelectorAll('[data-nl]').forEach(el => {
     const val = el.getAttribute('data-nl');
     if (val !== null) el.innerHTML = val;
@@ -1139,9 +1125,9 @@ document.getElementById('analyzeBtn').addEventListener('click', () => {
   if (ticker) runAnalysis(ticker);
 });
 
-// ── FETCH — direct Yahoo Finance with CORS proxy fallback ──
-// ── FETCH ENGINE — GitHub Pages versie (Yahoo Finance direct) ──
-// Op GitHub Pages werkt Yahoo Finance direct — geen CORS problemen.
+// ── FETCH · direct Yahoo Finance with CORS proxy fallback ──
+// ── FETCH ENGINE · GitHub Pages versie (Yahoo Finance direct) ──
+// Op GitHub Pages werkt Yahoo Finance direct · geen CORS problemen.
 // Fallback naar proxies als de app lokaal geopend wordt.
 
 function makeAbortSignal(ms) {
@@ -1154,7 +1140,7 @@ function makeAbortSignal(ms) {
 // Yahoo blokkeert directe verzoeken via CORS vanuit browsers.
 // Volgorde: eigen proxy (indien ingesteld) → allorigins → Stooq via allorigins
 
-// Eigen proxy URL (Cloudflare Worker) — instelbaar
+// Eigen proxy URL (Cloudflare Worker) · instelbaar
 let customProxyUrl = localStorage.getItem('vsa_proxy') || '';
 
 async function fetchData(ticker, range) {
@@ -1325,64 +1311,64 @@ function runVSA(rows) {
     const prev = rows[i-1];
     const prev2 = rows[i-2];
 
-    // 1. STOPPING VOLUME — high vol down bar closing upper half
+    // 1. STOPPING VOLUME · high vol down bar closing upper half
     if (vr>2 && !isUp && closePos>0.55) {
       signals.push({ type:'bullish', label: 'STOP-VOLUME', date:d, strength: vr > 3 ? 'high' : 'medium',
-        body: `Op ${d} daalde de prijs sterk op zeer hoog volume (${vr.toFixed(1)}× gem.) maar sloot in de bovenste helft van de staaf — kopers absorbeerden de verkopen. Klassiek VSA-keerpuntsignaal. De zone rond $${r.low.toFixed(2)} is nu een potentieel vraaggebied.`
+        body: `Op ${d} daalde de prijs sterk op zeer hoog volume (${vr.toFixed(1)}× gem.) maar sloot in de bovenste helft van de staaf · kopers absorbeerden de verkopen. Klassiek VSA-keerpuntsignaal. De zone rond $${r.low.toFixed(2)} is nu een potentieel vraaggebied.`
       });
     }
-    // 2. DEMAND SURGE — wide up bar, high vol, closes near high
+    // 2. DEMAND SURGE · wide up bar, high vol, closes near high
     else if (vr>1.6 && sr>1.3 && isUp && closePos>0.6) {
       signals.push({ type:'bullish', label: 'VRAAGSTIJGING', date:d, strength: vr > 2.5 ? 'high' : 'medium',
-        body: `Op ${d} steeg de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede stijgende staaf die dicht bij het hoogste punt sloot. Agressieve kopers aan de macht. Bullish vervolgssignaal.`
+        body: `Op ${d} steeg de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume · een brede stijgende staaf die dicht bij het hoogste punt sloot. Agressieve kopers aan de macht. Bullish vervolgssignaal.`
       });
     }
-    // 3. SUPPLY SURGE — wide down bar, high vol, closes near low
+    // 3. SUPPLY SURGE · wide down bar, high vol, closes near low
     else if (vr>1.6 && sr>1.3 && !isUp && closePos<0.4) {
       signals.push({ type:'bearish', label: 'AANBODSTIJGING', date:d, strength: vr > 2.5 ? 'high' : 'medium',
-        body: `Op ${d} daalde de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume — een brede dalende staaf die dicht bij het laagste punt sloot. Verkopers domineren. Bearish vervolgssignaal.`
+        body: `Op ${d} daalde de prijs van $${r.open.toFixed(2)} naar $${r.close.toFixed(2)} op ${vr.toFixed(1)}× gemiddeld volume · een brede dalende staaf die dicht bij het laagste punt sloot. Verkopers domineren. Bearish vervolgssignaal.`
       });
     }
-    // 4. ABSORPTION — very high vol, narrow spread
+    // 4. ABSORPTION · very high vol, narrow spread
     else if (vr>1.5 && sr<0.55) {
       signals.push({ type:'absorption', label: isUp ? ('BULLISH ABSORPTIE') : ('BEARISH ABSORPTIE'), date:d, strength: 'medium',
-        body: `Op ${d} was er zeer hoog volume (${vr.toFixed(1)}× gem.) maar slechts een smalle prijsrange van $${r.spread.toFixed(2)}. ${isUp ? 'Verkopers worden geabsorbeerd — potentiële steunzone.' : 'Kopers worden geabsorbeerd — potentiële weerstandszone.'} Let op het niveau $${r.close.toFixed(2)}.`
+        body: `Op ${d} was er zeer hoog volume (${vr.toFixed(1)}× gem.) maar slechts een smalle prijsrange van $${r.spread.toFixed(2)}. ${isUp ? 'Verkopers worden geabsorbeerd · potentiële steunzone.' : 'Kopers worden geabsorbeerd · potentiële weerstandszone.'} Let op het niveau $${r.close.toFixed(2)}.`
       });
     }
-    // 5. UP-THRUST / REJECTION — high vol up bar closing near low
+    // 5. UP-THRUST / REJECTION · high vol up bar closing near low
     else if (vr>1.3 && isUp && closePos<0.3 && sr>0.9) {
       signals.push({ type:'warning', label: 'VALSE UITBRAAK', date:d, strength: 'medium',
-        body: `Op ${d} steeg de prijs naar $${r.high.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar sloot dicht bij het laagste punt op $${r.close.toFixed(2)}. Verkopers verwierpen de stijging — potentieel distributie- of keerpuntsignaal.`
+        body: `Op ${d} steeg de prijs naar $${r.high.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar sloot dicht bij het laagste punt op $${r.close.toFixed(2)}. Verkopers verwierpen de stijging · potentieel distributie- of keerpuntsignaal.`
       });
     }
-    // 6. LOW EFFORT MOVE — wide spread, very low volume
+    // 6. LOW EFFORT MOVE · wide spread, very low volume
     else if (vr<0.65 && sr>1.5) {
       signals.push({ type: isUp?'bullish':'bearish', label: isUp?('LAGE WEERSTAND OMHOOG'):('LAGE WEERSTAND OMLAAG'), date:d, strength: 'low',
-        body: `Op ${d} bewoog de prijs ${isUp?'omhoog':'omlaag'} met $${r.spread.toFixed(2)} op slechts ${vr.toFixed(1)}× gemiddeld volume. Weinig ${isUp?'weerstand':'steun'} — het pad van de minste weerstand is ${isUp?'omhoog':'omlaag'}. De trend gaat waarschijnlijk door.`
+        body: `Op ${d} bewoog de prijs ${isUp?'omhoog':'omlaag'} met $${r.spread.toFixed(2)} op slechts ${vr.toFixed(1)}× gemiddeld volume. Weinig ${isUp?'weerstand':'steun'} · het pad van de minste weerstand is ${isUp?'omhoog':'omlaag'}. De trend gaat waarschijnlijk door.`
       });
     }
-    // 7. NO SUPPLY — narrow spread, low vol, up bar after a down move (strongest entry signal)
+    // 7. NO SUPPLY · narrow spread, low vol, up bar after a down move (strongest entry signal)
     else if (vr<0.8 && sr<0.7 && isUp && prev && !prev.close>=prev.open) {
       signals.push({ type:'bullish', label: 'GEEN AANBOD', date:d, strength: 'high',
-        body: `Op ${d} steeg de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere daling toont dit dat verkopers zijn uitgeput — er is geen aanbod meer om de prijs omlaag te drukken. Dit is een van de sterkste VSA-instapsignalen. $${r.close.toFixed(2)} is een potentieel instappunt.`
+        body: `Op ${d} steeg de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere daling toont dit dat verkopers zijn uitgeput · er is geen aanbod meer om de prijs omlaag te drukken. Dit is een van de sterkste VSA-instapsignalen. $${r.close.toFixed(2)} is een potentieel instappunt.`
       });
     }
-    // 8. NO DEMAND — narrow spread, low vol, down bar after an up move (trend weakening)
+    // 8. NO DEMAND · narrow spread, low vol, down bar after an up move (trend weakening)
     else if (vr<0.8 && sr<0.7 && !isUp && prev && prev.close>=prev.open) {
       signals.push({ type:'warning', label: 'GEEN VRAAG', date:d, strength: 'medium',
-        body: `Op ${d} daalde de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere stijging toont dit dat kopers zich terugtrekken — de stijgende trend heeft weinig kracht meer. Verkoop- of winstnemingssignaal. Pas op voor een ommekeer.`
+        body: `Op ${d} daalde de prijs op laag volume (${vr.toFixed(1)}× gem.) met een smalle spread van $${r.spread.toFixed(2)}. Na een eerdere stijging toont dit dat kopers zich terugtrekken · de stijgende trend heeft weinig kracht meer. Verkoop- of winstnemingssignaal. Pas op voor een ommekeer.`
       });
     }
-    // 9. SHAKE OUT — sharp down bar that recovers, closing in top 40%, on high vol
+    // 9. SHAKE OUT · sharp down bar that recovers, closing in top 40%, on high vol
     else if (vr>1.8 && sr>1.4 && !isUp && closePos>0.5 && prev && prev.close > r.low) {
       signals.push({ type:'bullish', label: 'UITSCHUDDING', date:d, strength: 'high',
-        body: `Op ${d} daalde de prijs scherp naar $${r.low.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar herstelde en sloot in de bovenste helft op $${r.close.toFixed(2)}. Dit is een klassieke "uitschudding" — zwakke houders worden eruit gegooid terwijl slimme actoren kopen. Bullish omkeersignaal.`
+        body: `Op ${d} daalde de prijs scherp naar $${r.low.toFixed(2)} op hoog volume (${vr.toFixed(1)}× gem.) maar herstelde en sloot in de bovenste helft op $${r.close.toFixed(2)}. Dit is een klassieke "uitschudding" · zwakke houders worden eruit gegooid terwijl slimme actoren kopen. Bullish omkeersignaal.`
       });
     }
-    // 10. CLIMACTIC ACTION — extreme volume (3x+), wide spread, potential exhaustion
+    // 10. CLIMACTIC ACTION · extreme volume (3x+), wide spread, potential exhaustion
     else if (vr>3 && sr>1.8) {
       signals.push({ type:'absorption', label: 'KLIMACTISCHE ACTIE', date:d, strength: 'high',
-        body: `Op ${d} explodeerde het volume naar ${vr.toFixed(1)}× gemiddeld met een brede range van $${r.spread.toFixed(2)}. Zulk extreme activiteit duidt vaak op een klimactisch einde van een trend. ${isUp ? 'Grote kopers kunnen uitgeput raken — pas op voor een ommekeer.' : 'Massale capitulatie mogelijk — let op stop-volume op de volgende dag.'} Afwachten is verstandig.`
+        body: `Op ${d} explodeerde het volume naar ${vr.toFixed(1)}× gemiddeld met een brede range van $${r.spread.toFixed(2)}. Zulk extreme activiteit duidt vaak op een klimactisch einde van een trend. ${isUp ? 'Grote kopers kunnen uitgeput raken · pas op voor een ommekeer.' : 'Massale capitulatie mogelijk · let op stop-volume op de volgende dag.'} Afwachten is verstandig.`
       });
     }
   });
@@ -1396,10 +1382,10 @@ function runVSA(rows) {
   }
   if (streak >= 3 && streakType !== 'absorption') {
     const streakLabel = streakType === 'bullish'
-      ? (`🔥 ${streak}× BULLISH OP RIJ — HOGE OVERTUIGING`)
-      : (`🔥 ${streak}× BEARISH OP RIJ — HOGE OVERTUIGING`);
+      ? (`🔥 ${streak}× BULLISH OP RIJ · HOGE OVERTUIGING`)
+      : (`🔥 ${streak}× BEARISH OP RIJ · HOGE OVERTUIGING`);
     signals.unshift({ type: streakType, label: streakLabel, date: 'Recente trend', strength: 'high',
-      body: `De laatste ${streak} VSA-signalen wijzen allemaal in dezelfde richting (${streakType}). Dit is een sterke aanwijzing dat de trend goed ingebed is. Handel alleen met de richting — ${streakType === 'bullish' ? 'koop op terugval' : 'vermijd long posities'}.`
+      body: `De laatste ${streak} VSA-signalen wijzen allemaal in dezelfde richting (${streakType}). Dit is een sterke aanwijzing dat de trend goed ingebed is. Handel alleen met de richting · ${streakType === 'bullish' ? 'koop op terugval' : 'vermijd long posities'}.`
     });
   }
 
@@ -1471,12 +1457,12 @@ function computeBias(rows, signals) {
   const bear = recent.filter(s=>s.type==='bearish').length;
   const absorb = recent.filter(s=>s.type==='absorption').length;
 
-  if (bull>bear && pct>1) return { bias:'BULLISH', text: `De prijs is de afgelopen 10 sessies met ${pct.toFixed(1)}% gestegen en recente signalen tonen kopers in controle (${bull} bullish vs ${bear} bearish). Favoriseer lange posities — wacht op terugval naar groene signaalzones.` };
-  if (bear>bull && pct<-1) return { bias:'BEARISH', text: `De prijs is de afgelopen 10 sessies met ${Math.abs(pct).toFixed(1)}% gedaald en verkopers domineren (${bear} bearish vs ${bull} bullish). Vermijd kopen — wacht eerst op een duidelijk keerpuntsignaal.` };
-  if (absorb>=2) return { bias:'NEUTRAL', text: `Meerdere absorptiesignalen gevonden — de markt verwerkt vraag en aanbod. Geen duidelijke richtingskans. Wacht op een uitbraak met volume voordat je handelt.` };
-  if (pct>2) return { bias:'BULLISH', text: `De prijs is recentelijk met ${pct.toFixed(1)}% gestegen. Matig bullish — nog geen sterke volumebevestiging. Wacht op een test van een triggerzone voor instap.` };
-  if (pct<-2) return { bias:'BEARISH', text: `De prijs is recentelijk met ${Math.abs(pct).toFixed(1)}% gedaald. Matig bearish. Probeer geen vallend mes te vangen — wacht op stop-volume of absorptie voor long posities.` };
-  return { bias:'NEUTRAL', text: `Gemengde signalen — geen duidelijke kans op dit moment. VSA zegt: als je geen duidelijke kans ziet, wacht dan af. Geduld is ook een positie.` };
+  if (bull>bear && pct>1) return { bias:'BULLISH', text: `De prijs is de afgelopen 10 sessies met ${pct.toFixed(1)}% gestegen en recente signalen tonen kopers in controle (${bull} bullish vs ${bear} bearish). Favoriseer lange posities · wacht op terugval naar groene signaalzones.` };
+  if (bear>bull && pct<-1) return { bias:'BEARISH', text: `De prijs is de afgelopen 10 sessies met ${Math.abs(pct).toFixed(1)}% gedaald en verkopers domineren (${bear} bearish vs ${bull} bullish). Vermijd kopen · wacht eerst op een duidelijk keerpuntsignaal.` };
+  if (absorb>=2) return { bias:'NEUTRAL', text: `Meerdere absorptiesignalen gevonden · de markt verwerkt vraag en aanbod. Geen duidelijke richtingskans. Wacht op een uitbraak met volume voordat je handelt.` };
+  if (pct>2) return { bias:'BULLISH', text: `De prijs is recentelijk met ${pct.toFixed(1)}% gestegen. Matig bullish · nog geen sterke volumebevestiging. Wacht op een test van een triggerzone voor instap.` };
+  if (pct<-2) return { bias:'BEARISH', text: `De prijs is recentelijk met ${Math.abs(pct).toFixed(1)}% gedaald. Matig bearish. Probeer geen vallend mes te vangen · wacht op stop-volume of absorptie voor long posities.` };
+  return { bias:'NEUTRAL', text: `Gemengde signalen · geen duidelijke kans op dit moment. VSA zegt: als je geen duidelijke kans ziet, wacht dan af. Geduld is ook een positie.` };
 }
 
 function buildChecklist(rows, signals, biasObj) {
@@ -1520,56 +1506,56 @@ function buildChecklist(rows, signals, biasObj) {
   const atrPct = atr ? (atr / last.close * 100).toFixed(1) : null;
 
   return [
-    { text: `Algemene richting is ${biasObj.bias} — handel alleen in deze richting`,
+    { text: `Algemene richting is ${biasObj.bias} · handel alleen in deze richting`,
       status: biasObj.bias!=='NEUTRAL'?'pass':'warn' },
     { text: bull>bear
-        ? (`VSA-signalen neigen bullish (${bull} bullish vs ${bear} bearish) — signalen ondersteunen stijging`)
+        ? (`VSA-signalen neigen bullish (${bull} bullish vs ${bear} bearish) · signalen ondersteunen stijging`)
         : bear>bull
-        ? (`VSA-signalen neigen bearish (${bear} bearish vs ${bull} bullish) — signalen waarschuwen voor daling`)
-        : (`VSA-signalen zijn gemengd (${bull} bullish, ${bear} bearish) — geen duidelijke overeenstemming`),
+        ? (`VSA-signalen neigen bearish (${bear} bearish vs ${bull} bullish) · signalen waarschuwen voor daling`)
+        : (`VSA-signalen zijn gemengd (${bull} bullish, ${bear} bearish) · geen duidelijke overeenstemming`),
       status: (biasObj.bias==='BULLISH'&&bull>=bear)||(biasObj.bias==='BEARISH'&&bear>=bull)?'pass':'warn' },
 
     // VWAP checkitem
     { text: aboveVWAP
-        ? `✅ VWAP: Prijs zit ${vwapDiff}% BOVEN VWAP ($${vwap.toFixed(2)}) — institutionele kopers domineren. Bullish referentie.`
-        : `⚠️ VWAP: Prijs zit ${Math.abs(vwapDiff)}% ONDER VWAP ($${vwap.toFixed(2)}) — verkopers domineren. Wees voorzichtig met long trades.`,
+        ? `✅ VWAP: Prijs zit ${vwapDiff}% BOVEN VWAP ($${vwap.toFixed(2)}) · institutionele kopers domineren. Bullish referentie.`
+        : `⚠️ VWAP: Prijs zit ${Math.abs(vwapDiff)}% ONDER VWAP ($${vwap.toFixed(2)}) · verkopers domineren. Wees voorzichtig met long trades.`,
       status: (biasObj.bias==='BULLISH' && aboveVWAP) || (biasObj.bias==='BEARISH' && !aboveVWAP) ? 'pass' : 'warn' },
 
     // EMA checkitem
     { text: !hasEMA20
-        ? `EMA: te weinig data voor EMA20 — gebruik een langere periode (3M of 6M)`
+        ? `EMA: te weinig data voor EMA20 · gebruik een langere periode (3M of 6M)`
         : emaUptrend && aboveEMA20
-        ? `✅ EMA: Prijs boven EMA20 ($${ema20.toFixed(2)}) en EMA20 boven EMA50${hasEMA50?` ($${ema50.toFixed(2)})`:''}— sterke opwaartse trend bevestigd`
+        ? `✅ EMA: Prijs boven EMA20 ($${ema20.toFixed(2)}) en EMA20 boven EMA50${hasEMA50?` ($${ema50.toFixed(2)})`:''}· sterke opwaartse trend bevestigd`
         : !aboveEMA20
-        ? `⚠️ EMA20: Prijs ($${last.close.toFixed(2)}) onder EMA20 ($${ema20.toFixed(2)}) — korte termijn trend is neerwaarts`
+        ? `⚠️ EMA20: Prijs ($${last.close.toFixed(2)}) onder EMA20 ($${ema20.toFixed(2)}) · korte termijn trend is neerwaarts`
         : !emaUptrend && hasEMA50
-        ? `⚠️ EMA: Prijs boven EMA20 maar EMA20 onder EMA50 — trend nog niet volledig bevestigd`
-        : `EMA20: $${ema20.toFixed(2)} — prijs zit erboven maar EMA50 niet beschikbaar`,
+        ? `⚠️ EMA: Prijs boven EMA20 maar EMA20 onder EMA50 · trend nog niet volledig bevestigd`
+        : `EMA20: $${ema20.toFixed(2)} · prijs zit erboven maar EMA50 niet beschikbaar`,
       status: hasEMA20 && aboveEMA20 && (!hasEMA50 || emaUptrend) ? 'pass' : 'warn' },
 
     // ATR stop loss hint
     { text: atr
-        ? `📐 ATR(14): $${atr.toFixed(2)} (${atrPct}% van prijs) — professionele stop loss = entry − 1.5× ATR = $${(last.close - 1.5*atr).toFixed(2)}`
+        ? `📐 ATR(14): $${atr.toFixed(2)} (${atrPct}% van prijs) · professionele stop loss = entry − 1.5× ATR = $${(last.close - 1.5*atr).toFixed(2)}`
         : `ATR: te weinig data`,
       status: 'info' },
 
     { text: hasDivergence
-        ? (`⚠️ CVD-divergentie gedetecteerd — prijs en koopdruk bewegen in tegengestelde richting. Wees voorzichtig!`)
-        : (`CVD bevestigt prijsrichting — koopdruk en prijs bewegen in lijn`),
+        ? (`⚠️ CVD-divergentie gedetecteerd · prijs en koopdruk bewegen in tegengestelde richting. Wees voorzichtig!`)
+        : (`CVD bevestigt prijsrichting · koopdruk en prijs bewegen in lijn`),
       status: hasDivergence ? 'warn' : 'pass' },
     { text: vr>2.2
-        ? (`⚠️ Laatste staaf volume is ${vr.toFixed(1)}× gemiddeld — mogelijke klimactische uitputting. Voorzichtig instappen.`)
-        : (`Laatste staaf volume is normaal (${vr.toFixed(1)}× gem.) — geen uitputtingswaarschuwing`),
+        ? (`⚠️ Laatste staaf volume is ${vr.toFixed(1)}× gemiddeld · mogelijke klimactische uitputting. Voorzichtig instappen.`)
+        : (`Laatste staaf volume is normaal (${vr.toFixed(1)}× gem.) · geen uitputtingswaarschuwing`),
       status: vr>2.2?'warn':'pass' },
     { text: pos>70
-        ? (`Prijs is dicht bij de periodeHOOGSTE (${pos}% van range) — als bullish is dit sterk; als bearish is shorten hier riskant`)
+        ? (`Prijs is dicht bij de periodeHOOGSTE (${pos}% van range) · als bullish is dit sterk; als bearish is shorten hier riskant`)
         : pos<30
-        ? (`Prijs is dicht bij de periodeLAAGSTE (${pos}% van range) — potentiële steunzone, betere verhouding voor long`)
-        : (`Prijs is midden in de range (${pos}%) — randen van de range geven betere kansen. Wacht indien mogelijk.`),
+        ? (`Prijs is dicht bij de periodeLAAGSTE (${pos}% van range) · potentiële steunzone, betere verhouding voor long`)
+        : (`Prijs is midden in de range (${pos}%) · randen van de range geven betere kansen. Wacht indien mogelijk.`),
       status: pos>70||pos<30?'pass':'warn' },
     { text: lastBig
-        ? (`Laatste staaf is breed en uitgerekt — niet achterna rennen. Wacht op een terugval naar een signaalzone.`)
-        : (`Laatste staaf is niet uitgerekt — instapomstandigheden zijn redelijk`),
+        ? (`Laatste staaf is breed en uitgerekt · niet achterna rennen. Wacht op een terugval naar een signaalzone.`)
+        : (`Laatste staaf is niet uitgerekt · instapomstandigheden zijn redelijk`),
       status: lastBig?'warn':'pass' }
   ];
 }
@@ -1724,9 +1710,9 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   const cvdDivergence = (priceTrend > 0 && cvdTrend < 0) ? 'bearish_div' :
                         (priceTrend < 0 && cvdTrend > 0) ? 'bullish_div' : 'aligned';
   const cvdBadgeHTML = cvdDivergence === 'bearish_div'
-    ? `<span class="cvd-badge div-warn">⚠️ ${'BEARISH DIVERGENTIE — verborgen zwakte'}</span>`
+    ? `<span class="cvd-badge div-warn">⚠️ ${'BEARISH DIVERGENTIE · verborgen zwakte'}</span>`
     : cvdDivergence === 'bullish_div'
-    ? `<span class="cvd-badge div-warn">⚠️ ${'BULLISH DIVERGENTIE — verborgen kracht'}</span>`
+    ? `<span class="cvd-badge div-warn">⚠️ ${'BULLISH DIVERGENTIE · verborgen kracht'}</span>`
     : cvdTrend >= 0
     ? `<span class="cvd-badge pos">${'KOOPDRUK DOMINANT'}</span>`
     : `<span class="cvd-badge neg">${'VERKOOPDRUK DOMINANT'}</span>`;
@@ -1748,7 +1734,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   const closes=rows.map(r=>r.close);
   const volumes=rows.map(r=>r.volume);
 
-  const noSignalsMsg = 'Geen sterke VSA-signalen gevonden in deze periode. De markt lijkt in balans — wacht op een duidelijker signaal.';
+  const noSignalsMsg = 'Geen sterke VSA-signalen gevonden in deze periode. De markt lijkt in balans · wacht op een duidelijker signaal.';
   const signalsHTML = signals.length===0
     ? `<div style="color:var(--muted);font-size:13px;padding:10px 0;">${noSignalsMsg}</div>`
     : signals.map(s=>{
@@ -1784,7 +1770,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       <button class="help-btn" id="helpbtn-bias" onclick="toggleHelp('bias')">Uitleg</button>
     </div>
     <div class="help-box" id="help-bias" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04)">
-      ${`<strong>Wat is de Overall Bias?</strong> Een samenvatting van de afgelopen 4–6 weken koersactie in één richting. Controleer dit altijd <em>eerst</em> — handel alleen in deze richting.<br><br>
+      ${`<strong>Wat is de Overall Bias?</strong> Een samenvatting van de afgelopen 4–6 weken koersactie in één richting. Controleer dit altijd <em>eerst</em> · handel alleen in deze richting.<br><br>
           <span style="color:var(--accent);font-weight:700;">BULLISH</span> → Kopers hebben de leiding. Alleen koopmomenten zoeken.<br>
           <span style="color:var(--accent2);font-weight:700;">BEARISH</span> → Verkopers hebben de leiding. Wacht op een ommekeer voor je koopt.<br>
           <span style="color:var(--accent3);font-weight:700;">NEUTRAL</span> → Geen duidelijke richting. Veiligste keuze: afwachten.`}
@@ -1799,10 +1785,10 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
           <div style="flex:1;background:var(--surface2);border-radius:20px;height:10px;overflow:hidden;border:1px solid var(--border);">
             <div style="height:100%;width:${trendStrength.score * 10}%;background:${trendStrength.color};border-radius:20px;transition:width 0.5s;"></div>
           </div>
-          <div style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:${trendStrength.color};white-space:nowrap;">${trendStrength.score}/10 — ${trendStrength.label}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:${trendStrength.color};white-space:nowrap;">${trendStrength.score}/10 · ${trendStrength.label}</div>
         </div>
         <div class="help-box" id="help-trend">
-          ${`Een score van 1 tot 10 voor de kracht van de huidige trend.<br><strong>7–10</strong> = Sterke, verhandelbare trend. <strong>4–6</strong> = Matige trend, voorzichtig zijn. <strong>1–3</strong> = Zwakke trend, weinig richting — overweeg te wachten.`}
+          ${`Een score van 1 tot 10 voor de kracht van de huidige trend.<br><strong>7–10</strong> = Sterke, verhandelbare trend. <strong>4–6</strong> = Matige trend, voorzichtig zijn. <strong>1–3</strong> = Zwakke trend, weinig richting · overweeg te wachten.`}
         </div>
       </div>
       ${zones.length > 0 ? `
@@ -1820,19 +1806,19 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
             </div>`).join('')}
         </div>
         <div class="help-box" id="help-zones">
-          ${`Prijsniveaus waar eerder belangrijke VSA-signalen plaatsvonden. Prijzen keren hier vaak terug.<br><strong style="color:var(--accent)">Groen (STEUN)</strong> = prijs stuiterde hier eerder omhoog — goede plek voor je stop-loss eronder.<br><strong style="color:var(--accent2)">Rood (WEERSTAND)</strong> = prijs werd hier eerder teruggedrukt — wees voorzichtig bij het benaderen.`}
+          ${`Prijsniveaus waar eerder belangrijke VSA-signalen plaatsvonden. Prijzen keren hier vaak terug.<br><strong style="color:var(--accent)">Groen (STEUN)</strong> = prijs stuiterde hier eerder omhoog · goede plek voor je stop-loss eronder.<br><strong style="color:var(--accent2)">Rood (WEERSTAND)</strong> = prijs werd hier eerder teruggedrukt · wees voorzichtig bij het benaderen.`}
         </div>
       </div>` : ''}
     </div>
     <div class="chart-area">
-      <div class="chart-title">${'KOERS'} — ${rows.length} ${'HANDELSDAGEN'}</div>
+      <div class="chart-title">${'KOERS'} · ${rows.length} ${'HANDELSDAGEN'}</div>
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
-      <div class="chart-title" style="margin-top:14px;">${'VOLUME — GEKLEURD OP VSA-SIGNAAL'}</div>
+      <div class="chart-title" style="margin-top:14px;">${'VOLUME · GEKLEURD OP VSA-SIGNAAL'}</div>
       <div class="vol-wrap"><canvas id="volChart"></canvas></div>
       <div class="cvd-row-label">${'CUMULATIEVE VOLUME DELTA (CVD)'} ${cvdBadgeHTML} <button class="help-btn" id="helpbtn-cvd" onclick="toggleHelp('cvd')">Uitleg</button></div>
       <div class="help-box" id="help-cvd">
         ${`<strong>Wat is CVD?</strong> De paarse lijn toont de opgebouwde koopdruk vs verkoopdruk over tijd. Stijgend = meer kopers dan verkopers. Dalend = meer verkopers.<br><br>
-            ⚠️ <strong>CVD Divergentie:</strong> Als de prijs omhoog gaat maar CVD daalt (of andersom) — pas op. De prijsbeweging heeft geen volume achter zich en kan snel omdraaien.`}
+            ⚠️ <strong>CVD Divergentie:</strong> Als de prijs omhoog gaat maar CVD daalt (of andersom) · pas op. De prijsbeweging heeft geen volume achter zich en kan snel omdraaien.`}
       </div>
       <div class="cvd-wrap"><canvas id="cvdChart"></canvas></div>
       <div class="chart-legend">
@@ -1851,10 +1837,10 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
         </div>
         <div class="help-box" id="help-signals">
           ${`<strong>VSA Signalen</strong> zijn specifieke combinaties van prijs en volume die vertellen wat er achter de schermen gebeurt.<br><br>
-              <strong style="color:var(--accent)">🟢 Groen</strong> = Bullish — kopers winnen. <strong style="color:var(--accent2)">🔴 Rood</strong> = Bearish — verkopers winnen.<br>
-              <strong style="color:var(--accent3)">🟡 Geel</strong> = Absorptie — iemand groot absorbeert stilletjes. <strong style="color:var(--blue)">🔵 Blauw</strong> = Waarschuwing — twijfelachtige beweging.<br><br>
+              <strong style="color:var(--accent)">🟢 Groen</strong> = Bullish · kopers winnen. <strong style="color:var(--accent2)">🔴 Rood</strong> = Bearish · verkopers winnen.<br>
+              <strong style="color:var(--accent3)">🟡 Geel</strong> = Absorptie · iemand groot absorbeert stilletjes. <strong style="color:var(--blue)">🔵 Blauw</strong> = Waarschuwing · twijfelachtige beweging.<br><br>
               De sterkte-stipjes (●○○ zwak → ●●● sterk) geven aan hoe overtuigend het signaal is.<br>
-              🔥 <strong>HIGH CONVICTION</strong> = 3+ signalen op rij in dezelfde richting — het sterkste signaal.`}
+              🔥 <strong>HIGH CONVICTION</strong> = 3+ signalen op rij in dezelfde richting · het sterkste signaal.`}
         </div>
         ${signalsHTML}
       </div>
@@ -1864,7 +1850,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
           <button class="help-btn" id="helpbtn-checklist" onclick="toggleHelp('checklist')">Uitleg</button>
         </div>
         <div class="help-box" id="help-checklist">
-          ${`<strong>6 automatische checks</strong> voor elke trade. Als 2 of meer stipjes rood zijn — sla de trade over en wacht op een betere setup.<br><br>
+          ${`<strong>6 automatische checks</strong> voor elke trade. Als 2 of meer stipjes rood zijn · sla de trade over en wacht op een betere setup.<br><br>
               <span style="color:var(--accent)">● Groen</span> = Voorwaarde voldaan. <span style="color:var(--accent3)">● Geel</span> = Grensgeval, let op. <span style="color:var(--accent2)">● Rood</span> = Probleem.<br><br>
               De checklist controleert o.a.: is de bias duidelijk? bevestigt het volume de richting? is er CVD-divergentie? staat de prijs op een goed niveau?`}
         </div>
@@ -1883,10 +1869,10 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       ${pocPrice ? `<div class="stat-item"><div class="stat-label">${'Volume POC'}</div><div class="stat-val neutral">$${pocPrice}</div></div>` : ''}
     </div>
     <div id="help-stats" class="help-box" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none;padding:14px 22px;background:rgba(45,122,79,0.04);">
-      ${`<strong>Gem. Volume</strong> — gemiddeld dagelijks verhandeld. Hoog = liquide aandeel (makkelijk kopen/verkopen).<br>
-          <strong>Volume Trend</strong> — neemt volume toe of af? Stijgend bevestigt de prijsbeweging. Dalend = trend verzwakt.<br>
-          <strong>Positie in Range</strong> — 100% = dicht bij de periode-hoogste. 0% = dicht bij de laagste.<br>
-          <strong>Volume POC</strong> — het prijsniveau waar het meeste volume werd verhandeld. Prijs keert hier vaak naar terug. Goede referentie voor stop-loss.`}
+      ${`<strong>Gem. Volume</strong> · gemiddeld dagelijks verhandeld. Hoog = liquide aandeel (makkelijk kopen/verkopen).<br>
+          <strong>Volume Trend</strong> · neemt volume toe of af? Stijgend bevestigt de prijsbeweging. Dalend = trend verzwakt.<br>
+          <strong>Positie in Range</strong> · 100% = dicht bij de periode-hoogste. 0% = dicht bij de laagste.<br>
+          <strong>Volume POC</strong> · het prijsniveau waar het meeste volume werd verhandeld. Prijs keert hier vaak naar terug. Goede referentie voor stop-loss.`}
     </div>
     <div class="risk-calc">
       <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text);font-weight:700;letter-spacing:2px;width:100%;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
@@ -1894,7 +1880,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
         <button class="help-btn" id="helpbtn-risk" onclick="toggleHelp('risk')">Uitleg</button>
       </div>
       <div class="help-box" id="help-risk" style="width:100%;margin-bottom:10px;">
-        ${`<strong>Waarom is dit belangrijk?</strong> Dit voorkomt dat je te veel riskeert op één trade. Vul je accountgrootte en risico % in — de tool berekent exact hoeveel aandelen je mag kopen.<br><br>
+        ${`<strong>Waarom is dit belangrijk?</strong> Dit voorkomt dat je te veel riskeert op één trade. Vul je accountgrootte en risico % in · de tool berekent exact hoeveel aandelen je mag kopen.<br><br>
             <strong>Gouden regel: riskeer nooit meer dan 1–2% van je account per trade.</strong> Bij een account van €10.000 en 1% risico = max €100 verlies op één trade.<br><br>
             Zet de stop-loss net onder een groene steunzone die de tool heeft gevonden.`}
       </div>
@@ -1921,11 +1907,11 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       </div>
       <div class="risk-result">
         <div class="risk-result-label">${'AANTAL AANDELEN'}</div>
-        <div class="risk-result-val" id="riskShares">—</div>
+        <div class="risk-result-val" id="riskShares">·</div>
       </div>
       <div class="risk-result">
         <div class="risk-result-label">${'TOTALE POSITIE'}</div>
-        <div class="risk-result-val" id="riskTotal">—</div>
+        <div class="risk-result-val" id="riskTotal">·</div>
       </div>
     </div>`;
 
@@ -1933,7 +1919,7 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   if(volChart) volChart.destroy();
   if(cvdChart) cvdChart.destroy();
 
-  // Build candlestick dataset — each bar: {x: timestamp ms, o, h, l, c}
+  // Build candlestick dataset · each bar: {x: timestamp ms, o, h, l, c}
   const candleData = rows.map(r=>({
     x: r.date.getTime(),
     o: r.open, h: r.high, l: r.low, c: r.close
@@ -2080,14 +2066,14 @@ function calcRisk() {
   const fmt = n => n >= 1000 ? '$' + (n/1000).toFixed(1) + 'K' : '$' + n.toFixed(2);
   const el = id => document.getElementById(id);
   if(el('riskAmount')) el('riskAmount').textContent = fmt(riskAmt);
-  if(el('riskShares'))  el('riskShares').textContent  = shares > 0 ? shares + ' shares' : '—';
-  if(el('riskTotal'))   el('riskTotal').textContent   = shares > 0 ? fmt(total) : '—';
+  if(el('riskShares'))  el('riskShares').textContent  = shares > 0 ? shares + ' shares' : '·';
+  if(el('riskTotal'))   el('riskTotal').textContent   = shares > 0 ? fmt(total) : '·';
 }
 
 
-// ── TICKER LOOKUP — volledige NYSE + NASDAQ lijst via GitHub ──
+// ── TICKER LOOKUP · volledige NYSE + NASDAQ lijst via GitHub ──
 let lookupTimer = null;
-let stockDB = [];      // [{s, n, e}] — gevuld bij opstarten
+let stockDB = [];      // [{s, n, e}] · gevuld bij opstarten
 let stockDBready = false;
 
 // Laad NYSE + NASDAQ lijsten van GitHub (gratis, geen API key)
@@ -2129,7 +2115,7 @@ async function loadStockDB() {
 
     const lines = text.trim().split('\n').slice(1); // skip header
     for (const line of lines) {
-      // CSV parse — handle quoted fields
+      // CSV parse · handle quoted fields
       const cols = parseCSVLine(line);
       const sym  = cols[src.symCol]?.trim().replace(/^"|"$/g,'');
       const name = cols[src.nameCol]?.trim().replace(/^"|"$/g,'').replace(/ - Common Stock.*$/i,'').replace(/ Common Stock.*$/i,'').trim();
@@ -2167,7 +2153,7 @@ function parseCSVLine(line) {
   return cols;
 }
 
-// Zoek in lokale DB — prioriteit: exacte match > begint met > bevat naam
+// Zoek in lokale DB · prioriteit: exacte match > begint met > bevat naam
 function searchStockDB(q) {
   const qU = q.toUpperCase();
   const qL = q.toLowerCase();
@@ -2222,7 +2208,7 @@ async function showLookup(q) {
   if (results.length === 0) {
     box.innerHTML = `
       <div class="lookup-searching" style="color:var(--muted);font-size:11px;padding:8px 14px;">
-        ${'Geen resultaten — probeer het exacte symbool.'}
+        ${'Geen resultaten · probeer het exacte symbool.'}
       </div>
       <div class="lookup-item" onmousedown="selectTicker('${qTrim.toUpperCase().replace(/'/g,"\\'")}')">
         <span class="lookup-exch">→</span>
@@ -2281,7 +2267,7 @@ applyLang();
 
 
 // ══════════════════════════════════════════════
-// ── MARKET STATE — calculated from local time, no Yahoo dependency ──
+// ── MARKET STATE · calculated from local time, no Yahoo dependency ──
 function getMarketState(exchange, currency) {
   const now = new Date();
   const day = now.getUTCDay(); // 0=Sun, 6=Sat
@@ -2360,7 +2346,7 @@ function renderWatchlist() {
     const sign = w.change > 0 ? '+' : '';
     const currency = w.currency === 'EUR' ? '€' : w.currency === 'GBP' ? '£' : '$';
 
-    // Calculate market state from local time — don't rely on Yahoo returning marketState
+    // Calculate market state from local time · don't rely on Yahoo returning marketState
     // Works for NYSE/NASDAQ (ET), most EU exchanges (CET), LSE (GMT/BST)
     const computedState = getMarketState(w.exchange || 'NYQ', w.currency || 'USD');
     const marketState = computedState; // use computed, ignore Yahoo's (often missing via proxy)
@@ -2401,11 +2387,11 @@ function renderWatchlist() {
         ${w.loaded ? `<span class="watch-market ${marketCls}">${marketLabel}</span>` : ''}
       </div>
       ${w.loaded
-        ? `<span class="watch-price ${cls}" id="wp-${w.sym}">${currency}${w.price != null ? w.price.toFixed(2) : '—'}</span>
+        ? `<span class="watch-price ${cls}" id="wp-${w.sym}">${currency}${w.price != null ? w.price.toFixed(2) : '·'}</span>
            <span class="watch-chg ${cls}" id="wc-${w.sym}">${sign}${w.changePct != null ? w.changePct.toFixed(2) : '0.00'}%</span>
            ${extraLine}`
-        : `<span class="watch-price flat">—</span>
-           <span class="watch-chg flat">—</span>`}
+        : `<span class="watch-price flat">·</span>
+           <span class="watch-chg flat">·</span>`}
       <a href="https://finance.yahoo.com/quote/${w.sym}" target="_blank" rel="noopener"
          onclick="event.stopPropagation()"
          style="font-size:10px;font-family:'Space Mono',monospace;color:var(--blue);text-decoration:none;margin-top:4px;display:inline-block;opacity:0.7;">
@@ -2428,7 +2414,7 @@ async function fetchAllQuotes() {
 
   const fetches = watchlist.map(async (w, i) => {
     try {
-      // Hergebruik dezelfde fetchData als de analyser — werkt altijd als analyse werkt
+      // Hergebruik dezelfde fetchData als de analyser · werkt altijd als analyse werkt
       const data = await fetchData(w.sym, '1mo');
       if (!data || !data.rows || data.rows.length === 0) return;
 
@@ -2871,7 +2857,7 @@ function renderMarkets() {
       const daysUntilMon = dow === 6 ? 2 : 1;
       nextStr = `Opent maandag om ${fmtTime(market.open.h, market.open.m)}`;
     } else {
-      // Closed but weekday — opens tomorrow or same day
+      // Closed but weekday · opens tomorrow or same day
       const minsToOpen = minsUntil(market.open.h, market.open.m, market.tz);
       if (minsToOpen < 720) {
         nextStr = `Opent over <strong>${fmtMins(minsToOpen)}</strong> om ${fmtTime(market.open.h, market.open.m)}`;
@@ -2960,48 +2946,48 @@ const SIGNAL_INFO = {
   'STOPPING VOLUME': {
     type:'bullish',
     what: 'Extreem hoog volume op een dalende candle, maar de koers sluit niet veel lager. Grote spelers (instellingen) kopen massaal op terwijl kleine beleggers in paniek verkopen. Het aanbod wordt "gestopt".',
-    action: 'Dit is een vroeg teken van een mogelijke bodem. <strong>Wacht op bevestiging</strong> — de volgende candle moet omhoog sluiten met lager volume. Pas daarna overweeg je een longpositie.',
+    action: 'Dit is een vroeg teken van een mogelijke bodem. <strong>Wacht op bevestiging</strong> · de volgende candle moet omhoog sluiten met lager volume. Pas daarna overweeg je een longpositie.',
     tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Bodem signaal',c:'green'},{l:'Wacht op bevestiging',c:'amber'}],
     candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
   },
   'STOP-VOLUME': {
     type:'bullish',
     what: 'Extreem hoog volume op een dalende candle, maar de koers sluit niet veel lager. Grote spelers kopen massaal in terwijl anderen verkopen. Het aanbod wordt "gestopt".',
-    action: '<strong>Wacht op bevestiging</strong> — de volgende candle moet omhoog sluiten met lager volume. Pas dan overweeg je een longpositie.',
+    action: '<strong>Wacht op bevestiging</strong> · de volgende candle moet omhoog sluiten met lager volume. Pas dan overweeg je een longpositie.',
     tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Bodem signaal',c:'green'}],
     candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
   },
   'DEMAND SURGE': {
     type:'bullish',
-    what: 'Grote bullish candle met hoog volume en brede spread (groot verschil tussen high en low). Vraag overweldigt het aanbod — kopers nemen de controle over.',
-    action: 'Sterke kooopsignaal, maar wacht niet op instap op de candle zelf — die is al te ver gestegen. <strong>Wacht op een kleine pullback</strong> met laag volume daarna.',
+    what: 'Grote bullish candle met hoog volume en brede spread (groot verschil tussen high en low). Vraag overweldigt het aanbod · kopers nemen de controle over.',
+    action: 'Sterke kooopsignaal, maar wacht niet op instap op de candle zelf · die is al te ver gestegen. <strong>Wacht op een kleine pullback</strong> met laag volume daarna.',
     tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Momentum',c:'green'}],
     candles: [{o:45,h:47,l:44,c:46,v:4},{o:46,h:47,l:45,c:46,v:3},{o:46,h:48,l:45,c:47,v:5},{o:47,h:56,l:46,c:55,v:14},{o:55,h:57,l:54,c:56,v:7}],
   },
   'VRAAGSTIJGING': {
     type:'bullish',
-    what: 'Grote bullish candle met hoog volume en brede spread. Vraag overweldigt het aanbod — kopers nemen de controle over.',
+    what: 'Grote bullish candle met hoog volume en brede spread. Vraag overweldigt het aanbod · kopers nemen de controle over.',
     action: 'Sterk koopsignaal. <strong>Wacht op een kleine pullback</strong> met laag volume voor instap.',
     tags: [{l:'Bullish',c:'green'},{l:'Hoog volume',c:'amber'},{l:'Momentum',c:'green'}],
     candles: [{o:45,h:47,l:44,c:46,v:4},{o:46,h:47,l:45,c:46,v:3},{o:46,h:48,l:45,c:47,v:5},{o:47,h:56,l:46,c:55,v:14},{o:55,h:57,l:54,c:56,v:7}],
   },
   'SUPPLY SURGE': {
     type:'bearish',
-    what: 'Grote bearish candle met hoog volume. Aanbod overweldigt de vraag — verkopers nemen de leiding. Instellingen dumpen hun posities.',
+    what: 'Grote bearish candle met hoog volume. Aanbod overweldigt de vraag · verkopers nemen de leiding. Instellingen dumpen hun posities.',
     action: '<strong>Niet kopen.</strong> Als je al long zit, overweeg je positie te verkleinen of een stop te plaatsen. Wacht tot het aanbod uitgewerkt is.',
     tags: [{l:'Bearish',c:'red'},{l:'Hoog volume',c:'amber'},{l:'Verkopen signaal',c:'red'}],
     candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
   },
   'AANBODSTIJGING': {
     type:'bearish',
-    what: 'Grote bearish candle met hoog volume. Verkopers nemen de leiding — instellingen dumpen posities.',
+    what: 'Grote bearish candle met hoog volume. Verkopers nemen de leiding · instellingen dumpen posities.',
     action: '<strong>Niet kopen.</strong> Wacht tot het aanbod uitgewerkt is voor je een positie overweegt.',
     tags: [{l:'Bearish',c:'red'},{l:'Hoog volume',c:'amber'},{l:'Verkopen signaal',c:'red'}],
     candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
   },
   'NO SUPPLY': {
     type:'bullish',
-    what: 'Kleine bearish candle met heel laag volume. Er zijn bijna geen verkopers meer actief. Het aanbod is "opgedroogd" — als er nu kopers komen, gaat de prijs snel omhoog.',
+    what: 'Kleine bearish candle met heel laag volume. Er zijn bijna geen verkopers meer actief. Het aanbod is "opgedroogd" · als er nu kopers komen, gaat de prijs snel omhoog.',
     action: 'Krachtig bullish signaal, <strong>vooral na een daling</strong>. Als de volgende candle bullish is met normaal volume, is dit een goede instap.',
     tags: [{l:'Bullish',c:'green'},{l:'Laag volume',c:'amber'},{l:'Aanbod droogt op',c:'green'}],
     candles: [{o:55,h:56,l:52,c:53,v:8},{o:53,h:54,l:51,c:52,v:6},{o:52,h:53,l:50,c:51,v:5},{o:51,h:52,l:50,c:51,v:2},{o:51,h:55,l:50,c:54,v:7}],
@@ -3015,14 +3001,14 @@ const SIGNAL_INFO = {
   },
   'NO DEMAND': {
     type:'warning',
-    what: 'Kleine bullish candle met heel laag volume na een stijging. Er zijn bijna geen kopers actief. De opwaartse beweging heeft geen kracht — de rally is zwak.',
+    what: 'Kleine bullish candle met heel laag volume na een stijging. Er zijn bijna geen kopers actief. De opwaartse beweging heeft geen kracht · de rally is zwak.',
     action: '<strong>Niet kopen op deze candle.</strong> Als je al long zit, overweeg je stop aan te scherpen. Institutionele kopers zijn afwezig.',
     tags: [{l:'Waarschuwing',c:'amber'},{l:'Laag volume',c:'amber'},{l:'Vraag ontbreekt',c:'red'}],
     candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
   },
   'GEEN VRAAG': {
     type:'warning',
-    what: 'Kleine bullish candle met heel laag volume. De rally heeft geen kracht — institutionele kopers zijn afwezig.',
+    what: 'Kleine bullish candle met heel laag volume. De rally heeft geen kracht · institutionele kopers zijn afwezig.',
     action: '<strong>Niet kopen.</strong> Als je al long zit, scherp je stop aan.',
     tags: [{l:'Waarschuwing',c:'amber'},{l:'Laag volume',c:'amber'},{l:'Geen momentum',c:'red'}],
     candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
@@ -3057,7 +3043,7 @@ const SIGNAL_INFO = {
   },
   'CLIMACTIC ACTION': {
     type:'absorption',
-    what: 'Extreem hoog volume met een brede candle — maar de koers sluit midden in de range. Dit toont dat het aanbod of de vraag "geabsorbeerd" wordt. Na een lange trend is dit een waarschuwing dat de trend op zijn einde loopt.',
+    what: 'Extreem hoog volume met een brede candle · maar de koers sluit midden in de range. Dit toont dat het aanbod of de vraag "geabsorbeerd" wordt. Na een lange trend is dit een waarschuwing dat de trend op zijn einde loopt.',
     action: 'Na een lange <strong>stijging</strong>: wees voorzichtig, distributie kan beginnen. Na een lange <strong>daling</strong>: kans op bodem, maar wacht op bevestiging.',
     tags: [{l:'Let op',c:'amber'},{l:'Trend einde?',c:'amber'},{l:'Hoog volume',c:'amber'}],
     candles: [{o:62,h:66,l:61,c:65,v:6},{o:65,h:68,l:64,c:67,v:7},{o:67,h:70,l:66,c:69,v:8},{o:69,h:76,l:63,c:67,v:22},{o:67,h:69,l:64,c:65,v:9}],
@@ -3071,8 +3057,8 @@ const SIGNAL_INFO = {
   },
   'BULLISH ABSORPTION': {
     type:'absorption',
-    what: 'Hoog volume, maar de koers daalt nauwelijks. Instellingen absorberen al het aanbod — ze kopen alles op dat er verkocht wordt.',
-    action: 'Bullish. Grote spelers willen omhoog — <strong>bereid je voor op een stijging</strong>. Wacht op bevestiging.',
+    what: 'Hoog volume, maar de koers daalt nauwelijks. Instellingen absorberen al het aanbod · ze kopen alles op dat er verkocht wordt.',
+    action: 'Bullish. Grote spelers willen omhoog · <strong>bereid je voor op een stijging</strong>. Wacht op bevestiging.',
     tags: [{l:'Bullish',c:'green'},{l:'Institutioneel kopen',c:'green'}],
     candles: [{o:50,h:52,l:46,c:47,v:5},{o:47,h:49,l:44,c:48,v:12},{o:48,h:50,l:46,c:49,v:14},{o:49,h:53,l:48,c:52,v:9},{o:52,h:56,l:51,c:55,v:8}],
   },
@@ -3085,7 +3071,7 @@ const SIGNAL_INFO = {
   },
   'BEARISH ABSORPTION': {
     type:'bearish',
-    what: 'Hoog volume maar de koers stijgt nauwelijks. Instellingen absorberen alle vraag — ze verkopen alles wat er gekocht wordt.',
+    what: 'Hoog volume maar de koers stijgt nauwelijks. Instellingen absorberen alle vraag · ze verkopen alles wat er gekocht wordt.',
     action: '<strong>Distributie fase.</strong> Niet kopen. Grote spelers verlaten hun posities.',
     tags: [{l:'Bearish',c:'red'},{l:'Institutioneel verkopen',c:'red'}],
     candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
@@ -3093,7 +3079,7 @@ const SIGNAL_INFO = {
   'BEARISH ABSORPTIE': {
     type:'bearish',
     what: 'Hoog volume maar koers stijgt nauwelijks. Instellingen verkopen alles wat er gekocht wordt.',
-    action: '<strong>Niet kopen.</strong> Distributie fase — grote spelers verlaten posities.',
+    action: '<strong>Niet kopen.</strong> Distributie fase · grote spelers verlaten posities.',
     tags: [{l:'Bearish',c:'red'},{l:'Distributie',c:'red'}],
     candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
   },
@@ -3168,56 +3154,56 @@ const QUIZ_QUESTIONS = [
     q: 'Je ziet een candle met extreem hoog volume maar de koers sluit nauwelijks lager dan de opening. Wat is dit signaal?',
     opts: ['Supply Surge', 'Stopping Volume', 'No Demand', 'Up-Thrust'],
     correct: 1,
-    explain: '✅ <strong>Stopping Volume</strong> — hoog volume + koers sluit niet lager = grote spelers kopen het aanbod op. Het aanbod wordt "gestopt".',
+    explain: '✅ <strong>Stopping Volume</strong> · hoog volume + koers sluit niet lager = grote spelers kopen het aanbod op. Het aanbod wordt "gestopt".',
     candles: [{o:52,h:54,l:44,c:46,v:9},{o:46,h:48,l:43,c:47,v:10},{o:47,h:48,l:40,c:41,v:8},{o:41,h:47,l:39,c:45,v:18},{o:45,h:49,l:44,c:48,v:6}],
   },
   {
     q: 'Na een stijging zie je een kleine bullish candle met heel laag volume. Wat betekent dit?',
     opts: ['Demand Surge', 'Shake Out', 'No Demand', 'Bullish Absorption'],
     correct: 2,
-    explain: '✅ <strong>No Demand</strong> — lage volume na een stijging = geen echte kopers. De rally heeft geen kracht. Niet kopen!',
+    explain: '✅ <strong>No Demand</strong> · lage volume na een stijging = geen echte kopers. De rally heeft geen kracht. Niet kopen!',
     candles: [{o:50,h:54,l:49,c:53,v:8},{o:53,h:56,l:52,c:55,v:9},{o:55,h:58,l:54,c:57,v:7},{o:57,h:59,l:56,c:58,v:2},{o:58,h:59,l:57,c:58,v:2}],
   },
   {
     q: 'De koers valt plotseling door een steunniveau maar herstelt snel en sluit omhoog, met relatief laag volume. Wat is dit?',
     opts: ['Supply Surge', 'Climactic Action', 'Shake Out', 'Up-Thrust'],
     correct: 2,
-    explain: '✅ <strong>Shake Out</strong> — zwakke beleggers worden uitgeschud zodat grote spelers goedkoop kunnen kopen. Na bevestiging is dit een uitstekend instapmoment.',
+    explain: '✅ <strong>Shake Out</strong> · zwakke beleggers worden uitgeschud zodat grote spelers goedkoop kunnen kopen. Na bevestiging is dit een uitstekend instapmoment.',
     candles: [{o:52,h:54,l:51,c:53,v:5},{o:53,h:54,l:52,c:53,v:4},{o:53,h:54,l:46,c:53,v:7},{o:53,h:57,l:52,c:56,v:9},{o:56,h:59,l:55,c:58,v:8}],
   },
   {
     q: 'Een aandeel breekt uit boven weerstand met een grote candle maar sluit terug dicht bij de opening. Volume is hoog. Wat signaleert dit?',
     opts: ['Demand Surge', 'Up-Thrust / Rejection', 'Stopping Volume', 'No Supply'],
     correct: 1,
-    explain: '✅ <strong>Up-Thrust / Rejection</strong> — valse uitbraak. Grote spelers verkopen aan kopers van de uitbraak. Gevaarlijk voor longs.',
+    explain: '✅ <strong>Up-Thrust / Rejection</strong> · valse uitbraak. Grote spelers verkopen aan kopers van de uitbraak. Gevaarlijk voor longs.',
     candles: [{o:54,h:56,l:53,c:55,v:5},{o:55,h:57,l:54,c:56,v:6},{o:56,h:63,l:54,c:55,v:12},{o:55,h:57,l:53,c:54,v:7},{o:54,h:55,l:50,c:51,v:8}],
   },
   {
     q: 'Na een daling zie je een kleine bearish candle met heel laag volume. Wat betekent dit voor de koper?',
     opts: ['Bearish Absorption', 'Climactic Action', 'No Supply', 'Supply Surge'],
     correct: 2,
-    explain: '✅ <strong>No Supply</strong> — laag volume + kleine bearish candle = bijna niemand wil nog verkopen. Als er nu kopers komen, gaat de prijs snel omhoog. Goed instapsignaal!',
+    explain: '✅ <strong>No Supply</strong> · laag volume + kleine bearish candle = bijna niemand wil nog verkopen. Als er nu kopers komen, gaat de prijs snel omhoog. Goed instapsignaal!',
     candles: [{o:55,h:56,l:52,c:53,v:8},{o:53,h:54,l:51,c:52,v:6},{o:52,h:53,l:50,c:51,v:5},{o:51,h:52,l:50,c:51,v:2},{o:51,h:55,l:50,c:54,v:7}],
   },
   {
-    q: 'Grote bearish candle met extreem hoog volume — de koers valt hard. Wat is dit?',
+    q: 'Grote bearish candle met extreem hoog volume · de koers valt hard. Wat is dit?',
     opts: ['Stopping Volume', 'Supply Surge', 'No Demand', 'Shake Out'],
     correct: 1,
-    explain: '✅ <strong>Supply Surge</strong> — grote verkopers dumpen posities. Niet kopen, wacht tot het aanbod uitgewerkt is.',
+    explain: '✅ <strong>Supply Surge</strong> · grote verkopers dumpen posities. Niet kopen, wacht tot het aanbod uitgewerkt is.',
     candles: [{o:58,h:60,l:57,c:59,v:4},{o:59,h:60,l:58,c:59,v:3},{o:59,h:60,l:57,c:58,v:5},{o:58,h:59,l:48,c:49,v:15},{o:49,h:51,l:47,c:48,v:7}],
   },
   {
     q: 'Hoog volume maar de koers beweegt nauwelijks omhoog tijdens een rally. Wat absorberen grote spelers?',
     opts: ['Vraag (ze kopen)', 'Aanbod (ze kopen)', 'Aanbod (ze verkopen)', 'Vraag (ze verkopen)'],
     correct: 2,
-    explain: '✅ <strong>Bearish Absorption</strong> — hoog volume + nauwelijks stijging = instellingen verkopen alles wat er gekocht wordt. Distributie fase.',
+    explain: '✅ <strong>Bearish Absorption</strong> · hoog volume + nauwelijks stijging = instellingen verkopen alles wat er gekocht wordt. Distributie fase.',
     candles: [{o:55,h:60,l:54,c:59,v:5},{o:59,h:63,l:58,c:60,v:12},{o:60,h:62,l:58,c:59,v:14},{o:59,h:61,l:55,c:56,v:9},{o:56,h:58,l:52,c:53,v:8}],
   },
   {
     q: 'Wat betekent een BULLISH bias in de VSA analyse?',
     opts: ['Koop direct alles', 'Kopers hebben de leiding, zoek koopmomenten', 'De koers daalt binnenkort', 'Volume is laag'],
     correct: 1,
-    explain: '✅ <strong>Bullish bias</strong> = de algemene richting is opwaarts. Dit betekent NIET dat je direct koopt — je zoekt naar instapkansen (No Supply, Shake Out) in deze richting.',
+    explain: '✅ <strong>Bullish bias</strong> = de algemene richting is opwaarts. Dit betekent NIET dat je direct koopt · je zoekt naar instapkansen (No Supply, Shake Out) in deze richting.',
     candles: [{o:46,h:48,l:45,c:47,v:5},{o:47,h:50,l:46,c:49,v:7},{o:49,h:53,l:48,c:52,v:9},{o:52,h:54,l:51,c:53,v:6},{o:53,h:57,l:52,c:56,v:8}],
   },
 ];
@@ -3402,7 +3388,7 @@ function renderJournalStats() {
 
   const signalCounts = {};
   wins.forEach(e => { if (e.signal) signalCounts[e.signal] = (signalCounts[e.signal]||0) + 1; });
-  const bestSignal = Object.entries(signalCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+  const bestSignal = Object.entries(signalCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || '·';
 
   el.innerHTML = `
     <div class="journal-stat">
@@ -3490,9 +3476,9 @@ function updateMarketStatusBar() {
   const setStatus = (id, open, pre, label) => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (open)      { el.textContent = label + ' ● OPEN';    el.className = 'app-mkt open'; }
-    else if (pre)  { el.textContent = label + ' ◑ PRE';     el.className = 'app-mkt pre'; }
-    else           { el.textContent = label + ' ○ GESLOTEN'; el.className = 'app-mkt closed'; }
+    if (open)      { el.textContent = label + ' OPEN';    el.className = 'app-mkt open'; }
+    else if (pre)  { el.textContent = label + ' PRE';     el.className = 'app-mkt pre'; }
+    else           { el.textContent = label + ' GESLOTEN'; el.className = 'app-mkt closed'; }
   };
 
   setStatus('msNYSE',   nyOpen,  nyPre,  'NYSE');
@@ -3527,7 +3513,7 @@ setInterval(updateMarketStatusBar, 30000);
 // ══════════════════════════════════════════════
 
 const ALERT_WATCHLIST = [
-  // High-volatility stocks under $50 — prime voor volume spikes
+  // High-volatility stocks under $50 · prime voor volume spikes
   'F','BAC','SOFI','HOOD','PLTR','NIO','XPEV','SNAP','PINS','UBER',
   'DKNG','MARA','RIOT','CLSK','HIMS','RBLX','AAL','CCL','RIVN','LCID',
   'ROOT','GRAB','SE','CPNG','PENN','GME','AMC','PTON','SPCE','NKLA',
@@ -3550,7 +3536,7 @@ function startAlertScanner() {
   document.getElementById('alertStopBtn').style.display = 'inline-block';
   document.getElementById('alertStatus').textContent = 'Actief';
   document.getElementById('alertStatus').className = 'alert-scanner-status running';
-  document.getElementById('alertScannerSub').textContent = 'Scanner actief — controleert stocks op volume spikes';
+  document.getElementById('alertScannerSub').textContent = 'Scanner actief · controleert stocks op volume spikes';
 
   renderAlertHits();
   runAlertScan(); // direct eerste scan
@@ -3702,7 +3688,7 @@ function renderAlertHits() {
   if (!el) return;
 
   if (alertHits.length === 0) {
-    el.innerHTML = '<div class="alert-empty">Nog geen meldingen.<br>Start de scanner — hij checkt automatisch stocks op volume spikes.</div>';
+    el.innerHTML = '<div class="alert-empty">Nog geen meldingen.<br>Start de scanner · hij checkt automatisch stocks op volume spikes.</div>';
     return;
   }
 
@@ -3915,13 +3901,13 @@ const LEARN_CONTENT = {
 
 vsa: `
 <div class="learn-card">
-  <h3>📊 Wat is VSA — Volume Spread Analysis?</h3>
-  <p>VSA is een methode om te begrijpen wat de <strong>grote spelers</strong> (banken, fondsen, institutionele traders) aan het doen zijn. Kleine traders zoals wij hebben geen invloed op de markt — maar grote spelers wel. Hun acties laten sporen achter in het <strong>volume en de spread</strong> van elke candle.</p>
+  <h3>📊 Wat is VSA · Volume Spread Analysis?</h3>
+  <p>VSA is een methode om te begrijpen wat de <strong>grote spelers</strong> (banken, fondsen, institutionele traders) aan het doen zijn. Kleine traders zoals wij hebben geen invloed op de markt · maar grote spelers wel. Hun acties laten sporen achter in het <strong>volume en de spread</strong> van elke candle.</p>
   <p>VSA kijkt naar drie dingen per candle:</p>
   <ul>
-    <li><strong>Spread</strong> — hoe groot is het verschil tussen de hoogste en laagste prijs?</li>
-    <li><strong>Sluitprijs</strong> — sluit de candle hoog, midden of laag in de bar?</li>
-    <li><strong>Volume</strong> — hoeveel werd er verhandeld? Meer dan normaal of minder?</li>
+    <li><strong>Spread</strong> · hoe groot is het verschil tussen de hoogste en laagste prijs?</li>
+    <li><strong>Sluitprijs</strong> · sluit de candle hoog, midden of laag in de bar?</li>
+    <li><strong>Volume</strong> · hoeveel werd er verhandeld? Meer dan normaal of minder?</li>
   </ul>
   <div class="learn-rule">💡 <strong>Gouden regel VSA:</strong> Hoog volume = grote spelers zijn actief. Laag volume = grote spelers doen niks. Volume is de brandstof van de markt.</div>
 </div>
@@ -3935,18 +3921,18 @@ vsa: `
     <li><strong>Vraag aanwezig</strong> = grote spelers kopen → prijs heeft steun</li>
     <li><strong>Geen vraag</strong> = kopers haken af → prijs kan dalen</li>
   </ul>
-  <div class="learn-rule amber">⏳ VSA kijkt naar de <strong>afgelopen 20–30 handelsdagen</strong> — niet alleen vandaag. Het leest de geschiedenis van het aandeel als een verhaal.</div>
+  <div class="learn-rule amber">⏳ VSA kijkt naar de <strong>afgelopen 20–30 handelsdagen</strong> · niet alleen vandaag. Het leest de geschiedenis van het aandeel als een verhaal.</div>
 </div>
 
 <div class="learn-card">
   <h3>📈 Bias: de algemene richting</h3>
   <p>De app berekent automatisch een <strong>BULLISH / BEARISH / NEUTRAL</strong> bias. Dit is jouw kompas:</p>
   <ul>
-    <li><span class="learn-badge bull">BULLISH</span> — grote kans op stijging, zoek koopmomenten</li>
-    <li><span class="learn-badge bear">BEARISH</span> — grote kans op daling, vermijd long trades</li>
-    <li><span class="learn-badge neutral">NEUTRAL</span> — geen duidelijke richting, wacht af</li>
+    <li><span class="learn-badge bull">BULLISH</span> · grote kans op stijging, zoek koopmomenten</li>
+    <li><span class="learn-badge bear">BEARISH</span> · grote kans op daling, vermijd long trades</li>
+    <li><span class="learn-badge neutral">NEUTRAL</span> · geen duidelijke richting, wacht af</li>
   </ul>
-  <div class="learn-rule warn">🚫 <strong>Handel NOOIT tegen de bias in.</strong> Als de bias BEARISH is, koop dan niet — ook niet als een signaal er verleidelijk uitziet.</div>
+  <div class="learn-rule warn">🚫 <strong>Handel NOOIT tegen de bias in.</strong> Als de bias BEARISH is, koop dan niet · ook niet als een signaal er verleidelijk uitziet.</div>
 </div>`,
 
 signals: `
@@ -3966,15 +3952,15 @@ signals: `
   </div>
   <div class="learn-sig-card bull">
     <div class="learn-sig-name">🌊 Bullish Absorption</div>
-    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Heel hoog volume maar smalle spread. Verkopers worden opgekocht — aanbod wordt geabsorbeerd. Steunzone in de making.</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Heel hoog volume maar smalle spread. Verkopers worden opgekocht · aanbod wordt geabsorbeerd. Steunzone in de making.</div>
   </div>
   <div class="learn-sig-card bull">
     <div class="learn-sig-name">✨ No Supply</div>
-    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Dalende candle op laag volume en smalle spread. Niemand wil meer verkopen — aanbod is uitgeput. Sterk koopmomenent.</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Dalende candle op laag volume en smalle spread. Niemand wil meer verkopen · aanbod is uitgeput. Sterk koopmomenent.</div>
   </div>
   <div class="learn-sig-card bull">
     <div class="learn-sig-name">💥 Shake Out</div>
-    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Prijs valt scherp op hoog volume maar herstelt snel en sluit hoog. Zwakke houders worden eruit gegooid — grote spelers kopen op de dip.</div>
+    <div class="learn-sig-desc"><span class="learn-badge bull">BULLISH</span> Prijs valt scherp op hoog volume maar herstelt snel en sluit hoog. Zwakke houders worden eruit gegooid · grote spelers kopen op de dip.</div>
   </div>
   <div class="learn-sig-card bear">
     <div class="learn-sig-name">📉 Supply Surge</div>
@@ -3982,7 +3968,7 @@ signals: `
   </div>
   <div class="learn-sig-card bear">
     <div class="learn-sig-name">🔻 Bearish Absorption</div>
-    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Heel hoog volume, smalle spread, dalend. Kopers worden geabsorbeerd — weerstandszone in de making.</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Heel hoog volume, smalle spread, dalend. Kopers worden geabsorbeerd · weerstandszone in de making.</div>
   </div>
   <div class="learn-sig-card bear">
     <div class="learn-sig-name">⚠️ Up-Thrust / Rejection</div>
@@ -3990,35 +3976,35 @@ signals: `
   </div>
   <div class="learn-sig-card bear">
     <div class="learn-sig-name">😴 No Demand</div>
-    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Stijgende candle op laag volume en smalle spread. Kopers hebben geen overtuiging — de stijging heeft geen kracht.</div>
+    <div class="learn-sig-desc"><span class="learn-badge bear">BEARISH</span> Stijgende candle op laag volume en smalle spread. Kopers hebben geen overtuiging · de stijging heeft geen kracht.</div>
   </div>
   <div class="learn-sig-card neutral">
     <div class="learn-sig-name">🌋 Climactic Action</div>
-    <div class="learn-sig-desc"><span class="learn-badge neutral">WAARSCHUWING</span> Extreem hoog volume én brede spread. Kan het einde van een trend zijn — wacht op bevestiging voor je handelt.</div>
+    <div class="learn-sig-desc"><span class="learn-badge neutral">WAARSCHUWING</span> Extreem hoog volume én brede spread. Kan het einde van een trend zijn · wacht op bevestiging voor je handelt.</div>
   </div>
 </div>
 
 <div class="learn-card" style="margin-top:12px;">
   <h4>Hoe gebruik je de signalen?</h4>
   <ul>
-    <li>Kijk altijd eerst naar de <strong>bias</strong> — handel alleen in die richting</li>
+    <li>Kijk altijd eerst naar de <strong>bias</strong> · handel alleen in die richting</li>
     <li>De <strong>sterkste setup</strong>: bias BULLISH + No Supply of Shake Out signaal + prijs boven VWAP</li>
     <li>Meerdere bullish signalen achter elkaar = hogere overtuiging</li>
-    <li>Één signaal alleen is niet genoeg — combineer altijd met bias en checklist</li>
+    <li>Één signaal alleen is niet genoeg · combineer altijd met bias en checklist</li>
   </ul>
 </div>`,
 
 vwap: `
 <div class="learn-card">
-  <h3>📍 VWAP — Volume Weighted Average Price</h3>
+  <h3>📍 VWAP · Volume Weighted Average Price</h3>
   <p>VWAP is de <strong>gemiddelde prijs gewogen naar volume</strong>. Het is het eerlijkste antwoord op de vraag: "wat is de gemiddelde prijs die iedereen betaald heeft?"</p>
-  <p>Grote institutionele traders (pensioenfondsen, banken) gebruiken VWAP als benchmark — ze proberen onder VWAP te kopen en boven VWAP te verkopen.</p>
+  <p>Grote institutionele traders (pensioenfondsen, banken) gebruiken VWAP als benchmark · ze proberen onder VWAP te kopen en boven VWAP te verkopen.</p>
 </div>
 
 <div class="learn-card">
   <h4>📐 Hoe wordt het berekend?</h4>
   <p>Voor elke candle: <strong>(Hoog + Laag + Sluit) ÷ 3 × Volume</strong>, dan gedeeld door het totale volume. Dit geeft een prijs die zwaarder weegt naar momenten met veel handel.</p>
-  <div class="learn-rule">💡 VWAP is cumulatief over de periode — het begint elke nieuwe periode opnieuw. In onze app berekenen we het over de geselecteerde periode (1M/3M/6M).</div>
+  <div class="learn-rule">💡 VWAP is cumulatief over de periode · het begint elke nieuwe periode opnieuw. In onze app berekenen we het over de geselecteerde periode (1M/3M/6M).</div>
 </div>
 
 <div class="learn-card">
@@ -4033,7 +4019,7 @@ vwap: `
     ✅ <strong>Bullish setup voorbeeld:</strong> Bias BULLISH + prijs daalt terug naar VWAP + No Supply signaal verschijnt op VWAP niveau → potentieel sterk instapmoment
   </div>
   <div class="learn-example bear">
-    ❌ <strong>Vermijd:</strong> Prijs ver boven VWAP kopen — je koopt "duur". Wacht op een terugval naar VWAP.
+    ❌ <strong>Vermijd:</strong> Prijs ver boven VWAP kopen · je koopt "duur". Wacht op een terugval naar VWAP.
   </div>
 </div>
 
@@ -4044,21 +4030,21 @@ vwap: `
     <li>Stopping Volume op VWAP = grote kans op ommekeer</li>
     <li>Up-Thrust op VWAP = bevestiging dat VWAP weerstand is</li>
   </ul>
-  <div class="learn-rule amber">⚠️ VWAP is een <strong>contextuele indicator</strong> — het werkt het best als bevestiging, niet als enig signaal.</div>
+  <div class="learn-rule amber">⚠️ VWAP is een <strong>contextuele indicator</strong> · het werkt het best als bevestiging, niet als enig signaal.</div>
 </div>`,
 
 ema: `
 <div class="learn-card">
-  <h3>📈 EMA — Exponential Moving Average</h3>
-  <p>Een EMA is een <strong>voortschrijdend gemiddelde</strong> van de sluitprijzen. Het geeft meer gewicht aan recente prijzen — het reageert dus sneller op nieuwe bewegingen dan een gewoon gemiddelde (SMA).</p>
+  <h3>📈 EMA · Exponential Moving Average</h3>
+  <p>Een EMA is een <strong>voortschrijdend gemiddelde</strong> van de sluitprijzen. Het geeft meer gewicht aan recente prijzen · het reageert dus sneller op nieuwe bewegingen dan een gewoon gemiddelde (SMA).</p>
   <p>Wij gebruiken <strong>EMA 20</strong> (korte termijn) en <strong>EMA 50</strong> (middellange termijn).</p>
 </div>
 
 <div class="learn-card">
   <h4>📖 Wat betekent elke EMA?</h4>
   <ul>
-    <li><strong>EMA 20</strong> — gemiddelde van de laatste 20 handelsdagen (~1 maand). Geeft de korte termijn trend aan.</li>
-    <li><strong>EMA 50</strong> — gemiddelde van de laatste 50 handelsdagen (~2,5 maand). Geeft de middellange termijn trend aan.</li>
+    <li><strong>EMA 20</strong> · gemiddelde van de laatste 20 handelsdagen (~1 maand). Geeft de korte termijn trend aan.</li>
+    <li><strong>EMA 50</strong> · gemiddelde van de laatste 50 handelsdagen (~2,5 maand). Geeft de middellange termijn trend aan.</li>
   </ul>
   <div class="learn-rule">💡 <strong>Vuistregel:</strong> Handel in de richting van de EMA's. Als de prijs boven beide EMA's zit en EMA20 boven EMA50 staat → alles wijst omhoog.</div>
 </div>
@@ -4086,19 +4072,19 @@ ema: `
     <li>Shake Out naar EMA50 + herstel = klassieke "test van steun" setup</li>
     <li>EMA20 kruist EMA50 van onder naar boven (Golden Cross) = trendwisseling signaal</li>
   </ul>
-  <div class="learn-rule warn">🚫 Koop nooit als prijs ver boven EMA20 zit. Wacht op een terugval — dat geeft een betere prijs en kleiner risico.</div>
+  <div class="learn-rule warn">🚫 Koop nooit als prijs ver boven EMA20 zit. Wacht op een terugval · dat geeft een betere prijs en kleiner risico.</div>
 </div>`,
 
 atr: `
 <div class="learn-card">
-  <h3>📐 ATR — Average True Range</h3>
-  <p>ATR meet de <strong>gemiddelde dagelijkse beweging</strong> van een aandeel. Het zegt niks over richting — alleen over <em>hoeveel</em> een aandeel gemiddeld beweegt per dag.</p>
+  <h3>📐 ATR · Average True Range</h3>
+  <p>ATR meet de <strong>gemiddelde dagelijkse beweging</strong> van een aandeel. Het zegt niks over richting · alleen over <em>hoeveel</em> een aandeel gemiddeld beweegt per dag.</p>
   <p>Een ATR van $1.50 betekent: dit aandeel beweegt gemiddeld $1.50 per dag van hoog naar laag.</p>
 </div>
 
 <div class="learn-card">
   <h4>🛡️ Waarvoor gebruik je ATR?</h4>
-  <p><strong>Stop loss berekenen</strong> — dit is de #1 toepassing. In plaats van willekeurig een stop te zetten, gebruik je ATR als maatstaf voor hoe ver de markt normaal "ruis" maakt.</p>
+  <p><strong>Stop loss berekenen</strong> · dit is de #1 toepassing. In plaats van willekeurig een stop te zetten, gebruik je ATR als maatstaf voor hoe ver de markt normaal "ruis" maakt.</p>
   <div class="learn-rule">💡 <strong>Professionele methode:</strong> Stop loss = entry prijs − 1.5× ATR<br>Dit geeft de markt genoeg ruimte om te bewegen zonder dat je gestopt wordt door normale volatiliteit.</div>
 </div>
 
@@ -4111,7 +4097,7 @@ atr: `
     <li>Als je max $100 wilt riskeren → $100 ÷ $0.60 = <strong>166 aandelen</strong></li>
   </ul>
   <div class="learn-example">
-    ✅ De app berekent dit automatisch in de <strong>Positiegrootteberekening</strong> sectie — ATR wordt direct ingevuld als stop loss suggestie.
+    ✅ De app berekent dit automatisch in de <strong>Positiegrootteberekening</strong> sectie · ATR wordt direct ingevuld als stop loss suggestie.
   </div>
 </div>
 
@@ -4122,19 +4108,19 @@ atr: `
     <li><strong>Lage ATR</strong> → rustig aandeel, kleinere stops, geschikt voor beginners</li>
     <li>ATR stijgt vaak voor en tijdens grote nieuwsgebeurtenissen</li>
   </ul>
-  <div class="learn-rule amber">⚠️ Stel je stop nooit strakker in dan 1× ATR — dan wordt je gestopt door gewone marktbewegingen, niet door echte keringen.</div>
+  <div class="learn-rule amber">⚠️ Stel je stop nooit strakker in dan 1× ATR · dan wordt je gestopt door gewone marktbewegingen, niet door echte keringen.</div>
 </div>`,
 
 cvd: `
 <div class="learn-card">
-  <h3>🌊 CVD — Cumulative Volume Delta</h3>
-  <p>CVD toont het <strong>verschil tussen koopvolume en verkoopvolume</strong> over tijd. Het accumuleert dit verschil — vandaar "cumulatief".</p>
+  <h3>🌊 CVD · Cumulative Volume Delta</h3>
+  <p>CVD toont het <strong>verschil tussen koopvolume en verkoopvolume</strong> over tijd. Het accumuleert dit verschil · vandaar "cumulatief".</p>
   <p>Als de CVD stijgt, betekent dit dat er meer gekocht wordt dan verkocht. Als CVD daalt, domineren verkopers.</p>
-  <div class="learn-rule">💡 CVD is de "druk onder de oppervlakte" — het vertelt je wie er echt wint, ook als de prijs dat nog niet laat zien.</div>
+  <div class="learn-rule">💡 CVD is de "druk onder de oppervlakte" · het vertelt je wie er echt wint, ook als de prijs dat nog niet laat zien.</div>
 </div>
 
 <div class="learn-card">
-  <h4>🔍 CVD Divergentie — het krachtigste signaal</h4>
+  <h4>🔍 CVD Divergentie · het krachtigste signaal</h4>
   <p>Een <strong>divergentie</strong> ontstaat als de prijs en CVD in tegengestelde richting bewegen:</p>
   <div class="learn-example">
     🔴 <strong>Bearish divergentie:</strong> Prijs stijgt, maar CVD daalt → verkopers winnen in het geheim. Prijs kan binnenkort dalen.
@@ -4142,7 +4128,7 @@ cvd: `
   <div class="learn-example">
     🟢 <strong>Bullish divergentie:</strong> Prijs daalt, maar CVD stijgt → kopers absorberen stilletjes. Prijs kan binnenkort stijgen.
   </div>
-  <div class="learn-rule warn">⚠️ De app waarschuwt automatisch bij CVD divergentie in de checklist. Neem deze waarschuwing serieus — het is een van de betrouwbaarste signalen.</div>
+  <div class="learn-rule warn">⚠️ De app waarschuwt automatisch bij CVD divergentie in de checklist. Neem deze waarschuwing serieus · het is een van de betrouwbaarste signalen.</div>
 </div>
 
 <div class="learn-card">
@@ -4157,8 +4143,8 @@ cvd: `
 
 volume: `
 <div class="learn-card">
-  <h3>🔊 Volume — de brandstof van de markt</h3>
-  <p>Volume is het <strong>aantal aandelen dat verhandeld wordt</strong> in een periode. Het is de meest fundamentele indicator — zonder volume heeft een prijsbeweging geen kracht.</p>
+  <h3>🔊 Volume · de brandstof van de markt</h3>
+  <p>Volume is het <strong>aantal aandelen dat verhandeld wordt</strong> in een periode. Het is de meest fundamentele indicator · zonder volume heeft een prijsbeweging geen kracht.</p>
   <div class="learn-rule">💡 <strong>Gouden regel:</strong> Een prijsbeweging op hoog volume is betrouwbaar. Een prijsbeweging op laag volume is verdacht.</div>
 </div>
 
@@ -4174,8 +4160,8 @@ volume: `
 
 <div class="learn-card">
   <h4>📍 Volume Profile & POC</h4>
-  <p>De app toont een <strong>Volume Profile</strong> — een horizontaal overzicht van hoeveel volume er op elk prijsniveau verhandeld is.</p>
-  <p>De <strong>POC (Point of Control)</strong> is het prijsniveau met het meeste volume. Dit is het "eerlijkste" niveau — de prijs keert hier vaak naar terug.</p>
+  <p>De app toont een <strong>Volume Profile</strong> · een horizontaal overzicht van hoeveel volume er op elk prijsniveau verhandeld is.</p>
+  <p>De <strong>POC (Point of Control)</strong> is het prijsniveau met het meeste volume. Dit is het "eerlijkste" niveau · de prijs keert hier vaak naar terug.</p>
   <div class="learn-example">
     ✅ Als de prijs ver van de POC af staat, is er een grotere kans dat hij terugkeert naar dat niveau. De POC werkt als een magneet.
   </div>
@@ -4202,9 +4188,9 @@ candles: `
 <div class="learn-card">
   <h4>🔑 Anatomie van een candle</h4>
   <ul>
-    <li><strong>Body</strong> — het dikke deel, van open naar sluit</li>
-    <li><strong>Upper wick (staartje boven)</strong> — tot waar de prijs steeg maar terugviel</li>
-    <li><strong>Lower wick (staartje onder)</strong> — tot waar de prijs daalde maar herstelde</li>
+    <li><strong>Body</strong> · het dikke deel, van open naar sluit</li>
+    <li><strong>Upper wick (staartje boven)</strong> · tot waar de prijs steeg maar terugviel</li>
+    <li><strong>Lower wick (staartje onder)</strong> · tot waar de prijs daalde maar herstelde</li>
     <li><strong>Breed body, geen wicks</strong> → sterke beweging, één richting domineerde</li>
     <li><strong>Kleine body, lange wicks</strong> → onzekerheid, strijd tussen kopers en verkopers</li>
   </ul>
@@ -4231,14 +4217,14 @@ candles: `
     </div>
     <div class="learn-sig-card neutral">
       <div class="learn-sig-name">Doji</div>
-      <div class="learn-sig-desc">Open en sluit bijna gelijk. Niemand wint — onzekerheid. Let op de volgende candle voor richting.</div>
+      <div class="learn-sig-desc">Open en sluit bijna gelijk. Niemand wint · onzekerheid. Let op de volgende candle voor richting.</div>
     </div>
     <div class="learn-sig-card bull">
       <div class="learn-sig-name">Dragonfly Doji</div>
       <div class="learn-sig-desc">Doji met lange lower wick. Verkopers probeerden te duwen maar kopers namen volledig over. Sterk bullish.</div>
     </div>
   </div>
-  <div class="learn-rule">💡 In VSA zijn candlestick patronen bevestiging — gebruik ze altijd samen met volume. Een Hammer op laag volume is zwak. Een Hammer op hoog volume is sterk.</div>
+  <div class="learn-rule">💡 In VSA zijn candlestick patronen bevestiging · gebruik ze altijd samen met volume. Een Hammer op laag volume is zwak. Een Hammer op hoog volume is sterk.</div>
 </div>`,
 
 setup: `
@@ -4248,13 +4234,13 @@ setup: `
 </div>
 
 <div class="learn-card">
-  <h4>✅ De perfecte bullish setup — checklist</h4>
+  <h4>✅ De perfecte bullish setup · checklist</h4>
   <ul>
     <li>☐ <strong>Bias = BULLISH</strong> (verplicht)</li>
     <li>☐ <strong>Prijs boven VWAP</strong> of stuitert van VWAP omhoog</li>
     <li>☐ <strong>Prijs boven EMA20</strong> en EMA20 boven EMA50</li>
     <li>☐ <strong>VSA signaal = No Supply, Shake Out of Stopping Volume</strong></li>
-    <li>☐ <strong>CVD geen divergentie</strong> — of bullish divergentie</li>
+    <li>☐ <strong>CVD geen divergentie</strong> · of bullish divergentie</li>
     <li>☐ <strong>Volume normaal of laag</strong> bij het signaal (bevestigt "geen aanbod")</li>
     <li>☐ <strong>Prijs dicht bij steunzone</strong> (laag in de range)</li>
   </ul>
@@ -4264,9 +4250,9 @@ setup: `
 <div class="learn-card">
   <h4>📐 Entry, Stop en Target bepalen</h4>
   <ul>
-    <li><strong>Entry</strong> — koop bij de opening van de volgende candle na het signaal, of bij een terugval naar de signaalzone</li>
-    <li><strong>Stop loss</strong> — gebruik ATR: entry − 1.5× ATR. Of zet net onder de laagste wick van het signaal.</li>
-    <li><strong>Target</strong> — minimaal 2× je risico (Risk/Reward = 1:2). Voorbeeld: risico $0.50 → target $1.00 winst.</li>
+    <li><strong>Entry</strong> · koop bij de opening van de volgende candle na het signaal, of bij een terugval naar de signaalzone</li>
+    <li><strong>Stop loss</strong> · gebruik ATR: entry − 1.5× ATR. Of zet net onder de laagste wick van het signaal.</li>
+    <li><strong>Target</strong> · minimaal 2× je risico (Risk/Reward = 1:2). Voorbeeld: risico $0.50 → target $1.00 winst.</li>
   </ul>
   <div class="learn-example">
     ✅ <strong>Voorbeeld:</strong> PLTR op $22.00. No Supply signaal. ATR = $0.40.<br>
@@ -4276,7 +4262,7 @@ setup: `
 </div>
 
 <div class="learn-card">
-  <h4>💰 Positiegrootte — hoeveel aandelen?</h4>
+  <h4>💰 Positiegrootte · hoeveel aandelen?</h4>
   <p>Gebruik de <strong>Positiegrootteberekening</strong> in de app. De formule:</p>
   <div class="learn-rule">Aantal aandelen = (Account × Risico%) ÷ (Entry − Stop)<br>Voorbeeld: €5000 × 2% ÷ $0.60 = €100 ÷ $0.60 = <strong>166 aandelen</strong></div>
   <div class="learn-rule warn">🚫 Riskeer nooit meer dan 1–2% van je account per trade. Bij €5000 is dat maximaal €50–100 verlies per trade.</div>
@@ -4285,27 +4271,27 @@ setup: `
 psych: `
 <div class="learn-card">
   <h3>🧠 Trading Psychologie</h3>
-  <p>90% van de traders verliest geld — niet omdat ze geen goede strategie hebben, maar door <strong>emoties</strong>. Angst en hebzucht zijn de twee grootste vijanden van elke trader.</p>
+  <p>90% van de traders verliest geld · niet omdat ze geen goede strategie hebben, maar door <strong>emoties</strong>. Angst en hebzucht zijn de twee grootste vijanden van elke trader.</p>
 </div>
 
 <div class="learn-card">
   <h4>😱 De 5 gevaarlijkste fouten</h4>
   <ul>
-    <li><strong>FOMO (Fear of Missing Out)</strong> — een trade ingaan omdat de prijs al hard gestegen is. Je koopt dan altijd te duur.</li>
-    <li><strong>Hoop in plaats van stop</strong> — je stop niet uitvoeren en hopen dat de prijs terugkomt. Dit is hoe kleine verliezen grote verliezen worden.</li>
-    <li><strong>Revenge trading</strong> — na een verlies direct een nieuwe trade nemen om het terug te verdienen. Altijd verkeerd.</li>
-    <li><strong>Overtrade</strong> — te veel trades tegelijk, te groot posities. Eén slechte dag kan je account ruïneren.</li>
-    <li><strong>Winst te vroeg pakken</strong> — uit angst voor verlies je winst al nemen voordat je target bereikt is.</li>
+    <li><strong>FOMO (Fear of Missing Out)</strong> · een trade ingaan omdat de prijs al hard gestegen is. Je koopt dan altijd te duur.</li>
+    <li><strong>Hoop in plaats van stop</strong> · je stop niet uitvoeren en hopen dat de prijs terugkomt. Dit is hoe kleine verliezen grote verliezen worden.</li>
+    <li><strong>Revenge trading</strong> · na een verlies direct een nieuwe trade nemen om het terug te verdienen. Altijd verkeerd.</li>
+    <li><strong>Overtrade</strong> · te veel trades tegelijk, te groot posities. Eén slechte dag kan je account ruïneren.</li>
+    <li><strong>Winst te vroeg pakken</strong> · uit angst voor verlies je winst al nemen voordat je target bereikt is.</li>
   </ul>
 </div>
 
 <div class="learn-card">
   <h4>✅ De mindset van een winstgevende trader</h4>
   <ul>
-    <li><strong>Denk in kansen, niet in zekerheid</strong> — geen enkele setup werkt 100%. Accepteer dat verliezen er gewoon bij horen.</li>
-    <li><strong>Bescherm kapitaal eerst</strong> — je doel is niet winnen, het is overleven. Als je kapitaal intact blijft, heb je morgen ook kansen.</li>
-    <li><strong>Volg je systeem altijd</strong> — als je setup niet klopt, handel je niet. Simpel.</li>
-    <li><strong>Journal alles</strong> — gebruik de Trade Journal in deze app. Na 20 trades zie je je echte patronen.</li>
+    <li><strong>Denk in kansen, niet in zekerheid</strong> · geen enkele setup werkt 100%. Accepteer dat verliezen er gewoon bij horen.</li>
+    <li><strong>Bescherm kapitaal eerst</strong> · je doel is niet winnen, het is overleven. Als je kapitaal intact blijft, heb je morgen ook kansen.</li>
+    <li><strong>Volg je systeem altijd</strong> · als je setup niet klopt, handel je niet. Simpel.</li>
+    <li><strong>Journal alles</strong> · gebruik de Trade Journal in deze app. Na 20 trades zie je je echte patronen.</li>
   </ul>
   <div class="learn-rule">💡 <strong>Winstgevende traders</strong> hebben vaak een trefferpercentage van maar 40–50%. Ze winnen omdat hun winsten groter zijn dan hun verliezen (goed Risk/Reward).</div>
 </div>
@@ -4317,23 +4303,23 @@ psych: `
     <li>Welke setups <em>echt</em> voor jou werken (niet wat je denkt)</li>
     <li>Op welke tijden je beter en slechter presteert</li>
     <li>Of je stop losses consequent uitvoert</li>
-    <li>Je emotionele patronen — trade je anders na een verlies?</li>
+    <li>Je emotionele patronen · trade je anders na een verlies?</li>
   </ul>
   <div class="learn-rule amber">⏳ Gebruik de <strong>Trade Journal</strong> bovenaan in de app. Na 30 trades heb je meer data over jezelf dan de meeste traders ooit hebben.</div>
 </div>`,
 
 videos: `
 <div class="learn-card">
-  <h3>▶️ YouTube Videos — Leer van de beste traders</h3>
-  <p>Klik op een onderwerp om de meest recente YouTube videos te vinden. De links openen een YouTube zoekopdracht — altijd actueel, nooit verouderd.</p>
+  <h3>▶️ YouTube Videos · Leer van de beste traders</h3>
+  <p>Klik op een onderwerp om de meest recente YouTube videos te vinden. De links openen een YouTube zoekopdracht · altijd actueel, nooit verouderd.</p>
 </div>
 
 <div class="learn-video-section">
-  <div class="learn-video-section-title">📊 VSA — VOLUME SPREAD ANALYSIS</div>
+  <div class="learn-video-section-title">📊 VSA · VOLUME SPREAD ANALYSIS</div>
   <div class="learn-video-grid">
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=VSA+volume+spread+analysis+beginners+trading" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
-      <div class="learn-video-body"><div class="learn-video-title">VSA Beginners — Zoek op YouTube</div><div class="learn-video-meta"><span class="learn-video-tag">VSA</span>Nieuwste videos</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">VSA Beginners · Zoek op YouTube</div><div class="learn-video-meta"><span class="learn-video-tag">VSA</span>Nieuwste videos</div></div>
     </a>
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=no+supply+no+demand+VSA+trading+signal" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
@@ -4361,7 +4347,7 @@ videos: `
 </div>
 
 <div class="learn-video-section">
-  <div class="learn-video-section-title">📈 EMA — MOVING AVERAGES</div>
+  <div class="learn-video-section-title">📈 EMA · MOVING AVERAGES</div>
   <div class="learn-video-grid">
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=EMA+exponential+moving+average+trading+explained" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
@@ -4383,7 +4369,7 @@ videos: `
     </a>
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=trading+risk+management+1+percent+rule+beginners" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
-      <div class="learn-video-body"><div class="learn-video-title">Risicobeheer — De 1% Regel</div><div class="learn-video-meta"><span class="learn-video-tag">Risico</span>Essentieel · Nieuwste videos</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Risicobeheer · De 1% Regel</div><div class="learn-video-meta"><span class="learn-video-tag">Risico</span>Essentieel · Nieuwste videos</div></div>
     </a>
   </div>
 </div>
@@ -4411,18 +4397,18 @@ videos: `
   <div class="learn-video-grid">
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=trading+psychology+why+traders+fail+beginners" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
-      <div class="learn-video-body"><div class="learn-video-title">Trading Psychologie — Waarom Traders Falen</div><div class="learn-video-meta"><span class="learn-video-tag">Psychologie</span>Nieuwste videos</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Trading Psychologie · Waarom Traders Falen</div><div class="learn-video-meta"><span class="learn-video-tag">Psychologie</span>Nieuwste videos</div></div>
     </a>
     <a class="learn-video-card" href="https://www.youtube.com/results?search_query=trading+journal+how+to+improve+win+rate" target="_blank" rel="noopener">
       <div class="learn-video-thumb" style="display:flex;align-items:center;justify-content:center;background:#f00;"><span style="font-size:32px;">▶</span></div>
-      <div class="learn-video-body"><div class="learn-video-title">Trade Journal — Winrate Verbeteren</div><div class="learn-video-meta"><span class="learn-video-tag">Journal</span>Nieuwste videos</div></div>
+      <div class="learn-video-body"><div class="learn-video-title">Trade Journal · Winrate Verbeteren</div><div class="learn-video-meta"><span class="learn-video-tag">Journal</span>Nieuwste videos</div></div>
     </a>
   </div>
 </div>
 
 <div class="learn-card" style="margin-top:4px;background:rgba(45,122,79,0.05);border-color:rgba(45,122,79,0.2);">
   <h4>💡 Hoe werkt dit?</h4>
-  <p style="font-size:13px;line-height:1.7;margin:0;">Elke knop opent een YouTube zoekopdracht voor dat onderwerp. Zo zie je altijd de meest recente en best beoordeelde videos — nooit verouderde links. Sorteer op YouTube op <strong>Meest bekeken</strong> of <strong>Nieuwste</strong> voor de beste resultaten.</p>
+  <p style="font-size:13px;line-height:1.7;margin:0;">Elke knop opent een YouTube zoekopdracht voor dat onderwerp. Zo zie je altijd de meest recente en best beoordeelde videos · nooit verouderde links. Sorteer op YouTube op <strong>Meest bekeken</strong> of <strong>Nieuwste</strong> voor de beste resultaten.</p>
 </div>`
 
 };
