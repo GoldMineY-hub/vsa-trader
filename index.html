@@ -14,29 +14,121 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.1/dist/chartjs-adapter-luxon.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* ── KLEUR TOKENS · LIGHT MODE ── */
   :root {
     --bg:#f5f0e8;--surface:#faf7f2;--surface2:#ede8df;--border:#ddd6c8;
-    --text:#2c2416;--muted:#8a7d6b;--accent:#2d7a4f;--accent2:#c0392b;
-    --accent3:#b8860b;--blue:#2563a8;--purple:#6d3fa8;
-    --glow:rgba(45,122,79,0.1);--shadow:0 2px 12px rgba(44,36,22,0.07);
+    --text:#2c2416;--muted:#8a7d6b;
+    --accent:#2d7a4f;--accent2:#c0392b;--accent3:#b8860b;
+    --blue:#2563a8;--purple:#6d3fa8;
+    --glow:rgba(45,122,79,0.12);--shadow:0 2px 12px rgba(44,36,22,0.08);
+    --header-bg:#1a1a1c;--header-border:rgba(255,255,255,0.06);
+    --mkt-open-bg:rgba(45,200,100,0.15);--mkt-open-text:#22c55e;--mkt-open-dot:#22c55e;
+    --mkt-pre-bg:rgba(250,175,0,0.15);--mkt-pre-text:#faaf00;--mkt-pre-dot:#faaf00;
+    --mkt-closed-bg:rgba(255,255,255,0.06);--mkt-closed-text:#666;--mkt-closed-dot:#444;
+    --clock-nl:#fff;--clock-us:#22c55e;
   }
+
+  /* ── DARK MODE ── */
+  body.dark {
+    --bg:#0f0f11;--surface:#1a1a1c;--surface2:#222226;--border:#2e2e33;
+    --text:#e8e4dc;--muted:#6b6660;
+    --accent:#34d068;--accent2:#e05252;--accent3:#f0a030;
+    --blue:#4a8fd4;--purple:#9b6fd4;
+    --glow:rgba(52,208,104,0.1);--shadow:0 2px 16px rgba(0,0,0,0.4);
+    --header-bg:#0a0a0c;--header-border:rgba(255,255,255,0.04);
+  }
+
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
-  body{overscroll-behavior-y:contain;}
+  body{overscroll-behavior-y:contain;transition:background 0.3s,color 0.3s;}
   body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:15px;-webkit-font-smoothing:antialiased;}
-  body::before{content:'';position:fixed;inset:0;
-    background:radial-gradient(ellipse at 10% 10%,rgba(255,248,230,0.6) 0%,transparent 50%),
-               radial-gradient(ellipse at 90% 90%,rgba(230,240,255,0.3) 0%,transparent 50%);
-    pointer-events:none;z-index:0;}
-  .header{padding:10px 20px;border-bottom:none;display:flex;align-items:center;
-    justify-content:space-between;position:sticky;top:0;z-index:100;background:#1c1c1e;flex-wrap:wrap;gap:10px;}
-  .logo-title{font-size:14px;font-weight:700;letter-spacing:2px;font-family:'Space Mono',monospace;color:#fff;}
+
+  /* ── HEADER ── */
+  .header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 24px;height:64px;
+    background:var(--header-bg);
+    border-bottom:1px solid var(--header-border);
+    position:sticky;top:0;z-index:100;
+    flex-wrap:wrap;gap:8px;
+  }
+  .header-logo{
+    font-family:'Space Mono',monospace;font-size:16px;font-weight:700;
+    letter-spacing:3px;color:#fff;white-space:nowrap;
+  }
+  .header-logo span{color:#34d068;}
+
+  /* Market blocks */
+  .header-markets{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .mkt-block{
+    display:flex;flex-direction:column;gap:2px;
+    padding:6px 12px;border-radius:8px;
+    background:var(--mkt-closed-bg);
+    border:1px solid transparent;
+    transition:all 0.3s;min-width:90px;
+  }
+  .mkt-block.open{background:var(--mkt-open-bg);border-color:rgba(34,197,94,0.2);}
+  .mkt-block.pre{background:var(--mkt-pre-bg);border-color:rgba(250,175,0,0.2);}
+  .mkt-name-row{display:flex;align-items:center;gap:5px;}
+  .mkt-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--mkt-closed-dot);flex-shrink:0;
+  }
+  .mkt-block.open .mkt-dot{background:var(--mkt-open-dot);box-shadow:0 0 6px var(--mkt-open-dot);}
+  .mkt-block.pre .mkt-dot{background:var(--mkt-pre-dot);}
+  .mkt-name{
+    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
+    color:#fff;letter-spacing:1px;
+  }
+  .mkt-status-label{
+    font-family:'Space Mono',monospace;font-size:9px;font-weight:700;
+    color:var(--mkt-closed-text);letter-spacing:1px;
+  }
+  .mkt-block.open .mkt-status-label{color:var(--mkt-open-text);}
+  .mkt-block.pre .mkt-status-label{color:var(--mkt-pre-text);}
+  .mkt-time{
+    font-family:'Space Mono',monospace;font-size:9px;
+    color:rgba(255,255,255,0.3);
+  }
+  .mkt-block.open .mkt-time{color:rgba(34,197,94,0.6);}
+  .mkt-premarket{
+    font-family:'Space Mono',monospace;font-size:10px;font-weight:700;
+    padding:4px 10px;border-radius:20px;
+    background:var(--mkt-pre-bg);color:var(--mkt-pre-text);
+    border:1px solid rgba(250,175,0,0.3);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.65;}}
+
+  /* Clock */
+  .header-right-group{display:flex;align-items:center;gap:12px;}
+  .header-clock{text-align:right;}
+  .clock-nl{
+    font-family:'Space Mono',monospace;font-size:15px;font-weight:700;
+    color:var(--clock-nl);letter-spacing:1px;line-height:1.2;
+  }
+  .clock-us{
+    font-family:'Space Mono',monospace;font-size:10px;
+    color:var(--clock-us);letter-spacing:1px;
+  }
+
+  /* Dark mode toggle */
+  .darkmode-btn{
+    width:36px;height:36px;border-radius:50%;
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+    cursor:pointer;font-size:16px;
+    display:flex;align-items:center;justify-content:center;
+    transition:all 0.2s;flex-shrink:0;
+  }
+  .darkmode-btn:hover{background:rgba(255,255,255,0.15);}
+
+  /* Hide old elements */
+  .logo-title{display:none;}
   .logo-sub{display:none;}
-  .header-right{display:flex;align-items:center;gap:12px;}
   .free-badge{display:none;}
-  .lang-btn{display:none;padding:6px 14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;
-    cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
-  .lang-btn.active{background:var(--accent);color:#fff;}
+  .lang-btn{display:none;}
+  .header-right{display:none;}
+
   .main{max-width:1100px;margin:0 auto;padding:28px 20px;position:relative;z-index:1;}
   .search-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
   .ticker-input{flex:1;min-width:180px;max-width:220px;background:var(--surface);
@@ -776,17 +868,51 @@
   </div>
 </div>
 
-<header class="header" style="background:#1c1c1e;border-bottom:none;padding:10px 20px;">
-  <div style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;">
-    VSA <span style="color:#2d7a4f;">TRADER</span>
+<header class="header" id="appHeader">
+  <!-- Logo -->
+  <div class="header-logo">
+    VSA <span>TRADER</span>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-    <span class="app-mkt closed" id="msNYSE">NYSE</span>
-    <span class="app-mkt closed" id="msNASDAQ">NASDAQ</span>
-    <span class="app-mkt closed" id="msAEX">AEX</span>
-    <span class="app-mkt pre" id="msPremarket" style="display:none;">⏰ PREMARKET</span>
+
+  <!-- Markten met openingstijden -->
+  <div class="header-markets">
+    <div class="mkt-block" id="mktNYSE">
+      <div class="mkt-name-row">
+        <span class="mkt-dot" id="dotNYSE"></span>
+        <span class="mkt-name">NYSE</span>
+        <span class="mkt-status-label" id="lblNYSE">GESLOTEN</span>
+      </div>
+      <div class="mkt-time" id="timeNYSE">09:30 · 16:00 ET</div>
+    </div>
+    <div class="mkt-block" id="mktNASDAQ">
+      <div class="mkt-name-row">
+        <span class="mkt-dot" id="dotNASDAQ"></span>
+        <span class="mkt-name">NASDAQ</span>
+        <span class="mkt-status-label" id="lblNASDAQ">GESLOTEN</span>
+      </div>
+      <div class="mkt-time" id="timeNASDAQ">09:30 · 16:00 ET</div>
+    </div>
+    <div class="mkt-block" id="mktAEX">
+      <div class="mkt-name-row">
+        <span class="mkt-dot" id="dotAEX"></span>
+        <span class="mkt-name">AEX</span>
+        <span class="mkt-status-label" id="lblAEX">GESLOTEN</span>
+      </div>
+      <div class="mkt-time" id="timeAEX">09:00 · 17:30 NL</div>
+    </div>
+    <div class="mkt-premarket" id="msPremarket" style="display:none;">⏰ PREMARKET</div>
   </div>
-  <div style="font-family:'Space Mono',monospace;font-size:11px;color:#666;" id="msTime">--:--</div>
+
+  <!-- Tijd + dark mode -->
+  <div class="header-right-group">
+    <div class="header-clock">
+      <div class="clock-nl" id="msTimeNL">--:--</div>
+      <div class="clock-us" id="msTimeUS">-- ET</div>
+    </div>
+    <button class="darkmode-btn" id="darkModeBtn" onclick="toggleDarkMode()" title="Dark mode">
+      <span id="darkModeIcon">🌙</span>
+    </button>
+  </div>
 </header>
 
 <main class="main">
@@ -3453,51 +3579,73 @@ function renderJournalList() {
 // ── MARKET STATUS BALK ──
 // ══════════════════════════════════════════════
 
+// ── DARK MODE ──
+function toggleDarkMode() {
+  const dark = document.body.classList.toggle('dark');
+  localStorage.setItem('vsa_dark', dark ? '1' : '0');
+  const icon = document.getElementById('darkModeIcon');
+  if (icon) icon.textContent = dark ? '☀️' : '🌙';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', dark ? '#0f0f11' : '#f5f0e8');
+}
+(function() {
+  if (localStorage.getItem('vsa_dark') === '1') {
+    document.body.classList.add('dark');
+    document.addEventListener('DOMContentLoaded', () => {
+      const icon = document.getElementById('darkModeIcon');
+      if (icon) icon.textContent = '☀️';
+    });
+  }
+})();
+
 function updateMarketStatusBar() {
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
   const nyTime = new Date(utc + 3600000 * (isDST_US(now) ? -4 : -5));
   const nlTime = new Date(utc + 3600000 * (isDST_EU(now) ? 2 : 1));
   const nyH = nyTime.getHours() + nyTime.getMinutes() / 60;
+  const nlH = nlTime.getHours() + nlTime.getMinutes() / 60;
   const day = now.getUTCDay();
   const isWeekday = day >= 1 && day <= 5;
 
-  // NYSE/NASDAQ: 9:30–16:00 ET
-  const nyOpen = isWeekday && nyH >= 9.5 && nyH < 16;
-  const nyPre  = isWeekday && nyH >= 4 && nyH < 9.5;
-  const nyPost = isWeekday && nyH >= 16 && nyH < 20;
+  const nyOpen  = isWeekday && nyH >= 9.5 && nyH < 16;
+  const nyPre   = isWeekday && nyH >= 4   && nyH < 9.5;
+  const aexOpen = isWeekday && nlH >= 9   && nlH < 17.5;
 
-  // AEX: 9:00–17:30 NL time
-  const nlH = nlTime.getHours() + nlTime.getMinutes() / 60;
-  const aexOpen = isWeekday && nlH >= 9 && nlH < 17.5;
+  const fmt2 = t => t.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
 
-  const fmt = t => t.toLocaleTimeString('nl-NL', {hour:'2-digit', minute:'2-digit'});
-
-  const setStatus = (id, open, pre, label) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (open)      { el.textContent = label + ' OPEN';    el.className = 'app-mkt open'; }
-    else if (pre)  { el.textContent = label + ' PRE';     el.className = 'app-mkt pre'; }
-    else           { el.textContent = label + ' GESLOTEN'; el.className = 'app-mkt closed'; }
+  const setMkt = (blockId, dotId, lblId, open, pre) => {
+    const block = document.getElementById(blockId);
+    const lbl   = document.getElementById(lblId);
+    if (!block) return;
+    block.className = 'mkt-block' + (open ? ' open' : pre ? ' pre' : '');
+    if (lbl) lbl.textContent = open ? 'OPEN' : pre ? 'PRE-MARKET' : 'GESLOTEN';
   };
 
-  setStatus('msNYSE',   nyOpen,  nyPre,  'NYSE');
-  setStatus('msNASDAQ', nyOpen,  nyPre,  'NASDAQ');
-  setStatus('msAEX',    aexOpen, false,  'AEX');
+  setMkt('mktNYSE',   'dotNYSE',   'lblNYSE',   nyOpen,  nyPre);
+  setMkt('mktNASDAQ', 'dotNASDAQ', 'lblNASDAQ', nyOpen,  nyPre);
+  setMkt('mktAEX',    'dotAEX',    'lblAEX',    aexOpen, false);
 
-  const msTime = document.getElementById('msTime');
-  if (msTime) msTime.textContent = '🇳🇱 ' + fmt(nlTime) + '  🇺🇸 ' + fmt(nyTime) + ' ET';
+  const tNYSE   = document.getElementById('timeNYSE');
+  const tNASDAQ = document.getElementById('timeNASDAQ');
+  const tAEX    = document.getElementById('timeAEX');
+  if (tNYSE)   tNYSE.textContent   = nyOpen  ? 'Sluit 16:00 ET'   : nyPre  ? 'Opent 09:30 ET'   : '09:30 · 16:00 ET';
+  if (tNASDAQ) tNASDAQ.textContent = nyOpen  ? 'Sluit 16:00 ET'   : nyPre  ? 'Opent 09:30 ET'   : '09:30 · 16:00 ET';
+  if (tAEX)    tAEX.textContent    = aexOpen ? 'Sluit 17:30 NL'   : '09:00 · 17:30 NL';
+
+  const nlEl = document.getElementById('msTimeNL');
+  const usEl = document.getElementById('msTimeUS');
+  if (nlEl) nlEl.textContent = fmt2(nlTime);
+  if (usEl) usEl.textContent = fmt2(nyTime) + ' ET';
 
   const preel = document.getElementById('msPremarket');
-  if (preel) preel.style.display = nyPre ? 'inline-flex' : 'none';
+  if (preel) preel.style.display = nyPre ? 'flex' : 'none';
 }
 
 function isDST_US(d) {
-  // US DST: 2nd Sunday March – 1st Sunday November
   const jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
   const jul = new Date(d.getFullYear(), 6, 1).getTimezoneOffset();
-  return Math.min(jan, jul) === d.getTimezoneOffset() ? false : true;
-  // Simpler: check offset
+  return Math.min(jan, jul) !== d.getTimezoneOffset();
 }
 function isDST_EU(d) {
   const jan = new Date(d.getFullYear(), 0, 1).getTimezoneOffset();
@@ -3505,7 +3653,7 @@ function isDST_EU(d) {
 }
 
 updateMarketStatusBar();
-setInterval(updateMarketStatusBar, 30000);
+setInterval(updateMarketStatusBar, 15000);
 
 // ══════════════════════════════════════════════
 // ══════════════════════════════════════════════
