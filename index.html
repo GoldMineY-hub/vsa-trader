@@ -455,24 +455,31 @@
 
   /* ── LIVE TICKER WATCHLIST ── */
   .watchlist-wrap{margin-bottom:16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
-  .watchlist-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2);}
+  .watchlist-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:8px;}
   .watchlist-bar-left{display:flex;align-items:center;gap:10px;}
   .watchlist-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;white-space:nowrap;}
   .watchlist-slots{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:rgba(45,122,79,0.1);padding:2px 9px;border-radius:10px;white-space:nowrap;}
+  .watchlist-bar-right{display:flex;align-items:center;gap:8px;}
   .watchlist-refresh-info{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);display:flex;align-items:center;gap:6px;}
-  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
-  .watchlist-cards{display:flex;flex-wrap:wrap;gap:0;padding:0;}
-  .watch-card{flex:1;min-width:130px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:background 0.15s;position:relative;border-right:1px solid var(--border);}
-  .watch-card:last-child{border-right:none;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:blink 2s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .watch-sort-btn{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;}
+  .watch-sort-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .watch-sort-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.07);}
+  /* Grid layout for up to 20 stocks */
+  .watchlist-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0;padding:0;}
+  .watch-card{padding:12px 14px;display:flex;flex-direction:column;gap:3px;cursor:pointer;transition:all 0.15s;position:relative;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
   .watch-card:hover{background:rgba(45,122,79,0.04);}
-  .watch-card-top{display:flex;align-items:center;justify-content:space-between;}
+  .watch-card.bias-bull{border-left:3px solid var(--accent);}
+  .watch-card.bias-bear{border-left:3px solid var(--accent2);}
+  .watch-card.bias-neutral{}
+  .watch-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
   .watch-sym{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text);}
   .watch-market{font-family:'Space Mono',monospace;font-size:8px;padding:1px 5px;border-radius:4px;font-weight:700;}
   .watch-market.open{background:rgba(45,122,79,0.12);color:var(--accent);}
   .watch-market.closed{background:var(--surface2);color:var(--muted);}
   .watch-market.pre{background:rgba(184,134,11,0.12);color:var(--accent3);}
-  .watch-price{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;}
+  .watch-price{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;}
   .watch-price.up{color:var(--accent);}
   .watch-price.down{color:var(--accent2);}
   .watch-price.flat{color:var(--text);}
@@ -480,14 +487,19 @@
   .watch-chg.up{color:var(--accent);}
   .watch-chg.down{color:var(--accent2);}
   .watch-chg.flat{color:var(--muted);}
+  .watch-bias-tag{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;padding:1px 6px;border-radius:4px;margin-top:2px;display:inline-block;align-self:flex-start;}
+  .watch-bias-tag.bull{background:rgba(45,122,79,0.1);color:var(--accent);}
+  .watch-bias-tag.bear{background:rgba(192,57,43,0.08);color:var(--accent2);}
+  .watch-bias-tag.neutral{background:rgba(184,134,11,0.08);color:var(--accent3);}
+  .watch-sparkline{margin-top:4px;height:28px;width:100%;}
   .watch-flash-up{animation:flashGreen 0.6s ease;}
   .watch-flash-down{animation:flashRed 0.6s ease;}
   @keyframes flashGreen{0%{background:rgba(45,122,79,0.25);}100%{background:transparent;}}
   @keyframes flashRed{0%{background:rgba(192,57,43,0.18);}100%{background:transparent;}}
   .watch-spin{display:inline-block;width:8px;height:8px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
-  .watch-extra-row{display:flex;align-items:center;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);width:100%;}
+  .watch-extra-row{display:flex;align-items:center;gap:6px;margin-top:4px;padding-top:4px;border-top:1px solid var(--border);width:100%;}
   .watch-extra-label{font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;background:rgba(184,134,11,0.15);color:var(--accent3);border:1px solid rgba(184,134,11,0.3);border-radius:4px;padding:1px 5px;white-space:nowrap;}
-  .watch-extra-price{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+  .watch-extra-price{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
   .watch-extra-chg{font-family:'Space Mono',monospace;font-size:10px;margin-left:auto;}
   .watch-extra-price.up,.watch-extra-chg.up{color:var(--accent);}
   .watch-extra-price.down,.watch-extra-chg.down{color:var(--accent2);}
@@ -495,10 +507,13 @@
   .watch-remove{position:absolute;top:4px;right:5px;background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:1px 4px;border-radius:4px;opacity:0;line-height:1;transition:opacity 0.1s;}
   .watch-card:hover .watch-remove{opacity:1;}
   .watch-remove:hover{color:var(--accent2);}
+  .watch-yahoo{font-size:9px;font-family:'Space Mono',monospace;color:var(--blue);text-decoration:none;opacity:0.6;margin-top:2px;}
+  .watch-yahoo:hover{opacity:1;}
   .watch-empty{padding:18px 20px;font-size:13px;color:var(--muted);font-family:'Inter',sans-serif;}
   .save-btn{background:var(--surface);border:1.5px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-weight:700;font-size:12px;padding:13px 16px;border-radius:8px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
   .save-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:rgba(45,122,79,0.06);}
   .save-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
 
   /* ── PREMARKET SCREENER LINKS ── */
   .screener-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:4px;}
@@ -936,16 +951,22 @@
   <div class="watchlist-wrap" id="watchlistWrap">
     <div class="watchlist-bar">
       <div class="watchlist-bar-left">
-        <div class="watchlist-label" data-en="📌 WATCHLIST" data-nl="📌 WATCHLIJST">📌 WATCHLIST</div>
-        <div class="watchlist-slots" id="watchSlots">0 / 7</div>
+        <div class="watchlist-label">📌 WATCHLIST</div>
+        <div class="watchlist-slots" id="watchSlots">0 / 20</div>
       </div>
-      <div class="watchlist-refresh-info">
-        <span class="live-dot"></span>
-        <span id="watchLastUpdate" data-en="updating..." data-nl="updaten...">updaten...</span>
+      <div class="watchlist-bar-right">
+        <button class="watch-sort-btn active" id="wsort-default" onclick="sortWatchlist('default')">Volgorde</button>
+        <button class="watch-sort-btn" id="wsort-chg" onclick="sortWatchlist('chg')">% ↓</button>
+        <button class="watch-sort-btn" id="wsort-bias" onclick="sortWatchlist('bias')">Bias</button>
+        <button class="watch-sort-btn" id="wsort-alpha" onclick="sortWatchlist('alpha')">A·Z</button>
+        <div class="watchlist-refresh-info">
+          <span class="live-dot"></span>
+          <span id="watchLastUpdate">updaten...</span>
+        </div>
       </div>
     </div>
     <div class="watchlist-cards" id="watchlistCards">
-      <div class="watch-empty" data-en="Save a stock after analysing it to track prices here." data-nl="Sla een aandeel op na analyse om de prijs hier te volgen.">Sla een aandeel op na analyse om de prijs hier te volgen.</div>
+      <div class="watch-empty">Sla een aandeel op na analyse om de prijs hier te volgen.</div>
     </div>
   </div>
 
@@ -2433,15 +2454,35 @@ function getMarketState(exchange, currency) {
 // ── LIVE WATCHLIST TICKER ──
 // ══════════════════════════════════════════════
 
-const MAX_WATCH = 7;
-const REFRESH_INTERVAL = 60; // seconds between price updates
+const MAX_WATCH = 20;
+const REFRESH_INTERVAL = 60;
 let watchlist = JSON.parse(localStorage.getItem('vsa_watchlist') || '[]');
 let watchCountdown = REFRESH_INTERVAL;
 let watchIntervalId = null;
-let prevPrices = {}; // track previous prices for flash animation
+let prevPrices = {};
+let watchSortMode = 'default';
 
 function saveWatchlist() {
   localStorage.setItem('vsa_watchlist', JSON.stringify(watchlist));
+}
+
+function sortWatchlist(mode) {
+  watchSortMode = mode;
+  document.querySelectorAll('.watch-sort-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('wsort-' + mode);
+  if (btn) btn.classList.add('active');
+  renderWatchlist();
+}
+
+function getWatchlistSorted() {
+  const list = [...watchlist];
+  if (watchSortMode === 'chg')   return list.sort((a,b) => (b.changePct||0) - (a.changePct||0));
+  if (watchSortMode === 'bias')  return list.sort((a,b) => {
+    const order = {BULLISH:0, NEUTRAL:1, BEARISH:2};
+    return (order[a.bias]??1) - (order[b.bias]??1);
+  });
+  if (watchSortMode === 'alpha') return list.sort((a,b) => a.sym.localeCompare(b.sym));
+  return list; // default order
 }
 
 function renderWatchlist() {
@@ -2458,56 +2499,49 @@ function renderWatchlist() {
   container.innerHTML = '';
 
   if (watchlist.length === 0) {
-    container.innerHTML = `<div class="watch-empty">${'Sla een aandeel op na analyse om de prijs hier te volgen.'}</div>`;
+    container.innerHTML = `<div class="watch-empty">Sla een aandeel op na analyse om de prijs hier te volgen.</div>`;
     return;
   }
 
-  watchlist.forEach((w, i) => {
-    const card = document.createElement('div');
-    card.className = 'watch-card';
-    card.id = `watch-card-${w.sym}`;
-    card.title = 'Klik om te analyseren';
+  const sorted = getWatchlistSorted();
 
+  sorted.forEach((w) => {
+    const origIdx = watchlist.findIndex(x => x.sym === w.sym);
+    const card = document.createElement('div');
     const cls = w.change > 0 ? 'up' : w.change < 0 ? 'down' : 'flat';
     const sign = w.change > 0 ? '+' : '';
     const currency = w.currency === 'EUR' ? '€' : w.currency === 'GBP' ? '£' : '$';
 
-    // Calculate market state from local time · don't rely on Yahoo returning marketState
-    // Works for NYSE/NASDAQ (ET), most EU exchanges (CET), LSE (GMT/BST)
+    // Bias class
+    const biasCls = w.bias === 'BULLISH' ? 'bias-bull' : w.bias === 'BEARISH' ? 'bias-bear' : '';
+    card.className = `watch-card ${biasCls}`;
+    card.id = `watch-card-${w.sym}`;
+    card.title = 'Klik om te analyseren';
+
     const computedState = getMarketState(w.exchange || 'NYQ', w.currency || 'USD');
-    const marketState = computedState; // use computed, ignore Yahoo's (often missing via proxy)
+    const marketLabel = computedState === 'REGULAR' ? 'OPEN' : computedState === 'PRE' ? 'PRE' : computedState === 'POST' ? 'NA' : 'GESLOTEN';
+    const marketCls   = computedState === 'REGULAR' ? 'open' : (computedState === 'PRE' || computedState === 'POST') ? 'pre' : 'closed';
 
-    const marketLabel = marketState === 'REGULAR' ? 'OPEN'
-                      : marketState === 'PRE'     ? 'PRE-MARKET'
-                      : marketState === 'POST'    ? ('NA-MARKET')
-                      : ('GESLOTEN');
-    const marketCls = marketState === 'REGULAR' ? 'open'
-                    : (marketState === 'PRE' || marketState === 'POST') ? 'pre' : 'closed';
+    // Bias tag
+    const biasTag = w.bias
+      ? `<span class="watch-bias-tag ${w.bias === 'BULLISH' ? 'bull' : w.bias === 'BEARISH' ? 'bear' : 'neutral'}">${w.bias}</span>`
+      : '';
 
-    // Build extra pre/post market line
+    // Pre/post extra line
     let extraLine = '';
-    if (w.loaded && marketState === 'PRE' && w.prePrice != null) {
-      const preCls = w.preChangePct > 0 ? 'up' : w.preChangePct < 0 ? 'down' : 'flat';
-      const preSign = w.preChangePct > 0 ? '+' : '';
-      extraLine = `
-        <div class="watch-extra-row">
-          <span class="watch-extra-label">PRE</span>
-          <span class="watch-extra-price ${preCls}">${currency}${w.prePrice.toFixed(2)}</span>
-          <span class="watch-extra-chg ${preCls}">${preSign}${w.preChangePct.toFixed(2)}%</span>
-        </div>`;
-    } else if (w.loaded && marketState === 'POST' && w.postPrice != null) {
-      const postCls = w.postChangePct > 0 ? 'up' : w.postChangePct < 0 ? 'down' : 'flat';
-      const postSign = w.postChangePct > 0 ? '+' : '';
-      extraLine = `
-        <div class="watch-extra-row">
-          <span class="watch-extra-label">${'NA'}</span>
-          <span class="watch-extra-price ${postCls}">${currency}${w.postPrice.toFixed(2)}</span>
-          <span class="watch-extra-chg ${postCls}">${postSign}${w.postChangePct.toFixed(2)}%</span>
-        </div>`;
+    if (w.loaded && computedState === 'PRE' && w.prePrice != null) {
+      const pc = w.preChangePct > 0 ? 'up' : w.preChangePct < 0 ? 'down' : 'flat';
+      extraLine = `<div class="watch-extra-row"><span class="watch-extra-label">PRE</span><span class="watch-extra-price ${pc}">${currency}${w.prePrice.toFixed(2)}</span><span class="watch-extra-chg ${pc}">${w.preChangePct > 0 ? '+' : ''}${w.preChangePct?.toFixed(2)}%</span></div>`;
+    } else if (w.loaded && computedState === 'POST' && w.postPrice != null) {
+      const pc = w.postChangePct > 0 ? 'up' : w.postChangePct < 0 ? 'down' : 'flat';
+      extraLine = `<div class="watch-extra-row"><span class="watch-extra-label">NA</span><span class="watch-extra-price ${pc}">${currency}${w.postPrice.toFixed(2)}</span><span class="watch-extra-chg ${pc}">${w.postChangePct > 0 ? '+' : ''}${w.postChangePct?.toFixed(2)}%</span></div>`;
     }
 
+    // Sparkline canvas ID
+    const sparkId = `spark-${w.sym}`;
+
     card.innerHTML = `
-      <button class="watch-remove" onclick="removeFromWatchlist(${i},event)" title="${'Verwijderen'}">✕</button>
+      <button class="watch-remove" onclick="removeFromWatchlist(${origIdx},event)" title="Verwijderen">✕</button>
       <div class="watch-card-top">
         <span class="watch-sym">${w.sym}</span>
         ${w.loaded ? `<span class="watch-market ${marketCls}">${marketLabel}</span>` : ''}
@@ -2515,24 +2549,59 @@ function renderWatchlist() {
       ${w.loaded
         ? `<span class="watch-price ${cls}" id="wp-${w.sym}">${currency}${w.price != null ? w.price.toFixed(2) : '·'}</span>
            <span class="watch-chg ${cls}" id="wc-${w.sym}">${sign}${w.changePct != null ? w.changePct.toFixed(2) : '0.00'}%</span>
-           ${extraLine}`
-        : `<span class="watch-price flat">·</span>
-           <span class="watch-chg flat">·</span>`}
-      <a href="https://finance.yahoo.com/quote/${w.sym}" target="_blank" rel="noopener"
-         onclick="event.stopPropagation()"
-         style="font-size:10px;font-family:'Space Mono',monospace;color:var(--blue);text-decoration:none;margin-top:4px;display:inline-block;opacity:0.7;">
-        Yahoo →
-      </a>
+           ${biasTag}
+           ${extraLine}
+           <canvas class="watch-sparkline" id="${sparkId}" height="28"></canvas>`
+        : `<span class="watch-price flat">·</span><span class="watch-chg flat">laden...</span>`}
+      <a class="watch-yahoo" href="https://finance.yahoo.com/quote/${w.sym}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Yahoo →</a>
     `;
 
     card.addEventListener('click', e => {
-      if (e.target.classList.contains('watch-remove')) return;
+      if (e.target.classList.contains('watch-remove') || e.target.classList.contains('watch-yahoo')) return;
       document.getElementById('tickerInput').value = w.sym;
       runAnalysis(w.sym);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     container.appendChild(card);
+
+    // Draw sparkline after card is in DOM
+    if (w.loaded && w.sparkData && w.sparkData.length > 1) {
+      requestAnimationFrame(() => drawSparkline(sparkId, w.sparkData, w.change >= 0));
+    }
   });
+}
+
+function drawSparkline(canvasId, data, isUp) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 120;
+  const H = 28;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+  if (data.length < 2) return;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const color = isUp ? '#2d7a4f' : '#c0392b';
+  const step = W / (data.length - 1);
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  data.forEach((v, i) => {
+    const x = i * step;
+    const y = H - ((v - min) / range) * (H - 4) - 2;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  // Fill under line
+  ctx.lineTo((data.length - 1) * step, H);
+  ctx.lineTo(0, H);
+  ctx.closePath();
+  ctx.fillStyle = isUp ? 'rgba(45,122,79,0.08)' : 'rgba(192,57,43,0.06)';
+  ctx.fill();
 }
 
 async function fetchAllQuotes() {
@@ -2540,16 +2609,27 @@ async function fetchAllQuotes() {
 
   const fetches = watchlist.map(async (w, i) => {
     try {
-      // Hergebruik dezelfde fetchData als de analyser · werkt altijd als analyse werkt
       const data = await fetchData(w.sym, '1mo');
       if (!data || !data.rows || data.rows.length === 0) return;
 
-      const rows    = data.rows;
-      const last    = rows[rows.length - 1];
-      const prev    = rows[rows.length - 2];
-      const price   = last.c;
-      const change  = price - prev.c;
+      const rows   = data.rows;
+      const last   = rows[rows.length - 1];
+      const prev   = rows[rows.length - 2];
+      const price  = last.c;
+      const change = price - prev.c;
       const changePct = (change / prev.c) * 100;
+
+      // Sparkline: last 14 close prices
+      const sparkData = rows.slice(-14).map(r => r.c);
+
+      // Quick VSA bias
+      let bias = null;
+      try {
+        const parsedRows = parseRows(data);
+        const signals = runVSA(parsedRows);
+        const biasObj = computeBias(parsedRows, signals);
+        bias = biasObj.bias;
+      } catch(e) {}
 
       if (w.loaded && w.price != null && price !== w.price) {
         const dir = price > w.price ? 'up' : 'down';
@@ -2564,11 +2644,13 @@ async function fetchAllQuotes() {
       watchlist[i] = {
         ...w,
         price, change, changePct,
+        sparkData, bias,
         regularPrice: price,
         prevClose: prev.c,
         prePrice: null, preChangePct: null,
         postPrice: null, postChangePct: null,
         currency: data.currency || 'USD',
+        exchange: data.exchange || w.exchange || 'NYQ',
         marketState: calcUSMarketState(),
         loaded: true,
       };
