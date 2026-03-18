@@ -2022,10 +2022,23 @@ async function runAnalysis(ticker) {
 function buildDailyCompare(rows, avgVol) {
   if (rows.length < 3) return '';
 
-  // Laatste 3 unieke handelsdagen — nieuwste rechts
-  const d2 = rows[rows.length - 1]; // meest recent
-  const d1 = rows[rows.length - 2];
-  const d0 = rows[rows.length - 3]; // oudste van de 3
+  // Dedupliceer op datum — soms geeft Yahoo dezelfde dag tweemaal
+  const seen = new Set();
+  const uniqueRows = [];
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const dateKey = rows[i].date.toISOString().slice(0, 10);
+    if (!seen.has(dateKey)) {
+      seen.add(dateKey);
+      uniqueRows.unshift(rows[i]);
+    }
+  }
+
+  if (uniqueRows.length < 3) return '';
+
+  // Neem de laatste 3 unieke handelsdagen
+  const d0 = uniqueRows[uniqueRows.length - 3];
+  const d1 = uniqueRows[uniqueRows.length - 2];
+  const d2 = uniqueRows[uniqueRows.length - 1];
 
   const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'short' });
 
