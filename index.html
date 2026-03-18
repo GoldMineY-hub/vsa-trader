@@ -1051,6 +1051,7 @@
     <div class="dash-tabs">
       <button class="dash-tab active" id="dtab-alerts"   onclick="switchDashTab('alerts')">🔔 Alerts</button>
       <button class="dash-tab"        id="dtab-movers"   onclick="switchDashTab('movers')">🔥 Movers</button>
+      <button class="dash-tab"        id="dtab-ipo"      onclick="switchDashTab('ipo')">🚀 IPO's</button>
       <button class="dash-tab"        id="dtab-news"     onclick="switchDashTab('news')">📰 Nieuws</button>
       <button class="dash-tab"        id="dtab-journal"  onclick="switchDashTab('journal')">📓 Journal</button>
       <button class="dash-tab"        id="dtab-learn"    onclick="switchDashTab('learn')">📚 Leren</button>
@@ -1122,6 +1123,65 @@
       </div>
       <div id="moversGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px;">
         <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13px;">Klik een categorie hierboven om te laden</div>
+      </div>
+    </div>
+
+    <div class="dash-panel" id="dpanel-ipo">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">🚀 Aankomende IPO's & Noteringen</div>
+          <div class="dash-panel-sub">Nieuwe stocks die binnenkort op de beurs komen · automatisch bijgewerkt</div>
+        </div>
+        <button class="alert-scanner-btn start" style="padding:8px 16px;font-size:12px;" onclick="loadIPOData()">↺ Vernieuwen</button>
+      </div>
+
+      <!-- Info banner -->
+      <div style="background:rgba(37,99,168,0.07);border:1.5px solid rgba(37,99,168,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.75;">
+        <strong style="color:var(--blue);">💡 Wat is een IPO?</strong> Een IPO (Initial Public Offering) is wanneer een bedrijf voor het eerst op de beurs komt. Dit is het moment dat gewone beleggers aandelen kunnen kopen. Populaire IPO's stijgen soms tientallen procenten op de eerste handelsdag.
+      </div>
+
+      <div id="ipoContent">
+        <div class="alert-empty" style="padding:40px;">Klik op Vernieuwen om de laatste IPO's te laden</div>
+      </div>
+
+      <!-- Broker sectie voor NL traders -->
+      <div style="margin-top:20px;">
+        <div class="section-label" style="margin-bottom:12px;">🇳🇱 WAAR KAN IK IPO'S KOPEN VANUIT NEDERLAND?</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">
+
+          <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">DEGIRO</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);margin-bottom:8px;">AANBEVOLEN VOOR BEGINNERS</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7;">Nederlandse broker · Lage kosten · Geen pre-IPO · Kopen vanaf dag 1 na notering · Nederlandstalig</div>
+            <a href="https://www.degiro.nl" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--blue);">degiro.nl →</a>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Trading 212</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--accent);margin-bottom:8px;">GOED VOOR KLEINE BEDRAGEN</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7;">Fractionele aandelen · Koop voor €10 · Gratis beleggen · US & EU markten · App-first</div>
+            <a href="https://www.trading212.com" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--blue);">trading212.com →</a>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">eToro</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--accent3);margin-bottom:8px;">PRE-IPO VIA CFD</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7;">Sociale trading · Fractionele aandelen · Sommige pre-IPO bedrijven beschikbaar · Let op: CFD's zijn risicovol</div>
+            <a href="https://www.etoro.com" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--blue);">etoro.com →</a>
+          </div>
+
+          <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Interactive Brokers</div>
+            <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--accent3);margin-bottom:8px;">VOOR GEVORDERDE TRADERS</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7;">Echte IPO-allocatie mogelijk · Professioneel platform · Breed aanbod · Hogere leerdrempel</div>
+            <a href="https://www.interactivebrokers.com" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--blue);">interactivebrokers.com →</a>
+          </div>
+
+        </div>
+
+        <div style="margin-top:14px;background:rgba(45,122,79,0.07);border:1.5px solid rgba(45,122,79,0.2);border-radius:10px;padding:14px;font-size:13px;line-height:1.75;">
+          <strong style="color:var(--accent);">🚀 SpaceX IPO Update 2026</strong> — Elon Musk heeft bevestigd dat berichten over een 2026 IPO "accuraat" zijn. SpaceX zou meer dan $30 miljard willen ophalen bij een waarde van ~$1,5 <em>biljoen</em>. Dit zou de grootste IPO ooit worden. Voor €100 instappen zodra het noteert kan via <strong>DEGIRO of Trading 212</strong> — fractionele aandelen zijn bij Trading 212 mogelijk. Let op: bij zo'n grote IPO is de eerste dagkoers vaak al hoog ingeprijsd.
+        </div>
       </div>
     </div>
 
@@ -4062,6 +4122,187 @@ document.addEventListener('DOMContentLoaded', () => {
   if (alertHits.length > 0) renderAlertHits();
 });
 
+// ══════════════════════════════════════════════
+// ── IPO TRACKER ──
+// ══════════════════════════════════════════════
+
+// Curated IPO data — bijgewerkt maart 2026
+const KNOWN_IPOS = [
+  {
+    name: 'SpaceX',
+    ticker: 'SPCE*',
+    sector: 'Ruimtevaart / AI',
+    exchange: 'NYSE of NASDAQ',
+    status: 'aankomend',
+    date: '2026 — Elon Musk bevestigd',
+    price: '$30+ mrd ophalen verwacht',
+    valuation: '~$1.500 mrd',
+    description: 'Musk heeft bevestigd dat rapporten over een 2026 IPO "accuraat" zijn. Zou de grootste IPO ooit worden — groter dan Saudi Aramco. Doel: Starship vluchten, AI datacenters in ruimte en maanbasis financieren.',
+    flag: '🇺🇸',
+    hype: 5,
+  },
+  {
+    name: 'OpenAI',
+    ticker: 'OAIX*',
+    sector: 'Kunstmatige intelligentie',
+    exchange: 'NASDAQ verwacht',
+    status: 'aankomend',
+    date: 'Eind 2026 of 2027',
+    price: 'Waarde $830 mrd – $1 biljoen',
+    valuation: '~$1.000 mrd',
+    description: 'Maker van ChatGPT. CEO Sam Altman zegt 0% enthousiast te zijn over beursnotering maar rapporten wijzen op 2026 voorbereiding. Project Stargate ($500 mrd datacenter) vereist enorme kapitaalronde.',
+    flag: '🇺🇸',
+    hype: 5,
+  },
+  {
+    name: 'Klarna',
+    ticker: 'KLAR',
+    sector: 'Fintech / BNPL',
+    exchange: 'NYSE',
+    status: 'al-genoteerd',
+    date: 'Genoteerd 2025',
+    price: 'Al verhandelbaar',
+    valuation: '$15 mrd',
+    description: 'Zweedse BNPL gigant is al in 2025 naar de beurs gegaan. Actief in Nederland via webshops. Al te kopen via DEGIRO of Trading 212.',
+    flag: '🇸🇪',
+    hype: 4,
+  },
+  {
+    name: 'Anthropic',
+    ticker: 'ANTH*',
+    sector: 'Kunstmatige intelligentie',
+    exchange: 'NASDAQ verwacht',
+    status: 'onzeker',
+    date: 'Mogelijk 2026',
+    price: 'Waarde $350–500 mrd',
+    valuation: '~$400 mrd',
+    description: 'Maker van Claude AI. Geen officieel besluit genomen over beursgang. Veiligheidsgericht AI-bedrijf dat concurreert met OpenAI.',
+    flag: '🇺🇸',
+    hype: 4,
+  },
+  {
+    name: 'Stripe',
+    ticker: 'STRP*',
+    sector: 'Betalingen',
+    exchange: 'NASDAQ verwacht',
+    status: 'onzeker',
+    date: '2026 of later',
+    price: 'Waarde ~$65 mrd',
+    valuation: '~$65 mrd',
+    description: 'Grootste private betalingsverwerker ter wereld. Oprichters Collison zijn niet gehaast. Wordt door miljoenen webshops gebruikt wereldwijd.',
+    flag: '🇮🇪',
+    hype: 4,
+  },
+  {
+    name: 'Databricks',
+    ticker: 'DBRK*',
+    sector: 'Data / AI Platform',
+    exchange: 'NASDAQ verwacht',
+    status: 'onzeker',
+    date: '2026 mogelijk',
+    price: 'Waarde $134 mrd',
+    valuation: '$134 mrd',
+    description: 'Data en AI platform. Laatste funding $4 mrd+ bij $134 mrd waarde. Sterke groei: $4,8 mrd omzet op jaarbasis. Wacht mogelijk op OpenAI IPO eerst.',
+    flag: '🇺🇸',
+    hype: 4,
+  },
+  {
+    name: 'Canva',
+    ticker: 'CANV*',
+    sector: 'Design Software',
+    exchange: 'NASDAQ',
+    status: 'onzeker',
+    date: '2026 of 2027',
+    price: 'Waarde $30+ mrd',
+    valuation: '~$30 mrd',
+    description: '260 miljoen maandelijkse gebruikers. Co-founder zei in nov 2025 dat IPO "waarschijnlijk nabij" is. Concurreert met Adobe en Figma.',
+    flag: '🇦🇺',
+    hype: 3,
+  },
+  {
+    name: 'Kraken',
+    ticker: 'KRKN*',
+    sector: 'Crypto Exchange',
+    exchange: 'NYSE of NASDAQ',
+    status: 'aankomend',
+    date: 'Q1/Q2 2026',
+    price: 'Waarde ~$15 mrd',
+    valuation: '$15 mrd',
+    description: 'Amerikaanse crypto exchange. Bereidt zich voor op beursgang begin 2026. Concurrent van Coinbase. Rondt $500 mln pre-IPO funding af.',
+    flag: '🇺🇸',
+    hype: 3,
+  },
+];
+
+async function loadIPOData() {
+  const el = document.getElementById('ipoContent');
+  if (!el) return;
+
+  el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-family:\'Space Mono\',monospace;font-size:12px;">⏳ Laden...</div>';
+
+  // Try to fetch latest IPO news via proxy
+  let newsItems = [];
+  try {
+    const url = 'https://query2.finance.yahoo.com/v1/finance/search?q=IPO+2025+stock+listing&quotesCount=0&newsCount=10&enableFuzzyQuery=false';
+    const proxyUrl = customProxyUrl
+      ? `${customProxyUrl.replace(/\/$/, '')}?url=${encodeURIComponent(url)}`
+      : `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const r = await fetch(proxyUrl, { signal: makeAbortSignal(12000) });
+    if (r.ok) {
+      const w = await r.json();
+      const json = w?.contents ? JSON.parse(w.contents) : w;
+      newsItems = (json?.news || []).slice(0, 4).map(n => ({
+        title: n.title, url: n.link, source: n.publisher, time: n.providerPublishTime
+      }));
+    }
+  } catch(e) {}
+
+  const statusLabel = { 'aankomend': '🟡 AANKOMEND', 'geen-ipo': '🔴 GEEN IPO', 'onzeker': '🟠 ONZEKER', 'al-genoteerd': '🟢 GENOTEERD' };
+  const statusColor = { 'aankomend': 'var(--accent3)', 'geen-ipo': 'var(--accent2)', 'onzeker': 'var(--accent3)', 'al-genoteerd': 'var(--accent)' };
+  const hypeStars = n => '⭐'.repeat(n) + '·'.repeat(5-n);
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:20px;">
+      ${KNOWN_IPOS.map(ipo => `
+        <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;${ipo.status==='geen-ipo'?'opacity:0.75':''}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">
+            <div>
+              <span style="font-size:16px;">${ipo.flag}</span>
+              <span style="font-family:'Space Mono',monospace;font-weight:700;font-size:14px;margin-left:6px;">${ipo.name}</span>
+            </div>
+            <span style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:${statusColor[ipo.status]};">${statusLabel[ipo.status]}</span>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px;">
+            ${ipo.sector} · ${ipo.exchange}
+          </div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;">${ipo.description}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;font-family:'Space Mono',monospace;font-size:10px;">
+            <span style="background:var(--surface);padding:2px 8px;border-radius:4px;border:1px solid var(--border);">📅 ${ipo.date}</span>
+            <span style="background:var(--surface);padding:2px 8px;border-radius:4px;border:1px solid var(--border);">💰 ${ipo.price}</span>
+            <span style="background:var(--surface);padding:2px 8px;border-radius:4px;border:1px solid var(--border);">🏢 ${ipo.valuation}</span>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent3);margin-top:8px;">Hype: ${hypeStars(ipo.hype)}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${newsItems.length > 0 ? `
+      <div class="section-label" style="margin-bottom:10px;">📰 LAATSTE IPO NIEUWS</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${newsItems.map(n => `
+          <a href="${n.url}" target="_blank" rel="noopener" style="text-decoration:none;">
+            <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;transition:border-color 0.15s;"
+                 onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+              <div style="font-size:13px;font-weight:600;color:var(--text);line-height:1.4;">${n.title}</div>
+              <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);margin-top:4px;">${n.source || ''}</div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
 // ── LIVE MOVERS < $50 ──
 // ══════════════════════════════════════════════
 
@@ -4787,6 +5028,10 @@ function switchDashTab(tab) {
   if (tab === 'movers') {
     const grid = document.getElementById('moversGrid');
     if (grid && grid.children.length <= 1) loadMovers('gainers');
+  }
+  if (tab === 'ipo') {
+    const el = document.getElementById('ipoContent');
+    if (el && el.querySelector('.alert-empty')) loadIPOData();
   }
   if (tab === 'news') {
     const section = document.getElementById('newsSection');
