@@ -916,6 +916,28 @@
   .app-mkt.pre{background:rgba(255,180,0,0.15);color:#ffb400;}
   .app-topbar-time{font-size:11px;font-family:'Space Mono',monospace;color:#666;}
 
+  /* ── DAGELIJKSE VERGELIJKING ── */
+  .daily-compare{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:2px solid var(--border);background:var(--surface);}
+  .daily-col{padding:14px 16px;border-right:1px solid var(--border);position:relative;}
+  .daily-col:last-child{border-right:none;}
+  .daily-col-label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+  .daily-col-date{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+  .daily-candle-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .daily-candle-svg{flex-shrink:0;}
+  .daily-ohlc{display:flex;flex-direction:column;gap:2px;flex:1;}
+  .daily-ohlc-row{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:10px;}
+  .daily-ohlc-lbl{color:var(--muted);}
+  .daily-ohlc-val{font-weight:700;color:var(--text);}
+  .daily-vol-bar{height:4px;border-radius:2px;margin-bottom:6px;transition:width 0.4s;}
+  .daily-vol-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
+  .daily-vol-num{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+  .daily-verdict{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:6px;display:inline-block;}
+  .daily-verdict.bull{background:rgba(45,122,79,0.1);color:var(--accent);}
+  .daily-verdict.bear{background:rgba(192,57,43,0.08);color:var(--accent2);}
+  .daily-verdict.neutral{background:rgba(184,134,11,0.08);color:var(--accent3);}
+  .daily-today{background:rgba(45,122,79,0.03);border-left:3px solid var(--accent);}
+  body.dark .daily-compare{background:var(--surface);}
+
 </style>
 </head>
 <body>
@@ -1963,6 +1985,105 @@ async function runAnalysis(ticker) {
   } finally { btn.disabled=false; }
 }
 
+function buildDailyCompare(rows, avgVol) {
+  if (rows.length < 3) return '';
+
+  const days = [
+    { row: rows[rows.length - 3], label: 'EERGISTEREN', isToday: false },
+    { row: rows[rows.length - 2], label: 'GISTEREN',    isToday: false },
+    { row: rows[rows.length - 1], label: 'VANDAAG',     isToday: true  },
+  ];
+
+  const maxVol = Math.max(...days.map(d => d.row.volume));
+
+  return `<div class="daily-compare">
+    ${days.map(({ row, label, isToday }) => {
+      const r = row;
+      const isUp = r.close >= r.open;
+      const spread = r.high - r.low;
+      const bodyPct = spread > 0 ? Math.abs(r.close - r.open) / spread : 0;
+      const closePct = spread > 0 ? (r.close - r.low) / spread : 0.5;
+      const volRatio = avgVol > 0 ? r.volume / avgVol : 1;
+      const volBarW = maxVol > 0 ? Math.round((r.volume / maxVol) * 100) : 50;
+      const volBarColor = volRatio >= 2 ? 'var(--accent3)' : isUp ? 'var(--accent)' : 'var(--accent2)';
+      const volStr = r.volume > 1e6 ? (r.volume/1e6).toFixed(1)+'M' : r.volume > 1000 ? (r.volume/1000).toFixed(0)+'K' : r.volume;
+      const dateStr = r.date.toLocaleDateString('nl-NL', { weekday:'short', day:'numeric', month:'short' });
+
+      // VSA quick read
+      const isNarrow = bodyPct < 0.35;
+      const isWide   = bodyPct > 0.65;
+      const hiVol    = volRatio >= 1.8;
+      const loVol    = volRatio <= 0.6;
+      let verdict = '', verdictClass = 'neutral';
+      if (isWide && isUp && hiVol)        { verdict = 'VRAAG SURGE';    verdictClass = 'bull'; }
+      else if (!isUp && hiVol && closePct > 0.5) { verdict = 'STOPPING VOL'; verdictClass = 'bull'; }
+      else if (isWide && !isUp && hiVol)  { verdict = 'AANBOD SURGE';   verdictClass = 'bear'; }
+      else if (loVol && !isUp && isNarrow){ verdict = 'GEEN AANBOD';    verdictClass = 'bull'; }
+      else if (loVol && isUp && isNarrow) { verdict = 'GEEN VRAAG';     verdictClass = 'bear'; }
+      else if (hiVol && isNarrow)         { verdict = 'ABSORPTIE';       verdictClass = 'neutral'; }
+      else if (isUp && isWide)            { verdict = 'BULLISH BAR';     verdictClass = 'bull'; }
+      else if (!isUp && isWide)           { verdict = 'BEARISH BAR';     verdictClass = 'bear'; }
+      else                                { verdict = isUp ? 'NEUTRAAL ↑' : 'NEUTRAAL ↓'; verdictClass = 'neutral'; }
+
+      // Mini SVG candle — 28px wide, 48px tall
+      const W = 28, H = 48, pad = 4;
+      const priceRange = r.high - r.low || 0.01;
+      const yHigh  = pad;
+      const yLow   = H - pad;
+      const yOpen  = pad + ((r.high - r.open)  / priceRange) * (H - 2*pad);
+      const yClose = pad + ((r.high - r.close) / priceRange) * (H - 2*pad);
+      const bodyTop    = Math.min(yOpen, yClose);
+      const bodyBottom = Math.max(yOpen, yClose);
+      const bodyH      = Math.max(bodyBottom - bodyTop, 2);
+      const cx = W / 2;
+      const candleColor = isUp ? 'var(--accent)' : 'var(--accent2)';
+
+      const svgCandle = `<svg class="daily-candle-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+        <line x1="${cx}" y1="${yHigh}" x2="${cx}" y2="${bodyTop}" stroke="${candleColor}" stroke-width="1.5"/>
+        <rect x="${cx-5}" y="${bodyTop}" width="10" height="${bodyH}" fill="${candleColor}" rx="1"/>
+        <line x1="${cx}" y1="${bodyBottom}" x2="${cx}" y2="${yLow}" stroke="${candleColor}" stroke-width="1.5"/>
+      </svg>`;
+
+      // Change vs previous day
+      const dayIdx = days.findIndex(d => d.row === row);
+      const prevRow = dayIdx > 0 ? rows[rows.length - 3 + dayIdx - 1] : null;
+      const dayChange = prevRow ? ((r.close - prevRow.close) / prevRow.close * 100) : null;
+      const dayChangeStr = dayChange !== null
+        ? `<span style="color:${dayChange >= 0 ? 'var(--accent)' : 'var(--accent2)'};font-weight:700;">${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(2)}%</span>`
+        : '';
+
+      return `<div class="daily-col${isToday ? ' daily-today' : ''}">
+        <div class="daily-col-label">
+          <span>${label}</span>
+          <span class="daily-col-date">${dateStr}</span>
+        </div>
+        <div class="daily-candle-row">
+          ${svgCandle}
+          <div class="daily-ohlc">
+            <div class="daily-ohlc-row"><span class="daily-ohlc-lbl">O</span><span class="daily-ohlc-val">$${r.open.toFixed(2)}</span></div>
+            <div class="daily-ohlc-row"><span class="daily-ohlc-lbl">H</span><span class="daily-ohlc-val">$${r.high.toFixed(2)}</span></div>
+            <div class="daily-ohlc-row"><span class="daily-ohlc-lbl">L</span><span class="daily-ohlc-val">$${r.low.toFixed(2)}</span></div>
+            <div class="daily-ohlc-row"><span class="daily-ohlc-lbl">S</span><span class="daily-ohlc-val">$${r.close.toFixed(2)}</span></div>
+          </div>
+        </div>
+        <div style="margin-bottom:4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <span class="daily-vol-label">VOL ${volRatio >= 1.8 ? '🔥' : ''}</span>
+            <span class="daily-vol-num" style="color:${volBarColor};">${volStr} (${volRatio.toFixed(1)}×)</span>
+          </div>
+          <div style="background:var(--surface2);border-radius:2px;height:4px;overflow:hidden;">
+            <div class="daily-vol-bar" style="width:${volBarW}%;background:${volBarColor};"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span class="daily-verdict ${verdictClass}">${verdict}</span>
+          ${dayChangeStr}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
 function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cvdData, vpData, zones, trendStrength) {
   const output=document.getElementById('output');
   const last=rows[rows.length-1], prev=rows[rows.length-2];
@@ -2035,6 +2156,9 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       <div class="price-change ${isUp?'up':'down'}">${isUp?'▲':'▼'} $${Math.abs(change).toFixed(2)} (${isUp?'+':''}${changePct}%)</div>
       <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;">${meta?.exchange ? meta.exchange + ' · ' : ''}${dateRange}</div>
     </div>
+
+    ${buildDailyCompare(rows, avgVol)}
+
     <div class="bias-strip">
       <div class="bias-label">${'ALGEMENE RICHTING'}</div>
       <div class="bias-pill ${biasObj.bias}">${biasObj.bias}</div>
