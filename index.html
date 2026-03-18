@@ -30,13 +30,54 @@
 
   /* ── DARK MODE ── */
   body.dark {
-    --bg:#0f0f11;--surface:#1a1a1c;--surface2:#222226;--border:#2e2e33;
-    --text:#e8e4dc;--muted:#6b6660;
+    --bg:#0f0f11;--surface:#18181b;--surface2:#1e1e23;--border:#303038;
+    --text:#f0ece4;--muted:#9e9890;
     --accent:#34d068;--accent2:#e05252;--accent3:#f0a030;
-    --blue:#4a8fd4;--purple:#9b6fd4;
-    --glow:rgba(52,208,104,0.1);--shadow:0 2px 16px rgba(0,0,0,0.4);
-    --header-bg:#0a0a0c;--header-border:rgba(255,255,255,0.04);
+    --blue:#5a9fd4;--purple:#9b6fd4;
+    --glow:rgba(52,208,104,0.12);--shadow:0 2px 16px rgba(0,0,0,0.5);
+    --header-bg:#0a0a0c;--header-border:rgba(255,255,255,0.06);
   }
+  /* Dark mode text overrides — zorg dat alles leesbaar is */
+  body.dark .panel-title,
+  body.dark .dash-panel-title,
+  body.dark .learn-card h3,
+  body.dark .learn-card h4,
+  body.dark .learn-card p,
+  body.dark .learn-card ul,
+  body.dark .learn-card li,
+  body.dark .result-label,
+  body.dark .guide-card-title,
+  body.dark .guide-card-body,
+  body.dark .signal-card,
+  body.dark .check-item,
+  body.dark .risk-label,
+  body.dark .bias-label,
+  body.dark .section-label,
+  body.dark .journal-label,
+  body.dark .dash-panel-sub,
+  body.dark .alert-hit-body,
+  body.dark .dash-info-box p
+  { color:var(--text) !important; }
+
+  body.dark .muted,
+  body.dark .watch-chg.flat,
+  body.dark .watch-extra-label
+  { color:var(--muted) !important; }
+
+  body.dark input,
+  body.dark select,
+  body.dark textarea
+  { background:var(--surface2);color:var(--text);border-color:var(--border); }
+
+  body.dark .learn-rule,
+  body.dark .learn-example
+  { color:var(--text); }
+
+  body.dark .empty-title,
+  body.dark .empty-sub
+  { color:var(--muted); }
+
+
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
@@ -263,6 +304,27 @@
   .chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
   .legend-dot{width:10px;height:10px;border-radius:50%;}
+
+  /* Dark mode chart background */
+  body.dark .chart-area { background: var(--surface); }
+  body.dark .chart-wrap canvas,
+  body.dark .vol-wrap canvas { background: transparent; }
+  body.dark .result-section { background: var(--surface); border-color: var(--border); }
+  body.dark .result-header { background: var(--surface2); }
+  body.dark .bias-strip { background: var(--surface); }
+  body.dark .two-col .col { background: var(--surface); }
+  body.dark .signal-card { background: var(--surface2); }
+  body.dark .check-item { color: var(--text); }
+  body.dark .risk-calc { background: var(--surface2); }
+  body.dark .risk-input { background: var(--surface); color: var(--text); border-color: var(--border); }
+  body.dark .risk-result { background: var(--surface); }
+  body.dark .zone-item { background: var(--surface2); }
+  body.dark .vp-bar-wrap { background: var(--surface2); }
+  body.dark .modal-content { background: var(--surface); color: var(--text); }
+  body.dark .help-box { background: var(--surface2); color: var(--text); }
+  body.dark .warn-box { color: var(--text); }
+  body.dark .tab-btn { color: var(--muted); background: var(--surface2); }
+  body.dark .tab-btn.active { color: var(--accent); }
   .two-col{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid var(--border);}
   .col{padding:20px 22px;border-right:1px solid var(--border);}
   .col:last-child{border-right:none;}
@@ -2066,16 +2128,34 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   if(volChart) volChart.destroy();
   if(cvdChart) cvdChart.destroy();
 
-  // Build candlestick dataset · each bar: {x: timestamp ms, o, h, l, c}
+  // Dark mode aware chart colors
+  const isDark = document.body.classList.contains('dark');
+  const chartBg      = isDark ? '#18181b' : '#faf7f2';
+  const chartBorder  = isDark ? '#303038' : '#ddd6c8';
+  const tickColor    = isDark ? '#9e9890' : '#8a7d6b';
+  const gridColor    = isDark ? '#222228' : '#ede8df';
+  const tooltipBg    = isDark ? '#1e1e23' : '#faf7f2';
+  const tooltipTitle = isDark ? '#9e9890' : '#8a7d6b';
+  const tooltipBody  = isDark ? '#f0ece4' : '#2c2416';
+  const upColor      = isDark ? '#34d068' : '#2d7a4f';
+  const downColor    = isDark ? '#e05252' : '#c0392b';
+
+  // Build candlestick dataset
   const candleData = rows.map(r=>({
     x: r.date.getTime(),
     o: r.open, h: r.high, l: r.low, c: r.close
   }));
 
   const tooltipStyle = {
-    backgroundColor:'#faf7f2', borderColor:'#ddd6c8', borderWidth:1,
-    titleColor:'#8a7d6b', bodyColor:'#2c2416',
-    titleFont:{family:'Space Mono',size:9}, bodyFont:{family:'Space Mono',size:11}
+    backgroundColor: tooltipBg,
+    borderColor: chartBorder,
+    borderWidth: 1,
+    titleColor: tooltipTitle,
+    bodyColor: tooltipBody,
+    titleFont:{family:'Space Mono',size:9},
+    bodyFont:{family:'Space Mono',size:11},
+    padding: 10,
+    cornerRadius: 6,
   };
 
   priceChart = new Chart(document.getElementById('priceChart').getContext('2d'), {
@@ -2084,16 +2164,8 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       datasets: [{
         label: ticker,
         data: candleData,
-        color: {
-          up:   '#2d7a4f',
-          down: '#c0392b',
-          unchanged: '#8a7d6b'
-        },
-        borderColor: {
-          up:   '#2d7a4f',
-          down: '#c0392b',
-          unchanged: '#8a7d6b'
-        }
+        color: { up: upColor, down: downColor, unchanged: tickColor },
+        borderColor: { up: upColor, down: downColor, unchanged: tickColor }
       }]
     },
     options: {
@@ -2106,12 +2178,11 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
           callbacks: {
             label: ctx => {
               const d = ctx.raw;
-            
               return [
-                `${'Open'}: $${d.o?.toFixed(2)}`,
-                `${'Hoog'}: $${d.h?.toFixed(2)}`,
-                `${'Laag'}: $${d.l?.toFixed(2)}`,
-                `${'Sluit'}: $${d.c?.toFixed(2)}`
+                `Open:  $${d.o?.toFixed(2)}`,
+                `Hoog:  $${d.h?.toFixed(2)}`,
+                `Laag:  $${d.l?.toFixed(2)}`,
+                `Sluit: $${d.c?.toFixed(2)}`
               ];
             }
           }
@@ -2121,18 +2192,19 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
         x: {
           type: 'time',
           time: { unit: currentRange==='6mo'?'week':'day', tooltipFormat:'dd MMM yyyy' },
-          ticks: { color:'#8a7d6b', font:{family:'Space Mono',size:8}, maxTicksLimit:10 },
-          grid: { color:'#ede8df' }
+          ticks: { color: tickColor, font:{family:'Space Mono',size:8}, maxTicksLimit:10 },
+          grid: { color: gridColor }
         },
         y: {
-          ticks: { color:'#8a7d6b', font:{family:'Space Mono',size:9}, callback: v=>'$'+v.toFixed(0) },
-          grid: { color:'#ede8df' }
+          position: 'right',
+          ticks: { color: tickColor, font:{family:'Space Mono',size:9}, callback: v=>'$'+v.toFixed(2) },
+          grid: { color: gridColor }
         }
       }
     }
   });
 
-  // Volume bar chart with VSA colours
+  // Volume bar chart
   volChart = new Chart(document.getElementById('volChart').getContext('2d'), {
     type: 'bar',
     data: {
@@ -2145,12 +2217,16 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
         legend: { display: false },
         tooltip: {
           ...tooltipStyle,
-          callbacks: { label: ctx => ` ${(ctx.raw/1e6).toFixed(2)}M` }
+          callbacks: { label: ctx => ` ${(ctx.raw/1e6).toFixed(2)}M vol` }
         }
       },
       scales: {
         x: { ticks:{display:false}, grid:{display:false} },
-        y: { ticks:{color:'#8a7d6b',font:{family:'Space Mono',size:8},callback:v=>(v/1e6).toFixed(0)+'M'}, grid:{color:'#ede8df'} }
+        y: {
+          position: 'right',
+          ticks:{color:tickColor, font:{family:'Space Mono',size:8}, callback:v=>(v/1e6).toFixed(1)+'M'},
+          grid:{color:gridColor}
+        }
       }
     }
   });
@@ -2158,24 +2234,22 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
   // CVD line chart
   const cvdValues = cvdData.map(d => d.cvd);
   const cvdMin = Math.min(...cvdValues), cvdMax = Math.max(...cvdValues);
-  const cvdColors = cvdValues.map((v, i) =>
-    i === 0 ? 'rgba(109,63,168,0.6)' :
-    v > cvdValues[i-1] ? 'rgba(45,122,79,0.7)' : 'rgba(192,57,43,0.7)'
-  );
   cvdChart = new Chart(document.getElementById('cvdChart').getContext('2d'), {
     type: 'line',
     data: {
       labels,
       datasets: [{
         data: cvdValues,
-        borderColor: 'rgba(109,63,168,0.8)',
-        backgroundColor: cvdTrend >= 0 ? 'rgba(45,122,79,0.07)' : 'rgba(192,57,43,0.07)',
+        borderColor: isDark ? 'rgba(155,111,212,0.9)' : 'rgba(109,63,168,0.8)',
+        backgroundColor: cvdTrend >= 0
+          ? (isDark ? 'rgba(52,208,104,0.08)' : 'rgba(45,122,79,0.07)')
+          : (isDark ? 'rgba(224,82,82,0.08)' : 'rgba(192,57,43,0.07)'),
         borderWidth: 2,
         fill: true,
         tension: 0.3,
         pointRadius: 0,
-        pointHoverRadius: 4,
-        pointHoverBackgroundColor: '#6d3fa8'
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: isDark ? '#9b6fd4' : '#6d3fa8'
       }]
     },
     options: {
@@ -2190,8 +2264,9 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       scales: {
         x: { ticks:{display:false}, grid:{display:false} },
         y: {
-          ticks:{color:'#8a7d6b',font:{family:'Space Mono',size:8},callback:v=>(v/1e6).toFixed(1)+'M'},
-          grid:{color:'#ede8df'}
+          position: 'right',
+          ticks:{color:tickColor, font:{family:'Space Mono',size:8}, callback:v=>(v/1e6).toFixed(1)+'M'},
+          grid:{color:gridColor}
         }
       }
     }
@@ -3669,6 +3744,19 @@ function toggleDarkMode() {
   if (icon) icon.textContent = dark ? '☀️' : '🌙';
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', dark ? '#0f0f11' : '#f5f0e8');
+  // Re-render charts with new colors
+  if (window._rawResult) {
+    const { ticker, rows, meta: m } = window._rawResult;
+    const signals = runVSA(rows);
+    const biasObj = computeBias(rows, signals);
+    const checklist = buildChecklist(rows, signals, biasObj);
+    const stats = computeStats(rows);
+    const cvdData = computeCVD(rows);
+    const vpData = computeVolumeProfile(rows);
+    const zones = computeKeyZones(rows, signals);
+    const trendStrength = computeTrendStrength(rows, signals, biasObj);
+    renderResult(ticker, rows, signals, biasObj, checklist, stats, m, cvdData, vpData, zones, trendStrength);
+  }
 }
 (function() {
   if (localStorage.getItem('vsa_dark') === '1') {
