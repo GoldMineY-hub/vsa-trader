@@ -2001,26 +2001,12 @@ function buildDailyCompare(rows, avgVol) {
   const d1 = rows[rows.length - 2];
   const d2 = rows[rows.length - 1];
 
-  // Determine labels based on how recent the last row is
-  const lastDate = d2.date;
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  const diffDays = Math.round((today - lastDate) / 86400000);
-
-  let labels;
-  if (diffDays <= 1) {
-    labels = ['EERGISTEREN', 'GISTEREN', 'LAATSTE DAG'];
-  } else {
-    // Show actual day names instead
-    const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long' });
-    labels = [dayName(d0), dayName(d1), dayName(d2)];
-    labels = labels.map(l => l.toUpperCase());
-  }
-
+  // Always show actual day names — these are the last 3 trading days
+  const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long' });
   const days = [
-    { row: d0, label: labels[0], isToday: false },
-    { row: d1, label: labels[1], isToday: false },
-    { row: d2, label: labels[2], isToday: true  },
+    { row: d0, label: dayName(d0).toUpperCase(), isLatest: false },
+    { row: d1, label: dayName(d1).toUpperCase(), isLatest: false },
+    { row: d2, label: dayName(d2).toUpperCase() + ' (LAATSTE)', isLatest: true },
   ];
 
   const maxVol = Math.max(...days.map(d => d.row.volume));
@@ -2039,7 +2025,7 @@ function buildDailyCompare(rows, avgVol) {
     </div>`;
 
   return ohlcLegend + `<div class="daily-compare">
-    ${days.map(({ row, label, isToday }) => {
+    ${days.map(({ row, label, isLatest }) => {
       const r = row;
       const isUp = r.close >= r.open;
       const spread = r.high - r.low;
@@ -2093,7 +2079,7 @@ function buildDailyCompare(rows, avgVol) {
         ? `<span style="color:${dayChange >= 0 ? 'var(--accent)' : 'var(--accent2)'};font-weight:700;font-family:'Space Mono',monospace;font-size:10px;">${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(2)}%</span>`
         : '';
 
-      return `<div class="daily-col${isToday ? ' daily-today' : ''}">
+      return `<div class="daily-col${isLatest ? ' daily-today' : ''}">
         <div class="daily-col-label">
           <span>${label}</span>
           <span class="daily-col-date">${dateStr}</span>
