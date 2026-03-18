@@ -685,6 +685,72 @@
   .learn-video-section{margin-bottom:20px;}
   .learn-video-section-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:10px;}
 
+  /* ── VOLUME ALERT SCANNER ── */
+  .alert-scanner-wrap{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
+  .alert-scanner-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;}
+  .alert-scanner-btn{padding:9px 20px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Space Mono',monospace;}
+  .alert-scanner-btn.start{background:var(--accent);color:#fff;}
+  .alert-scanner-btn.stop{background:var(--accent2);color:#fff;}
+  .alert-scanner-btn.start:disabled{opacity:0.5;cursor:not-allowed;}
+  .alert-scanner-status{font-family:'Space Mono',monospace;font-size:11px;padding:6px 12px;border-radius:20px;font-weight:700;}
+  .alert-scanner-status.idle{background:var(--surface);color:var(--muted);border:1.5px solid var(--border);}
+  .alert-scanner-status.running{background:rgba(45,122,79,0.12);color:var(--accent);border:1.5px solid rgba(45,122,79,0.3);}
+  .alert-scanner-status.scanning{background:rgba(184,134,11,0.12);color:var(--accent3);border:1.5px solid rgba(184,134,11,0.3);}
+  .alert-scanner-settings{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:flex-end;}
+  .alert-setting{display:flex;flex-direction:column;gap:4px;}
+  .alert-setting label{font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:1px;}
+  .alert-setting input,
+  .alert-setting select{padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Space Mono',monospace;background:var(--surface);color:var(--text);width:120px;}
+  .alert-progress{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-bottom:10px;display:none;}
+  .alert-progress.show{display:block;}
+  .alert-progress-fill{height:100%;background:var(--accent3);border-radius:2px;transition:width 0.3s;}
+  .alert-hits{display:flex;flex-direction:column;gap:8px;}
+  .alert-hit-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all 0.15s;position:relative;animation:alertPop 0.3s ease;}
+  @keyframes alertPop{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+  .alert-hit-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+  .alert-hit-card.vol-fire{border-left:4px solid #ff6b00;}
+  .alert-hit-card.vol-high{border-left:4px solid var(--accent3);}
+  .alert-hit-card.vol-bullish{border-left:4px solid var(--accent);}
+  .alert-hit-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  .alert-hit-sym{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;}
+  .alert-hit-price{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);}
+  .alert-hit-chg{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--accent);}
+  .alert-hit-badge{font-size:10px;font-weight:700;font-family:'Space Mono',monospace;padding:2px 8px;border-radius:4px;}
+  .alert-hit-badge.fire{background:rgba(255,107,0,0.12);color:#ff6b00;}
+  .alert-hit-badge.vol{background:rgba(184,134,11,0.1);color:var(--accent3);}
+  .alert-hit-badge.bull{background:rgba(45,122,79,0.1);color:var(--accent);}
+  .alert-hit-body{font-size:12px;color:var(--muted);line-height:1.6;}
+  .alert-hit-time{position:absolute;top:10px;right:12px;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);}
+  .alert-empty{text-align:center;padding:32px;color:var(--muted);font-size:13px;line-height:1.8;}
+  .alert-ticker-list{font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);margin-top:4px;}
+
+  /* ── DASHBOARD TABS ── */
+  .dash-tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:6px;margin-bottom:0;flex-wrap:wrap;}
+  .dash-tab{padding:8px 16px;border:none;border-radius:8px;font-size:12px;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.15s;white-space:nowrap;}
+  .dash-tab:hover{color:var(--text);background:var(--surface);}
+  .dash-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(44,36,22,0.08);}
+  .dash-panel{display:none;background:var(--surface);border:1.5px solid var(--border);border-radius:0 12px 12px 12px;padding:20px 22px;margin-top:-1px;}
+  .dash-panel.active{display:block;}
+  .dash-panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .dash-panel-title{font-size:16px;font-weight:700;color:var(--text);}
+  .dash-panel-sub{font-size:12px;color:var(--muted);font-family:'Space Mono',monospace;margin-top:3px;}
+  .dash-two-col{display:grid;grid-template-columns:1fr 340px;gap:20px;}
+  @media(max-width:900px){.dash-two-col{grid-template-columns:1fr;}}
+  .dash-settings-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+  .dash-info-box{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;font-size:13px;line-height:1.75;color:var(--text);}
+  .dash-info-title{font-weight:700;font-size:13px;margin-bottom:10px;}
+
+  /* Topbar logo */
+  .app-topbar{display:flex;align-items:center;justify-content:space-between;background:#1c1c1e;border-radius:12px;padding:10px 18px;margin-bottom:10px;}
+  .app-logo{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;}
+  .app-logo span{color:#2d7a4f;}
+  .app-topbar-markets{display:flex;gap:6px;flex-wrap:wrap;}
+  .app-mkt{font-size:10px;font-weight:700;font-family:'Space Mono',monospace;padding:4px 10px;border-radius:20px;}
+  .app-mkt.open{background:rgba(45,200,100,0.15);color:#2dc864;}
+  .app-mkt.closed{background:rgba(255,255,255,0.07);color:#666;}
+  .app-mkt.pre{background:rgba(255,180,0,0.15);color:#ffb400;}
+  .app-topbar-time{font-size:11px;font-family:'Space Mono',monospace;color:#666;}
+
 </style>
 </head>
 <body>
@@ -727,14 +793,16 @@
 
 <main class="main">
 
-  <!-- MARKT STATUS BALK — altijd zichtbaar bovenaan -->
-  <div id="marketStatusBar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;font-family:'Space Mono',monospace;font-size:11px;">
-    <span style="font-weight:700;color:var(--muted);letter-spacing:1px;">MARKTEN</span>
-    <span id="msNYSE" style="padding:3px 10px;border-radius:20px;font-weight:700;">NYSE —</span>
-    <span id="msNASDAQ" style="padding:3px 10px;border-radius:20px;font-weight:700;">NASDAQ —</span>
-    <span id="msAEX" style="padding:3px 10px;border-radius:20px;font-weight:700;">AEX —</span>
-    <span style="margin-left:auto;color:var(--muted);" id="msTime">--:--</span>
-    <span id="msPremarket" style="display:none;padding:3px 10px;border-radius:20px;background:rgba(184,134,11,0.15);color:var(--accent3);font-weight:700;">⏰ PREMARKET</span>
+  <!-- PROFESSIONELE TOPBAR -->
+  <div class="app-topbar">
+    <div class="app-logo">VSA<span> TRADER</span></div>
+    <div class="app-topbar-markets">
+      <span class="app-mkt closed" id="msNYSE">NYSE —</span>
+      <span class="app-mkt closed" id="msNASDAQ">NASDAQ —</span>
+      <span class="app-mkt closed" id="msAEX">AEX —</span>
+      <span class="app-mkt pre" id="msPremarket" style="display:none;">⏰ PREMARKET</span>
+    </div>
+    <div class="app-topbar-time" id="msTime">--:--</div>
   </div>
 
   <!-- 1. SEARCH ROW — first thing you see, clear action -->
@@ -779,453 +847,210 @@
   </div>
 
   <!-- 4. NEWS — directly after results, same stock context -->
-  <section id="newsSection" style="display:none;margin-top:12px;">
-    <div class="news-header">
-      <div>
-        <div class="news-title">📰 Nieuws & Social</div>
-        <div class="news-sub">LAATSTE NIEUWS VOOR JE WATCHLIJST</div>
-      </div>
-      <button class="news-refresh" id="newsRefreshBtn" onclick="loadAllNews()">↺ Vernieuwen</button>
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- DASHBOARD TABS — professionele onderkant          -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="dashboardSection" style="margin-top:16px;">
+
+    <!-- Tab navigatie -->
+    <div class="dash-tabs">
+      <button class="dash-tab active" id="dtab-alerts"   onclick="switchDashTab('alerts')">🔔 Alerts</button>
+      <button class="dash-tab"        id="dtab-movers"   onclick="switchDashTab('movers')">🔥 Movers</button>
+      <button class="dash-tab"        id="dtab-news"     onclick="switchDashTab('news')">📰 Nieuws</button>
+      <button class="dash-tab"        id="dtab-journal"  onclick="switchDashTab('journal')">📓 Journal</button>
+      <button class="dash-tab"        id="dtab-learn"    onclick="switchDashTab('learn')">📚 Leren</button>
+      <button class="dash-tab"        id="dtab-settings" onclick="switchDashTab('settings')">⚙️ Instellingen</button>
     </div>
-    <div class="news-ticker-tabs" id="newsTickerTabs"></div>
-    <div id="newsXRow" style="margin-bottom:10px;display:none;flex-wrap:wrap;gap:6px;"></div>
-    <div id="newsContent">
-      <div class="news-loading"><div class="news-spinner"></div><span>Nieuws laden...</span></div>
-    </div>
-  </section>
-  <!-- LIVE MOVERS PANEL -->
-  <div class="panel" style="border-color:var(--accent);background:rgba(45,122,79,0.03);">
-    <div class="panel-toggle" onclick="togglePanel('movers')">
-      <div class="panel-left"><div class="panel-icon">🔥</div><div>
-        <div class="panel-title">Live Movers — Stocks onder $50</div>
-        <div class="panel-sub">Stocks die nu het meest bewegen · automatisch bijgewerkt · klik om te analyseren</div>
-      </div></div>
-      <div class="panel-arrow" id="movers-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="movers-body">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
-        <button class="scanner-preset" onclick="loadMovers('gainers')" id="movers-btn-gainers" style="background:rgba(45,122,79,0.1);border-color:var(--accent);color:var(--accent);">📈 Top Stijgers</button>
-        <button class="scanner-preset" onclick="loadMovers('losers')" id="movers-btn-losers">📉 Top Dalers</button>
-        <button class="scanner-preset" onclick="loadMovers('active')" id="movers-btn-active">⚡ Meest Actief</button>
-        <span style="margin-left:auto;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);" id="moversLastUpdate"></span>
-      </div>
-      <div id="moversGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">
-        <div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);font-size:13px;">Klik een categorie om te laden</div>
-      </div>
-    </div>
-  </div>
 
-  <div class="panel">
-    <div class="panel-toggle" onclick="togglePanel('journal')">
-      <div class="panel-left"><div class="panel-icon">📓</div><div>
-        <div class="panel-title">Trade Journal — Bijhouden & Leren</div>
-        <div class="panel-sub">Noteer je trades · zie je trefferpercentage · leer van je fouten</div>
-      </div></div>
-      <div class="panel-arrow" id="journal-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="journal-body">
-
-      <!-- Stats -->
-      <div class="journal-stats" id="journalStats"></div>
-
-      <!-- New trade form -->
-      <div class="section-label" style="margin-bottom:10px;">➕ NIEUWE TRADE INVOEREN</div>
-      <div class="journal-form">
-        <div class="journal-form-grid">
-          <div class="journal-field">
-            <label class="journal-label">TICKER</label>
-            <input class="journal-input" id="jTicker" placeholder="AAPL" style="font-family:'Space Mono',monospace;font-weight:700;">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">DATUM ENTRY</label>
-            <input class="journal-input" id="jDate" type="date">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">ENTRY PRIJS ($)</label>
-            <input class="journal-input" id="jEntry" type="number" step="0.01" placeholder="24.50">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">EXIT PRIJS ($)</label>
-            <input class="journal-input" id="jExit" type="number" step="0.01" placeholder="28.00 (leeg = open)">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">STOP LOSS ($)</label>
-            <input class="journal-input" id="jStop" type="number" step="0.01" placeholder="22.00">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">AANTAL AANDELEN</label>
-            <input class="journal-input" id="jShares" type="number" placeholder="100">
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">VSA SIGNAAL</label>
-            <select class="journal-select" id="jSignal">
-              <option value="">— kies signaal —</option>
-              <option>Stopping Volume</option>
-              <option>No Supply</option>
-              <option>Shake Out</option>
-              <option>Demand Surge</option>
-              <option>Bullish Absorption</option>
-              <option>No Demand</option>
-              <option>Up-Thrust / Rejection</option>
-              <option>Supply Surge</option>
-              <option>Climactic Action</option>
-              <option>Anders</option>
-            </select>
-          </div>
-          <div class="journal-field">
-            <label class="journal-label">RICHTING</label>
-            <select class="journal-select" id="jDirection">
-              <option value="LONG">LONG (koop)</option>
-              <option value="SHORT">SHORT (verkoop)</option>
-            </select>
-          </div>
-          <textarea class="journal-textarea journal-input" id="jNotes" placeholder="Notities: waarom instappen, wat zag je in het chart, emoties tijdens de trade..."></textarea>
-        </div>
-        <button class="journal-save-btn" onclick="saveJournalEntry()">💾 Trade opslaan</button>
-      </div>
-
-      <!-- Filter -->
-      <div class="section-label" style="margin-bottom:10px;">📋 TRADE GESCHIEDENIS</div>
-      <div class="journal-filter-row">
-        <button class="journal-filter-btn active" id="jf-all" onclick="filterJournal('all')">Alle</button>
-        <button class="journal-filter-btn" id="jf-win" onclick="filterJournal('win')">✅ Winst</button>
-        <button class="journal-filter-btn" id="jf-loss" onclick="filterJournal('loss')">❌ Verlies</button>
-        <button class="journal-filter-btn" id="jf-open" onclick="filterJournal('open')">⏳ Open</button>
-      </div>
-      <div class="journal-list" id="journalList"></div>
-
-    </div>
-  </div>
-
-
-  <div class="panel">
-    <div class="panel-toggle" onclick="togglePanel('marketlinks')">
-      <div class="panel-left"><div class="panel-icon">📊</div><div>
-        <div class="panel-title">Market Links — Gainers, Losers & Volume</div>
-        <div class="panel-sub">Directe links naar de beste gratis marktoverzichten</div>
-      </div></div>
-      <div class="panel-arrow" id="marketlinks-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="marketlinks-body">
-
-      <div class="section-label" style="margin-bottom:12px;">📈 DAY GAINERS</div>
-      <div class="screener-grid">
-        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_gainers" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Top stijgers van de dag, gesorteerd op % winst.</div>
-          <div class="screener-url">finance.yahoo.com → Day Gainers</div>
-        </a>
-        <a class="screener-card" href="https://stockanalysis.com/markets/gainers/" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Overzichtelijke gainers lijst met volume en marktkapitalisatie.</div>
-          <div class="screener-url">stockanalysis.com/markets/gainers →</div>
-        </a>
-        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_topgainers" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Finviz Gainers</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Top gainers met filteropties voor sector, prijs en volume.</div>
-          <div class="screener-url">finviz.com/screener → Top Gainers</div>
-        </a>
-      </div>
-
-      <div class="screener-divider"></div>
-      <div class="section-label" style="margin-bottom:12px;">📉 DAY LOSERS</div>
-      <div class="screener-grid">
-        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_losers" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Grootste dalers van de dag. Interessant voor short setups of reversal kansen.</div>
-          <div class="screener-url">finance.yahoo.com → Day Losers</div>
-        </a>
-        <a class="screener-card" href="https://stockanalysis.com/markets/losers/" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Overzichtelijke verliezers met % daling en volume data.</div>
-          <div class="screener-url">stockanalysis.com/markets/losers →</div>
-        </a>
-        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_toplosers" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Finviz Losers</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Top losers met uitgebreide filteropties.</div>
-          <div class="screener-url">finviz.com/screener → Top Losers</div>
-        </a>
-      </div>
-
-      <div class="screener-divider"></div>
-      <div class="section-label" style="margin-bottom:12px;">🔥 MOST ACTIVE / HIGHEST VOLUME</div>
-      <div class="screener-grid">
-        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/most_actives" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Yahoo Finance</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Meest verhandelde aandelen. Hoog volume = institutionele interesse.</div>
-          <div class="screener-url">finance.yahoo.com → Most Active</div>
-        </a>
-        <a class="screener-card" href="https://stockanalysis.com/markets/most-active/" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Stock Analysis</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Most active stocks gesorteerd op totaal handelsvolume vandaag.</div>
-          <div class="screener-url">stockanalysis.com/markets/most-active →</div>
-        </a>
-        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&s=ta_mostactive" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Finviz Volume</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Meest actieve aandelen met Finviz heatmap en filteropties.</div>
-          <div class="screener-url">finviz.com/screener → Most Active</div>
-        </a>
-      </div>
-
-      <div class="screener-divider"></div>
-      <div class="section-label" style="margin-bottom:12px;">👁️ STOCKS TO WATCH</div>
-      <div class="screener-grid">
-        <a class="screener-card" href="https://finviz.com/map.ashx?t=sec" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Finviz Heatmap</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Visuele heatmap van de markt. In één oogopslag zien welke sectoren bewegen.</div>
-          <div class="screener-url">finviz.com/map → S&P 500 Heatmap</div>
-        </a>
-        <a class="screener-card" href="https://stockanalysis.com/markets/trending/" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Trending Stocks</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Meest bekeken aandelen vandaag. Populair = media-aandacht = mogelijke volatiliteit.</div>
-          <div class="screener-url">stockanalysis.com/markets/trending →</div>
-        </a>
-        <a class="screener-card" href="https://www.tradingview.com/markets/stocks-usa/market-movers-large-cap/" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">TradingView</div><span class="screener-badge free">GRATIS</span></div>
-          <div class="screener-desc">Large cap movers op TradingView. Uitstekende grafieken om VSA op toe te passen.</div>
-          <div class="screener-url">tradingview.com → Market Movers</div>
-        </a>
-        <a class="screener-card" href="https://unusualwhales.com/market-overview" target="_blank" rel="noopener">
-          <div class="screener-card-top"><div class="screener-name">Unusual Whales</div><span class="screener-badge limited">BEPERKT</span></div>
-          <div class="screener-desc">Marktoverzicht met opties flow. Signaleert institutionele activiteit vroeg.</div>
-          <div class="screener-url">unusualwhales.com/market-overview →</div>
-        </a>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-toggle" onclick="togglePanel('screener')">
-      <div class="panel-left"><div class="panel-icon">🚀</div><div>
-        <div class="panel-title">Premarket Gainers — Waar vind je ze?</div>
-        <div class="panel-sub">Directe links naar gratis screeners · filter op +10% tot +50% onder $100</div>
-      </div></div>
-      <div class="panel-arrow" id="screener-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="screener-body">
-
-      <div class="section-label" style="margin-bottom:12px;">📈 BESTE GRATIS SCREENERS VOOR PREMARKET</div>
-
-      <div class="screener-grid">
-
-        <!-- Finviz -->
-        <a class="screener-card" href="https://finviz.com/screener.ashx?v=111&f=sh_price_u100,ta_change_u10&o=-prechange&ar=180" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">Finviz</div>
-            <span class="screener-badge free">GRATIS</span>
-          </div>
-          <div class="screener-desc">Krachtigste gratis screener. Filter direct op prijs, premarket %, sector en volume.</div>
-          <div class="screener-filter">Prijs &lt; $100 · Change &gt; <strong>+10%</strong> · gesorteerd op change</div>
-          <div class="screener-url">finviz.com/screener →</div>
-        </a>
-
-        <!-- Stockanalysis -->
-        <a class="screener-card" href="https://stockanalysis.com/stocks/screener/?p=premarket&f=marketCap-desc&c=s,name,price,changePercent,preMarketChangePercent,volume&filters=preMarketChangePercent__gte__10~price__lte__100" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">Stock Analysis</div>
-            <span class="screener-badge free">GRATIS</span>
-          </div>
-          <div class="screener-desc">Overzichtelijke screener met premarket kolom. Werkt goed op mobiel.</div>
-          <div class="screener-filter">Premarket &gt; <strong>+10%</strong> · Prijs &lt; $100</div>
-          <div class="screener-url">stockanalysis.com/screener →</div>
-        </a>
-
-        <!-- Yahoo Finance -->
-        <a class="screener-card" href="https://finance.yahoo.com/screener/predefined/day_gainers" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">Yahoo Finance</div>
-            <span class="screener-badge free">GRATIS</span>
-          </div>
-          <div class="screener-desc">Day Gainers lijst. Voeg zelf premarket filter toe via de filterknop bovenaan.</div>
-          <div class="screener-filter">Day Gainers · pas aan: Prijs &lt; <strong>$100</strong></div>
-          <div class="screener-url">finance.yahoo.com/screener →</div>
-        </a>
-
-        <!-- MarketWatch -->
-        <a class="screener-card" href="https://www.marketwatch.com/tools/screener/premarket" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">MarketWatch</div>
-            <span class="screener-badge free">GRATIS</span>
-          </div>
-          <div class="screener-desc">Specifieke premarket screener. Toont % change vóór opening, gesorteerd op gainers.</div>
-          <div class="screener-filter">Premarket screener · filter prijs &lt; <strong>$100</strong></div>
-          <div class="screener-url">marketwatch.com/tools/screener →</div>
-        </a>
-
-        <!-- Benzinga -->
-        <a class="screener-card" href="https://www.benzinga.com/premarket/" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">Benzinga</div>
-            <span class="screener-badge limited">BEPERKT GRATIS</span>
-          </div>
-          <div class="screener-desc">Populair bij day traders. Toont premarket movers met nieuws erbij. Sommige data achter betaalmuur.</div>
-          <div class="screener-filter">Premarket movers + nieuws gecombineerd</div>
-          <div class="screener-url">benzinga.com/premarket →</div>
-        </a>
-
-        <!-- Unusual Whales -->
-        <a class="screener-card" href="https://unusualwhales.com/market-overview/premarket" target="_blank" rel="noopener">
-          <div class="screener-card-top">
-            <div class="screener-name">Unusual Whales</div>
-            <span class="screener-badge limited">BEPERKT GRATIS</span>
-          </div>
-          <div class="screener-desc">Toont premarket gainers én options flow. Goed voor het spotten van institutionele activiteit.</div>
-          <div class="screener-filter">Premarket overview · opties activiteit</div>
-          <div class="screener-url">unusualwhales.com/premarket →</div>
-        </a>
-
-      </div>
-
-      <div class="screener-divider"></div>
-
-      <div class="section-label" style="margin-bottom:10px;">🎯 HOE GEBRUIK JE DIT SAMEN MET VSA?</div>
-      <div class="screener-tip">
-        <strong>Stap 1:</strong> Open Finviz of Stock Analysis vóór de markt opent (06:00–09:30 NL tijd).<br>
-        <strong>Stap 2:</strong> Filter op premarket change <strong>≥ +10%</strong> en prijs <strong>&lt; $100</strong>. Noteer de top 5 symbolen.<br>
-        <strong>Stap 3:</strong> Voer elk symbool in de VSA analyser hierboven in. Kijk of het signaal de move bevestigt.<br>
-        <strong>Stap 4:</strong> Alleen instappen als de VSA bias <strong>BULLISH</strong> is én het checklist ≤ 1 rode stip heeft.<br><br>
-        ⚠️ <strong>Let op:</strong> Stocks die +30% of meer premarket stijgen zijn vaak al te laat om in te stappen — het risico op een snelle reversal is hoog. Focus op +10% tot +25% met bevestiging vanuit het chart.
-      </div>
-
-    </div>
-  </div>
-
-
-  <div class="panel">
-    <div class="panel-toggle" onclick="togglePanel('when')">
-      <div class="panel-left"><div class="panel-icon">🕐</div><div>
-        <div class="panel-title" data-en="When & how to use this tool" data-nl="Wanneer & hoe gebruik je dit hulpmiddel">When & how to use this tool</div>
-        <div class="panel-sub" data-en="What time period it covers, and when to run a scan" data-nl="Welke periode het dekt, en wanneer je een scan uitvoert">What time period it covers, and when to run a scan</div>
-      </div></div>
-      <div class="panel-arrow" id="when-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="when-body">
-      <div class="time-banner">
-        <div class="time-banner-icon">📅</div>
+    <!-- Tab inhoud panels -->
+    <div class="dash-panel active" id="dpanel-alerts">
+      <!-- VOLUME ALERT SCANNER inhoud (zonder panel wrapper) -->
+      <div class="dash-panel-header">
         <div>
-          <strong style="display:block;font-size:14px;margin-bottom:6px;" data-en="What time period does a scan cover?" data-nl="Welke periode dekt een scan?">What time period does a scan cover?</strong>
-          <div class="time-banner-body"
-            data-en="This tool does <strong>NOT</strong> just look at today's price. It looks back over the last <strong>20–30 trading days</strong> (roughly 4–6 weeks). It reads each day like a chapter — the price, how much it moved, and how many people were trading. Then it spots the important moments hidden in that history."
-            data-nl="Dit hulpmiddel kijkt <strong>NIET</strong> alleen naar de huidige prijs. Het kijkt terug over de laatste <strong>20–30 handelsdagen</strong> (ongeveer 4–6 weken). Het leest elke dag als een hoofdstuk — de prijs, hoeveel die bewoog, en hoeveel mensen handelden. Dan herkent het de belangrijke momenten verborgen in die geschiedenis.">
-            This tool does <strong>NOT</strong> just look at today's price. It looks back over the last <strong>20–30 trading days</strong> (roughly 4–6 weeks). It reads each day like a chapter — the price, how much it moved, and how many people were trading. Then it spots the important moments hidden in that history.
+          <div class="dash-panel-title">Volume Alert Scanner</div>
+          <div class="dash-panel-sub" id="alertScannerSub">Scant automatisch stocks op abnormaal volume + stijging</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="alert-scanner-status idle" id="alertStatus">Gestopt</span>
+          <button class="alert-scanner-btn start" id="alertStartBtn" onclick="startAlertScanner()">▶ Starten</button>
+          <button class="alert-scanner-btn stop"  id="alertStopBtn"  onclick="stopAlertScanner()" style="display:none;">⏹ Stop</button>
+        </div>
+      </div>
+      <div class="dash-two-col">
+        <div>
+          <div class="dash-settings-row">
+            <div class="alert-setting"><label>MIN VOLUME</label>
+              <select id="alertMinVol"><option value="2">2×</option><option value="3" selected>3×</option><option value="5">5×</option><option value="10">10× 🔥</option></select>
+            </div>
+            <div class="alert-setting"><label>MIN STIJGING</label>
+              <select id="alertMinChg"><option value="1">+1%</option><option value="2" selected>+2%</option><option value="3">+3%</option><option value="5">+5%</option></select>
+            </div>
+            <div class="alert-setting"><label>MAX PRIJS</label>
+              <select id="alertMaxPrice"><option value="20">&lt;$20</option><option value="50" selected>&lt;$50</option><option value="100">&lt;$100</option><option value="9999">Alles</option></select>
+            </div>
+            <div class="alert-setting"><label>INTERVAL</label>
+              <select id="alertInterval"><option value="120">2 min</option><option value="300" selected>5 min</option><option value="600">10 min</option></select>
+            </div>
+          </div>
+          <div class="alert-progress" id="alertProgress"><div class="alert-progress-fill" id="alertProgressFill" style="width:0%"></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span id="alertNextScan" style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);"></span>
+            <button onclick="clearAlertHits()" style="font-size:11px;font-family:'Space Mono',monospace;background:none;border:none;color:var(--muted);cursor:pointer;">✕ Wis meldingen</button>
+          </div>
+          <div id="alertHits"><div class="alert-empty">Start de scanner — hij checkt 40+ stocks op volume spikes.<br>Je krijgt een melding zodra iets beweegt.</div></div>
+        </div>
+        <div class="dash-info-box">
+          <div class="dash-info-title">📖 Hoe werkt het?</div>
+          <p>De scanner checkt elke paar minuten een lijst van 40+ volatiele stocks onder $50.</p>
+          <p style="margin-top:8px;">Als een stock plotseling <strong>3× of meer volume</strong> heeft én <strong>+2% of meer</strong> stijgt — verschijnt er een melding.</p>
+          <p style="margin-top:8px;">Klik op een melding → directe VSA analyse.</p>
+          <div style="margin-top:12px;padding:10px;background:rgba(255,107,0,0.07);border-radius:6px;border-left:3px solid #ff6b00;">
+            <span style="font-size:11px;font-weight:700;color:#ff6b00;">🔔 TIP</span>
+            <span style="font-size:12px;"> Laat de scanner draaien terwijl je iets anders doet — browser notificaties waarschuwen je automatisch.</span>
           </div>
         </div>
       </div>
-      <div class="section-label" data-en="YOUR TRADING DAY — STEP BY STEP" data-nl="JOUW HANDELSDAG — STAP VOOR STAP">YOUR TRADING DAY — STEP BY STEP</div>
-      <div class="when-grid">
-        <div class="when-card">
-          <div class="when-step" data-en="STEP 1" data-nl="STAP 1">STEP 1</div>
-          <div class="when-title" data-en="☀️ Before the market opens" data-nl="☀️ Vóór de markt opent">☀️ Before the market opens</div>
-          <div class="when-body" data-en="Run a scan on any stock you're watching. This tells you the <strong>overall direction</strong> and any important signal zones from recent weeks. This is your game plan for the day." data-nl="Voer een scan uit op een aandeel dat je volgt. Dit geeft je de <strong>algemene richting</strong> en belangrijke signaalzones van de afgelopen weken. Dit is jouw plan voor de dag.">Run a scan on any stock you're watching. This tells you the <strong>overall direction</strong> and any important signal zones from recent weeks. This is your game plan for the day.</div>
+    </div>
+
+    <div class="dash-panel" id="dpanel-movers">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">Live Movers — Stocks onder $50</div>
+          <div class="dash-panel-sub">Stocks die nu het meest bewegen · klik om te analyseren</div>
         </div>
-        <div class="when-card">
-          <div class="when-step" data-en="STEP 2" data-nl="STAP 2">STEP 2</div>
-          <div class="when-title" data-en="✅ Check the bias first" data-nl="✅ Check eerst de richting">✅ Check the bias first</div>
-          <div class="when-body" data-en="Is it <strong>BULLISH, BEARISH or NEUTRAL?</strong> If NEUTRAL — consider sitting out. Only trade in the direction the bias points." data-nl="Is het <strong>BULLISH, BEARISH of NEUTRAL?</strong> Als NEUTRAL — overweeg dan niet te handelen. Trade alleen in de richting die de bias aangeeft.">Is it <strong>BULLISH, BEARISH or NEUTRAL?</strong> If NEUTRAL — consider sitting out. Only trade in the direction the bias points.</div>
-        </div>
-        <div class="when-card">
-          <div class="when-step" data-en="STEP 3" data-nl="STAP 3">STEP 3</div>
-          <div class="when-title" data-en="🔍 Read the signals" data-nl="🔍 Lees de signalen">🔍 Read the signals</div>
-          <div class="when-body" data-en="Look at the VSA signals. Are they mostly green or red? Do they match the bias? <strong>More signals agreeing = stronger edge.</strong>" data-nl="Bekijk de VSA-signalen. Zijn ze voornamelijk groen of rood? Kloppen ze met de bias? <strong>Meer overeenkomende signalen = sterkere kans.</strong>">Look at the VSA signals. Are they mostly green or red? Do they match the bias? <strong>More signals agreeing = stronger edge.</strong></div>
-        </div>
-        <div class="when-card">
-          <div class="when-step" data-en="STEP 4" data-nl="STAP 4">STEP 4</div>
-          <div class="when-title" data-en="📋 Check the checklist" data-nl="📋 Check de controlelijst">📋 Check the checklist</div>
-          <div class="when-body" data-en="Before placing on eToro, run through the dots. <strong>2+ red dots = skip it.</strong> Wait for a cleaner setup." data-nl="Voordat je op eToro plaatst, loop je de stipjes door. <strong>2+ rode stipjes = overslaan.</strong> Wacht op een betere situatie.">Before placing on eToro, run through the dots. <strong>2+ red dots = skip it.</strong> Wait for a cleaner setup.</div>
+        <div style="display:flex;gap:6px;">
+          <button class="scanner-preset" onclick="loadMovers('gainers')" id="movers-btn-gainers" style="background:rgba(45,122,79,0.1);border-color:var(--accent);color:var(--accent);">📈 Stijgers</button>
+          <button class="scanner-preset" onclick="loadMovers('losers')"  id="movers-btn-losers">📉 Dalers</button>
+          <button class="scanner-preset" onclick="loadMovers('active')"  id="movers-btn-active">⚡ Actief</button>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);align-self:center;" id="moversLastUpdate"></span>
         </div>
       </div>
-      <div class="tip-box"
-        data-en="💡 <strong>Best times to scan:</strong> Evening after US markets close, or morning before they open. Re-scan mid-week if a stock makes a big move — fresh signals appear. <strong>Avoid scanning during big news events</strong> — signals will be noisy."
-        data-nl="💡 <strong>Beste momenten om te scannen:</strong> 's Avonds na sluiting van de Amerikaanse markten, of 's ochtends voor de opening. Scan opnieuw midden in de week als een aandeel sterk beweegt — nieuwe signalen verschijnen. <strong>Vermijd scannen tijdens grote nieuwsgebeurtenissen</strong> — signalen zijn dan onbetrouwbaar.">
-        💡 <strong>Best times to scan:</strong> Evening after US markets close, or morning before they open. Re-scan mid-week if a stock makes a big move — fresh signals appear. <strong>Avoid scanning during big news events</strong> — signals will be noisy.
+      <div id="moversGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px;">
+        <div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13px;">Klik een categorie hierboven om te laden</div>
       </div>
     </div>
-  </div>
 
-  <!-- VSA QUIZ PANEL -->
-  <div class="panel">
-    <div class="panel-toggle" onclick="togglePanel('quiz')">
-      <div class="panel-left"><div class="panel-icon">🧠</div><div>
-        <div class="panel-title">VSA Quiz — Test je kennis</div>
-        <div class="panel-sub">Leer VSA patronen herkennen met interactieve vragen</div>
-      </div></div>
-      <div class="panel-arrow" id="quiz-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="quiz-body">
-      <div class="quiz-wrap">
-        <div class="quiz-header">
-          <div class="quiz-title">🧠 VSA PATROON QUIZ</div>
-          <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+    <div class="dash-panel" id="dpanel-news">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">Nieuws & Social</div>
+          <div class="dash-panel-sub">Laatste nieuws voor je watchlist stocks</div>
         </div>
-        <div class="quiz-body" id="quizBody"></div>
+        <button class="news-refresh" id="newsRefreshBtn" onclick="loadAllNews()">↺ Vernieuwen</button>
+      </div>
+      <div class="news-ticker-tabs" id="newsTickerTabs"></div>
+      <div id="newsXRow" style="margin-bottom:10px;display:none;flex-wrap:wrap;gap:6px;"></div>
+      <div id="newsContent">
+        <div class="news-loading"><div class="news-spinner"></div><span>Nieuws laden...</span></div>
       </div>
     </div>
-  </div>
 
-  <!-- LEERBIBLIOTHEEK PANEL -->
-  <div class="panel" style="border-color:var(--purple);background:rgba(109,63,168,0.03);">
-    <div class="panel-toggle" onclick="togglePanel('learn')">
-      <div class="panel-left"><div class="panel-icon">📚</div><div>
-        <div class="panel-title">Leerbibliotheek — Alle indicatoren uitgelegd</div>
-        <div class="panel-sub">VSA · VWAP · EMA · ATR · CVD · Volume Profile · Candlesticks · Psychologie</div>
-      </div></div>
-      <div class="panel-arrow" id="learn-arrow">▼</div>
+    <div class="dash-panel" id="dpanel-journal">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">Trade Journal</div>
+          <div class="dash-panel-sub">Bijhouden & leren van je trades</div>
+        </div>
+      </div>
+      <div class="dash-two-col">
+        <div>
+          <div class="journal-stats" id="journalStats" style="margin-bottom:14px;"></div>
+          <div class="section-label" style="margin-bottom:8px;">➕ NIEUWE TRADE</div>
+          <div class="journal-form">
+            <div class="journal-form-grid">
+              <div class="journal-field"><label class="journal-label">TICKER</label><input class="journal-input" id="jTicker" placeholder="AAPL" style="font-family:'Space Mono',monospace;font-weight:700;"></div>
+              <div class="journal-field"><label class="journal-label">DATUM</label><input class="journal-input" id="jDate" type="date"></div>
+              <div class="journal-field"><label class="journal-label">ENTRY ($)</label><input class="journal-input" id="jEntry" type="number" step="0.01" placeholder="24.50"></div>
+              <div class="journal-field"><label class="journal-label">EXIT ($)</label><input class="journal-input" id="jExit" type="number" step="0.01" placeholder="leeg = open"></div>
+              <div class="journal-field"><label class="journal-label">STOP ($)</label><input class="journal-input" id="jStop" type="number" step="0.01"></div>
+              <div class="journal-field"><label class="journal-label">AANDELEN</label><input class="journal-input" id="jShares" type="number"></div>
+              <div class="journal-field"><label class="journal-label">SIGNAAL</label>
+                <select class="journal-select" id="jSignal">
+                  <option value="">— kies —</option>
+                  <option>Stopping Volume</option><option>No Supply</option><option>Shake Out</option>
+                  <option>Demand Surge</option><option>Bullish Absorption</option><option>No Demand</option>
+                  <option>Up-Thrust / Rejection</option><option>Supply Surge</option><option>Climactic Action</option><option>Anders</option>
+                </select>
+              </div>
+              <div class="journal-field"><label class="journal-label">RICHTING</label>
+                <select class="journal-select" id="jDirection"><option value="LONG">LONG</option><option value="SHORT">SHORT</option></select>
+              </div>
+              <textarea class="journal-textarea journal-input" id="jNotes" placeholder="Notities: waarom instappen, wat zag je..."></textarea>
+            </div>
+            <button class="journal-save-btn" onclick="saveJournalEntry()">💾 Opslaan</button>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:8px;">📋 TRADES</div>
+          <div class="journal-filter-row">
+            <button class="journal-filter-btn active" id="jf-all"  onclick="filterJournal('all')">Alle</button>
+            <button class="journal-filter-btn" id="jf-win"  onclick="filterJournal('win')">✅ Winst</button>
+            <button class="journal-filter-btn" id="jf-loss" onclick="filterJournal('loss')">❌ Verlies</button>
+            <button class="journal-filter-btn" id="jf-open" onclick="filterJournal('open')">⏳ Open</button>
+          </div>
+          <div class="journal-list" id="journalList"></div>
+        </div>
+      </div>
     </div>
-    <div class="panel-body" id="learn-body">
 
-      <!-- Tab navigation -->
-      <div class="learn-tabs" id="learnTabs">
+    <div class="dash-panel" id="dpanel-learn">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">Leerbibliotheek</div>
+          <div class="dash-panel-sub">VSA · VWAP · EMA · ATR · CVD · Candlesticks · Psychologie</div>
+        </div>
+      </div>
+      <div class="learn-tabs" id="learnTabs" style="margin-bottom:16px;">
         <button class="learn-tab active" onclick="switchLearnTab('vsa')">📊 VSA Basis</button>
-        <button class="learn-tab" onclick="switchLearnTab('signals')">🎯 VSA Signalen</button>
+        <button class="learn-tab" onclick="switchLearnTab('signals')">🎯 Signalen</button>
         <button class="learn-tab" onclick="switchLearnTab('vwap')">📍 VWAP</button>
         <button class="learn-tab" onclick="switchLearnTab('ema')">📈 EMA</button>
         <button class="learn-tab" onclick="switchLearnTab('atr')">📐 ATR</button>
         <button class="learn-tab" onclick="switchLearnTab('cvd')">🌊 CVD</button>
         <button class="learn-tab" onclick="switchLearnTab('volume')">🔊 Volume</button>
-        <button class="learn-tab" onclick="switchLearnTab('candles')">🕯️ Candlesticks</button>
-        <button class="learn-tab" onclick="switchLearnTab('setup')">⚡ Setup bouwen</button>
+        <button class="learn-tab" onclick="switchLearnTab('candles')">🕯️ Candles</button>
+        <button class="learn-tab" onclick="switchLearnTab('setup')">⚡ Setup</button>
         <button class="learn-tab" onclick="switchLearnTab('psych')">🧠 Psychologie</button>
-        <button class="learn-tab" onclick="switchLearnTab('videos')">▶️ YouTube Videos</button>
+        <button class="learn-tab" onclick="switchLearnTab('videos')">▶️ Videos</button>
       </div>
-
-      <div id="learnContent" style="margin-top:16px;"></div>
-
+      <div id="learnContent"></div>
     </div>
-  </div>
 
-  <div class="panel" style="border-color:var(--accent3);background:rgba(184,134,11,0.03);">
-    <div class="panel-toggle" onclick="togglePanel('proxysettings')">
-      <div class="panel-left"><div class="panel-icon">⚙️</div><div>
-        <div class="panel-title">Proxy Instellingen — Data ophalen</div>
-        <div class="panel-sub" id="proxyStatusSub">Data ophalen via allorigins proxy · klik voor eigen proxy instellen (sneller)</div>
-      </div></div>
-      <div class="panel-arrow" id="proxysettings-arrow">▼</div>
-    </div>
-    <div class="panel-body" id="proxysettings-body">
-
-      <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:1.8;">
-        <p style="margin:0 0 10px;">
-          Yahoo Finance blokkeert directe verzoeken vanuit de browser. De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt maar is soms traag (10–30 seconden).<br>
-          Voor de <strong>snelste verbinding</strong>: zet je eigen gratis <strong>Cloudflare Worker</strong> op. Duurt 5 minuten, geen creditcard nodig.
-        </p>
-
-        <details style="font-size:12px;">
-          <summary style="cursor:pointer;font-weight:700;color:var(--accent);margin-bottom:12px;">📋 Stap-voor-stap instructie (klik om uit te klappen)</summary>
-
-          <div style="line-height:2.2;margin-bottom:12px;">
-            <strong>Stap 1</strong> — Ga naar <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--accent);">workers.cloudflare.com</a> en maak een gratis account aan<br>
-            <strong>Stap 2</strong> — Klik <strong>Create Worker</strong> → kies <strong>Start with Hello World!</strong> → klik <strong>Deploy</strong><br>
-            <strong>Stap 3</strong> — Je ziet nu een code-editor. Selecteer alle code (Ctrl+A) en verwijder het<br>
-            <strong>Stap 4</strong> — Kopieer de Worker-code hieronder en plak hem in de editor<br>
-            <strong>Stap 5</strong> — Klik rechtsboven op <strong>Deploy</strong><br>
-            <strong>Stap 6</strong> — Kopieer je Worker URL (bijv. <code style="background:var(--surface);padding:2px 6px;border-radius:4px;">https://vsatrader.jouwnaam.workers.dev</code>)<br>
-            <strong>Stap 7</strong> — Plak die URL hieronder en klik Opslaan
+    <div class="dash-panel" id="dpanel-settings">
+      <div class="dash-panel-header">
+        <div>
+          <div class="dash-panel-title">Proxy Instellingen</div>
+          <div class="dash-panel-sub" id="proxyStatusSub">Data ophalen via allorigins proxy · stel eigen Cloudflare Worker in voor snellere verbinding</div>
+        </div>
+      </div>
+      <div class="dash-two-col">
+        <div>
+          <div style="background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:1.8;">
+            <p style="margin:0 0 10px;">Yahoo Finance blokkeert directe verzoeken vanuit de browser. De app gebruikt <strong>allorigins.win</strong> als doorstuurproxy — dit werkt maar is soms traag (10–30 seconden).<br>Voor de <strong>snelste verbinding</strong>: zet je eigen gratis <strong>Cloudflare Worker</strong> op. Duurt 5 minuten, geen creditcard nodig.</p>
+            <details style="font-size:12px;">
+              <summary style="cursor:pointer;font-weight:700;color:var(--accent);margin-bottom:12px;">📋 Stap-voor-stap instructie</summary>
+              <div style="line-height:2.2;margin-bottom:12px;">
+                <strong>Stap 1</strong> — Ga naar <a href="https://workers.cloudflare.com" target="_blank" style="color:var(--accent);">workers.cloudflare.com</a> → gratis account<br>
+                <strong>Stap 2</strong> — Klik <strong>Create Worker</strong> → <strong>Start with Hello World!</strong> → <strong>Deploy</strong><br>
+                <strong>Stap 3</strong> — Selecteer alle code (Ctrl+A), verwijder het<br>
+                <strong>Stap 4</strong> — Kopieer de Worker-code rechts en plak hem in<br>
+                <strong>Stap 5</strong> — Klik <strong>Deploy</strong> → kopieer je Worker URL<br>
+                <strong>Stap 6</strong> — Plak de URL hieronder en klik Opslaan
+              </div>
+            </details>
           </div>
-
-          <div style="margin-bottom:8px;font-weight:700;color:var(--text);">Worker code (kopieer dit):</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input id="proxyInput" type="url" placeholder="https://vsatrader.jouwnaam.workers.dev"
+              style="flex:1;min-width:260px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;background:var(--surface);color:var(--text);">
+            <button onclick="saveProxyUrl()" style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">💾 Opslaan</button>
+            <button onclick="clearProxyUrl()" style="padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">✕ Wissen</button>
+          </div>
+          <div id="proxyTestResult" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:12px;"></div>
+        </div>
+        <div>
+          <div style="margin-bottom:8px;font-weight:700;font-size:13px;">Worker code:</div>
           <div style="position:relative;">
-            <pre id="workerCodeBlock" style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:11px;font-family:'Space Mono',monospace;overflow-x:auto;white-space:pre;line-height:1.6;margin:0;">export default {
+            <pre id="workerCodeBlock" style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px;font-size:10px;font-family:'Space Mono',monospace;overflow-x:auto;white-space:pre;line-height:1.6;margin:0;max-height:300px;overflow-y:auto;">export default {
   async fetch(request) {
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -1259,17 +1084,24 @@
 };</pre>
             <button onclick="copyWorkerCode()" style="position:absolute;top:8px;right:8px;padding:4px 12px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;" id="copyWorkerBtn">📋 Kopieer</button>
           </div>
-        </details>
+        </div>
       </div>
-
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <input id="proxyInput" type="url" placeholder="https://vsatrader.jouwnaam.workers.dev"
-          style="flex:1;min-width:260px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;font-size:12px;background:var(--surface);color:var(--text);">
-        <button onclick="saveProxyUrl()" style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">💾 Opslaan</button>
-        <button onclick="clearProxyUrl()" style="padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;">✕ Wissen</button>
-      </div>
-      <div id="proxyTestResult" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:12px;"></div>
     </div>
+
+    <!-- VSA QUIZ (verborgen tab, toegankelijk via leren) -->
+    <div class="dash-panel" id="dpanel-quiz" style="display:none;">
+      <div class="dash-panel-header">
+        <div class="dash-panel-title">VSA Quiz — Test je kennis</div>
+      </div>
+      <div class="quiz-wrap">
+        <div class="quiz-header">
+          <div class="quiz-title">🧠 VSA PATROON QUIZ</div>
+          <div class="quiz-score" id="quizScore">Score: 0 / 0</div>
+        </div>
+        <div class="quiz-body" id="quizBody"></div>
+      </div>
+    </div>
+
   </div>
 
 
@@ -3683,9 +3515,9 @@ function updateMarketStatusBar() {
   const setStatus = (id, open, pre, label) => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (open) { el.textContent = label + ' OPEN'; el.className = 'ms-open'; el.style.padding = '3px 10px'; el.style.borderRadius = '20px'; el.style.fontWeight = '700'; }
-    else if (pre) { el.textContent = label + ' PRE'; el.className = 'ms-pre'; el.style.padding = '3px 10px'; el.style.borderRadius = '20px'; el.style.fontWeight = '700'; }
-    else { el.textContent = label + ' GESLOTEN'; el.className = 'ms-closed'; el.style.padding = '3px 10px'; el.style.borderRadius = '20px'; el.style.fontWeight = '700'; }
+    if (open)      { el.textContent = label + ' ● OPEN';    el.className = 'app-mkt open'; }
+    else if (pre)  { el.textContent = label + ' ◑ PRE';     el.className = 'app-mkt pre'; }
+    else           { el.textContent = label + ' ○ GESLOTEN'; el.className = 'app-mkt closed'; }
   };
 
   setStatus('msNYSE',   nyOpen,  nyPre,  'NYSE');
@@ -3715,6 +3547,242 @@ updateMarketStatusBar();
 setInterval(updateMarketStatusBar, 30000);
 
 // ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// ── VOLUME ALERT SCANNER ──
+// ══════════════════════════════════════════════
+
+const ALERT_WATCHLIST = [
+  // High-volatility stocks under $50 — prime voor volume spikes
+  'F','BAC','SOFI','HOOD','PLTR','NIO','XPEV','SNAP','PINS','UBER',
+  'DKNG','MARA','RIOT','CLSK','HIMS','RBLX','AAL','CCL','RIVN','LCID',
+  'ROOT','GRAB','SE','CPNG','PENN','GME','AMC','PTON','SPCE','NKLA',
+  'BB','NOK','INTC','WBA','SNDL','VALE','ITUB','PBR','SLB','HAL',
+  'ONDS','FFIE','MULN','CLOV','BBBY','WKHS','RIDE','GOEV','ATVI','WISH',
+];
+
+let alertScannerTimer = null;
+let alertCountdownTimer = null;
+let alertHits = JSON.parse(localStorage.getItem('vsa_alert_hits') || '[]');
+let alertScanning = false;
+let alertCountdown = 0;
+let alertBaselineCache = {}; // sym -> avgVol from first scan
+
+function startAlertScanner() {
+  if (alertScanning) return;
+  alertScanning = true;
+
+  document.getElementById('alertStartBtn').style.display = 'none';
+  document.getElementById('alertStopBtn').style.display = 'inline-block';
+  document.getElementById('alertStatus').textContent = 'Actief';
+  document.getElementById('alertStatus').className = 'alert-scanner-status running';
+  document.getElementById('alertScannerSub').textContent = 'Scanner actief — controleert stocks op volume spikes';
+
+  renderAlertHits();
+  runAlertScan(); // direct eerste scan
+
+  const interval = parseInt(document.getElementById('alertInterval').value);
+  scheduleNextScan(interval);
+}
+
+function stopAlertScanner() {
+  alertScanning = false;
+  if (alertScannerTimer) { clearTimeout(alertScannerTimer); alertScannerTimer = null; }
+  if (alertCountdownTimer) { clearInterval(alertCountdownTimer); alertCountdownTimer = null; }
+
+  document.getElementById('alertStartBtn').style.display = 'inline-block';
+  document.getElementById('alertStopBtn').style.display = 'none';
+  document.getElementById('alertStatus').textContent = 'Gestopt';
+  document.getElementById('alertStatus').className = 'alert-scanner-status idle';
+  document.getElementById('alertNextScan').textContent = '';
+  document.getElementById('alertScannerSub').textContent = 'Scant automatisch stocks op abnormaal volume + stijging · klik om te starten';
+  document.getElementById('alertProgress').classList.remove('show');
+}
+
+function scheduleNextScan(seconds) {
+  if (!alertScanning) return;
+  alertCountdown = seconds;
+
+  if (alertCountdownTimer) clearInterval(alertCountdownTimer);
+  alertCountdownTimer = setInterval(() => {
+    if (!alertScanning) return;
+    alertCountdown--;
+    const m = Math.floor(alertCountdown / 60);
+    const s = alertCountdown % 60;
+    const el = document.getElementById('alertNextScan');
+    if (el) el.textContent = `Volgende scan: ${m > 0 ? m+'m ' : ''}${s}s`;
+    if (alertCountdown <= 0) {
+      clearInterval(alertCountdownTimer);
+    }
+  }, 1000);
+
+  alertScannerTimer = setTimeout(() => {
+    if (!alertScanning) return;
+    runAlertScan();
+    const interval = parseInt(document.getElementById('alertInterval').value);
+    scheduleNextScan(interval);
+  }, seconds * 1000);
+}
+
+async function runAlertScan() {
+  if (!alertScanning) return;
+
+  const minVolRatio = parseFloat(document.getElementById('alertMinVol').value);
+  const minChgPct   = parseFloat(document.getElementById('alertMinChg').value);
+  const maxPrice    = parseFloat(document.getElementById('alertMaxPrice').value);
+
+  const prog = document.getElementById('alertProgress');
+  const fill = document.getElementById('alertProgressFill');
+  const status = document.getElementById('alertStatus');
+
+  prog.classList.add('show');
+  status.textContent = 'Scant...';
+  status.className = 'alert-scanner-status scanning';
+
+  const tickers = ALERT_WATCHLIST;
+  const newHits = [];
+
+  for (let i = 0; i < tickers.length; i++) {
+    if (!alertScanning) break;
+    const sym = tickers[i];
+    fill.style.width = Math.round((i / tickers.length) * 100) + '%';
+
+    try {
+      const data = await fetchData(sym, '1mo');
+      if (!data || !data.rows || data.rows.length < 5) continue;
+
+      const rows = data.rows;
+      const last = rows[rows.length - 1];
+      const prev = rows[rows.length - 2];
+      const price = last.c;
+
+      if (price > maxPrice) continue;
+
+      // Bereken gemiddeld volume over de laatste 20 dagen (excl. vandaag)
+      const histRows = rows.slice(-21, -1);
+      const avgVol = histRows.reduce((s, r) => s + r.v, 0) / histRows.length;
+      if (avgVol < 10000) continue; // te dunne markt
+
+      const todayVol = last.v;
+      const volRatio = todayVol / avgVol;
+      const chgPct = ((last.c - prev.c) / prev.c) * 100;
+
+      // Check of het een hit is
+      if (volRatio >= minVolRatio && chgPct >= minChgPct) {
+        // Vermijd duplicaten van dezelfde dag
+        const today = new Date().toISOString().slice(0, 10);
+        const alreadySeen = alertHits.some(h =>
+          h.sym === sym && h.date === today && Math.abs(h.volRatio - volRatio) < 0.5
+        );
+        if (alreadySeen) continue;
+
+        // VSA bias check
+        const parsedRows = parseRows(data);
+        const signals = runVSA(parsedRows);
+        const biasObj = computeBias(parsedRows, signals);
+
+        const hit = {
+          sym, price, chgPct, volRatio, avgVol,
+          todayVol, bias: biasObj.bias,
+          signals: signals.slice(0, 2).map(s => s.label),
+          date: today,
+          time: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }),
+          ts: Date.now(),
+        };
+        newHits.push(hit);
+        alertHits.unshift(hit);
+
+        // Browser notificatie (als toegestaan)
+        if (Notification.permission === 'granted') {
+          new Notification(`🔔 Volume Spike: ${sym}`, {
+            body: `+${chgPct.toFixed(1)}% op ${volRatio.toFixed(1)}× volume · $${price.toFixed(2)}`,
+            icon: '📊',
+          });
+        }
+      }
+    } catch(e) { /* stil doorgaan */ }
+
+    // Kleine pauze tussen requests
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  // Bewaar max 50 hits
+  alertHits = alertHits.slice(0, 50);
+  localStorage.setItem('vsa_alert_hits', JSON.stringify(alertHits));
+
+  prog.classList.remove('show');
+  fill.style.width = '0%';
+  status.textContent = `Actief · ${newHits.length > 0 ? newHits.length + ' nieuw' : 'geen hits'}`;
+  status.className = 'alert-scanner-status running';
+
+  renderAlertHits();
+
+  // Vraag notificatie toestemming bij eerste hit
+  if (newHits.length > 0 && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function renderAlertHits() {
+  const el = document.getElementById('alertHits');
+  if (!el) return;
+
+  if (alertHits.length === 0) {
+    el.innerHTML = '<div class="alert-empty">Nog geen meldingen.<br>Start de scanner — hij checkt automatisch stocks op volume spikes.</div>';
+    return;
+  }
+
+  el.innerHTML = alertHits.map(h => {
+    const volColor = h.volRatio >= 10 ? 'vol-fire' : h.volRatio >= 5 ? 'vol-high' : 'vol-bullish';
+    const badge = h.volRatio >= 10
+      ? `<span class="alert-hit-badge fire">🔥 ${h.volRatio.toFixed(0)}× VOL</span>`
+      : `<span class="alert-hit-badge vol">⚡ ${h.volRatio.toFixed(1)}× VOL</span>`;
+    const biasBadge = h.bias === 'BULLISH'
+      ? `<span class="alert-hit-badge bull">BULLISH</span>`
+      : '';
+    const sigTags = (h.signals || []).map(s =>
+      `<span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">${s}</span>`
+    ).join(' · ');
+    const volStr = h.todayVol > 1000000
+      ? (h.todayVol/1000000).toFixed(1) + 'M'
+      : h.todayVol > 1000 ? (h.todayVol/1000).toFixed(0) + 'K' : h.todayVol;
+    const avgStr = h.avgVol > 1000000
+      ? (h.avgVol/1000000).toFixed(1) + 'M'
+      : h.avgVol > 1000 ? (h.avgVol/1000).toFixed(0) + 'K' : Math.round(h.avgVol);
+
+    return `<div class="alert-hit-card ${volColor}" onclick="loadFromAlert('${h.sym}')">
+      <div class="alert-hit-time">${h.time}</div>
+      <div class="alert-hit-top">
+        <span class="alert-hit-sym">${h.sym}</span>
+        <span class="alert-hit-price">$${h.price.toFixed(2)}</span>
+        <span class="alert-hit-chg">+${h.chgPct.toFixed(2)}%</span>
+        ${badge}
+        ${biasBadge}
+      </div>
+      <div class="alert-hit-body">
+        Volume: ${volStr} (gem. ${avgStr}) · ${sigTags || 'geen VSA signaal'}
+        <br><span style="font-size:11px;color:var(--accent);font-weight:700;">→ Klik om volledige VSA analyse te openen</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadFromAlert(sym) {
+  document.getElementById('tickerInput').value = sym;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => document.getElementById('analyzeBtn').click(), 400);
+}
+
+function clearAlertHits() {
+  alertHits = [];
+  localStorage.removeItem('vsa_alert_hits');
+  renderAlertHits();
+}
+
+// Init: render opgeslagen hits bij pagina laden
+document.addEventListener('DOMContentLoaded', () => {
+  if (alertHits.length > 0) renderAlertHits();
+});
+
 // ── LIVE MOVERS < $50 ──
 // ══════════════════════════════════════════════
 
@@ -4393,15 +4461,48 @@ function switchLearnTab(tab) {
   if (content) content.innerHTML = LEARN_CONTENT[tab] || '<p style="color:var(--muted);">Inhoud volgt binnenkort.</p>';
 }
 
-// Init leerbibliotheek when panel opens
-const _origToggle = window.togglePanel;
-window.togglePanel = function(id) {
-  _origToggle(id);
-  if (id === 'learn') {
+// ══════════════════════════════════════════════
+// ── DASHBOARD TAB SYSTEEM ──
+// ══════════════════════════════════════════════
+
+let activeDashTab = 'alerts';
+
+function switchDashTab(tab) {
+  activeDashTab = tab;
+
+  // Update tab buttons
+  document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('dtab-' + tab);
+  if (btn) btn.classList.add('active');
+
+  // Update panels
+  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('dpanel-' + tab);
+  if (panel) panel.classList.add('active');
+
+  // Init content when tab first opens
+  if (tab === 'learn') {
     const content = document.getElementById('learnContent');
     if (content && !content.innerHTML.trim()) switchLearnTab('vsa');
   }
-};
+  if (tab === 'journal') {
+    setTimeout(() => { renderJournalStats(); renderJournalList(); }, 50);
+  }
+  if (tab === 'movers') {
+    const grid = document.getElementById('moversGrid');
+    if (grid && grid.children.length <= 1) loadMovers('gainers');
+  }
+  if (tab === 'news') {
+    const section = document.getElementById('newsSection');
+    if (section) section.style.display = 'block';
+  }
+}
+
+// Initieer dashboard op load
+document.addEventListener('DOMContentLoaded', () => {
+  switchDashTab('alerts');
+  if (alertHits.length > 0) renderAlertHits();
+});
 
 // ── PROXY INSTELLINGEN ──
 function saveProxyUrl() {
