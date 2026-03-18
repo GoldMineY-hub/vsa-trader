@@ -1997,16 +1997,17 @@ async function runAnalysis(ticker) {
 function buildDailyCompare(rows, avgVol) {
   if (rows.length < 3) return '';
 
-  const d0 = rows[rows.length - 3];
+  // Laatste 3 unieke handelsdagen — nieuwste rechts
+  const d2 = rows[rows.length - 1]; // meest recent
   const d1 = rows[rows.length - 2];
-  const d2 = rows[rows.length - 1];
+  const d0 = rows[rows.length - 3]; // oudste van de 3
 
-  // Always show actual day names — these are the last 3 trading days
-  const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long' });
+  const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'short' });
+
   const days = [
-    { row: d0, label: dayName(d0).toUpperCase(), isLatest: false },
-    { row: d1, label: dayName(d1).toUpperCase(), isLatest: false },
-    { row: d2, label: dayName(d2).toUpperCase() + ' (LAATSTE)', isLatest: true },
+    { row: d0, label: dayName(d0).toUpperCase() },
+    { row: d1, label: dayName(d1).toUpperCase() },
+    { row: d2, label: dayName(d2).toUpperCase() + ' ← LAATSTE', isLatest: true },
   ];
 
   const maxVol = Math.max(...days.map(d => d.row.volume));
@@ -2035,7 +2036,7 @@ function buildDailyCompare(rows, avgVol) {
       const volBarW = maxVol > 0 ? Math.round((r.volume / maxVol) * 100) : 50;
       const volBarColor = volRatio >= 2 ? 'var(--accent3)' : isUp ? 'var(--accent)' : 'var(--accent2)';
       const volStr = r.volume > 1e6 ? (r.volume/1e6).toFixed(1)+'M' : r.volume > 1000 ? (r.volume/1000).toFixed(0)+'K' : r.volume;
-      const dateStr = r.date.toLocaleDateString('nl-NL', { weekday:'short', day:'numeric', month:'short' });
+      const dateStr = r.date.toLocaleDateString('nl-NL', { day:'numeric', month:'short' });
 
       // VSA quick read
       const isNarrow = bodyPct < 0.35;
@@ -2073,7 +2074,7 @@ function buildDailyCompare(rows, avgVol) {
 
       // Day change vs previous
       const dayIdx = days.findIndex(d => d.row === row);
-      const prevRow = dayIdx > 0 ? rows[rows.length - 3 + dayIdx - 1] : null;
+      const prevRow = dayIdx > 0 ? days[dayIdx - 1].row : null;
       const dayChange = prevRow ? ((r.close - prevRow.close) / prevRow.close * 100) : null;
       const dayChangeStr = dayChange !== null
         ? `<span style="color:${dayChange >= 0 ? 'var(--accent)' : 'var(--accent2)'};font-weight:700;font-family:'Space Mono',monospace;font-size:10px;">${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(2)}%</span>`
