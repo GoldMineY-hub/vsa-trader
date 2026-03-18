@@ -299,8 +299,8 @@
   .bias-text{font-size:14px;color:var(--muted);flex:1;min-width:200px;line-height:1.65;font-family:'Inter',sans-serif;}
   .chart-area{padding:20px 22px;border-bottom:2px solid var(--border);}
   .chart-title{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);letter-spacing:2px;margin-bottom:10px;font-weight:700;}
-  .chart-wrap{position:relative;height:260px;}
-  .vol-wrap{position:relative;height:80px;margin-top:8px;}
+  .chart-wrap{position:relative;height:300px;}
+  .vol-wrap{position:relative;height:90px;margin-top:8px;}
   .chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
   .legend-dot{width:10px;height:10px;border-radius:50%;}
@@ -1058,8 +1058,17 @@
   <div id="output">
     <div class="empty-state">
       <div class="empty-icon">📊</div>
-      <div class="empty-title" data-en="Enter a stock ticker above" data-nl="Voer een aandelenticker in">Voer een aandelenticker in</div>
-      <div class="empty-sub" data-en="Type any stock symbol and hit ANALYSE. Results appear in a few seconds · geen account of API-sleutel nodig." data-nl="Typ een aandelensymbool en klik op ANALYSEER. Resultaten verschijnen binnen enkele seconden · geen account of API-sleutel nodig.">Type any stock symbol and hit ANALYSE. Results appear in a few seconds · geen account of API-sleutel nodig.</div>
+      <div class="empty-title">Voer een aandelenticker in</div>
+      <div class="empty-sub">Typ een symbool en klik ANALYSEER. Resultaten verschijnen binnen enkele seconden.</div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+        ${['AAPL','TSLA','NVDA','PLTR','SOFI','AMD','MARA','NIO','HOOD','F'].map(s =>
+          `<button onclick="document.getElementById('tickerInput').value='${s}';document.getElementById('analyzeBtn').click()"
+            style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:5px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 0.15s;"
+            onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">${s}</button>`
+        ).join('')}
+      </div>
+      <div style="margin-top:10px;font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);">of klik op een stock in de 🔥 Movers tab hieronder</div>
     </div>
   </div>
 
@@ -1988,15 +1997,48 @@ async function runAnalysis(ticker) {
 function buildDailyCompare(rows, avgVol) {
   if (rows.length < 3) return '';
 
+  const d0 = rows[rows.length - 3];
+  const d1 = rows[rows.length - 2];
+  const d2 = rows[rows.length - 1];
+
+  // Determine labels based on how recent the last row is
+  const lastDate = d2.date;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diffDays = Math.round((today - lastDate) / 86400000);
+
+  let labels;
+  if (diffDays <= 1) {
+    labels = ['EERGISTEREN', 'GISTEREN', 'LAATSTE DAG'];
+  } else {
+    // Show actual day names instead
+    const dayName = d => d.date.toLocaleDateString('nl-NL', { weekday: 'long' });
+    labels = [dayName(d0), dayName(d1), dayName(d2)];
+    labels = labels.map(l => l.toUpperCase());
+  }
+
   const days = [
-    { row: rows[rows.length - 3], label: 'EERGISTEREN', isToday: false },
-    { row: rows[rows.length - 2], label: 'GISTEREN',    isToday: false },
-    { row: rows[rows.length - 1], label: 'VANDAAG',     isToday: true  },
+    { row: d0, label: labels[0], isToday: false },
+    { row: d1, label: labels[1], isToday: false },
+    { row: d2, label: labels[2], isToday: true  },
   ];
 
   const maxVol = Math.max(...days.map(d => d.row.volume));
 
-  return `<div class="daily-compare">
+  // OHLC legend — shown once above the 3 columns
+  const ohlcLegend = `
+    <div style="padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <span style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--muted);">LAATSTE 3 HANDELSDAGEN</span>
+      <div style="display:flex;gap:12px;margin-left:auto;flex-wrap:wrap;">
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);" title="Openingsprijs — eerste prijs van de dag"><strong style="color:var(--text);">O</strong> = Open</span>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);" title="Hoogste prijs van de dag"><strong style="color:var(--text);">H</strong> = Hoog</span>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);" title="Laagste prijs van de dag"><strong style="color:var(--text);">L</strong> = Laag</span>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);" title="Sluitingsprijs — laatste prijs van de dag"><strong style="color:var(--text);">S</strong> = Sluit</span>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);" title="Volume vergeleken met het gemiddelde van de afgelopen maand"><strong style="color:var(--text);">×</strong> = Volume t.o.v. gem.</span>
+      </div>
+    </div>`;
+
+  return ohlcLegend + `<div class="daily-compare">
     ${days.map(({ row, label, isToday }) => {
       const r = row;
       const isUp = r.close >= r.open;
@@ -2015,21 +2057,20 @@ function buildDailyCompare(rows, avgVol) {
       const hiVol    = volRatio >= 1.8;
       const loVol    = volRatio <= 0.6;
       let verdict = '', verdictClass = 'neutral';
-      if (isWide && isUp && hiVol)        { verdict = 'VRAAG SURGE';    verdictClass = 'bull'; }
-      else if (!isUp && hiVol && closePct > 0.5) { verdict = 'STOPPING VOL'; verdictClass = 'bull'; }
-      else if (isWide && !isUp && hiVol)  { verdict = 'AANBOD SURGE';   verdictClass = 'bear'; }
-      else if (loVol && !isUp && isNarrow){ verdict = 'GEEN AANBOD';    verdictClass = 'bull'; }
-      else if (loVol && isUp && isNarrow) { verdict = 'GEEN VRAAG';     verdictClass = 'bear'; }
-      else if (hiVol && isNarrow)         { verdict = 'ABSORPTIE';       verdictClass = 'neutral'; }
-      else if (isUp && isWide)            { verdict = 'BULLISH BAR';     verdictClass = 'bull'; }
-      else if (!isUp && isWide)           { verdict = 'BEARISH BAR';     verdictClass = 'bear'; }
-      else                                { verdict = isUp ? 'NEUTRAAL ↑' : 'NEUTRAAL ↓'; verdictClass = 'neutral'; }
+      if (isWide && isUp && hiVol)               { verdict = 'VRAAG SURGE';    verdictClass = 'bull'; }
+      else if (!isUp && hiVol && closePct > 0.5) { verdict = 'STOPPING VOL';   verdictClass = 'bull'; }
+      else if (isWide && !isUp && hiVol)         { verdict = 'AANBOD SURGE';   verdictClass = 'bear'; }
+      else if (loVol && !isUp && isNarrow)       { verdict = 'GEEN AANBOD';    verdictClass = 'bull'; }
+      else if (loVol && isUp && isNarrow)        { verdict = 'GEEN VRAAG';     verdictClass = 'bear'; }
+      else if (hiVol && isNarrow)                { verdict = 'ABSORPTIE';      verdictClass = 'neutral'; }
+      else if (isUp && isWide)                   { verdict = 'BULLISH BAR';    verdictClass = 'bull'; }
+      else if (!isUp && isWide)                  { verdict = 'BEARISH BAR';    verdictClass = 'bear'; }
+      else                                       { verdict = isUp ? 'NEUTRAAL ↑' : 'NEUTRAAL ↓'; verdictClass = 'neutral'; }
 
-      // Mini SVG candle — 28px wide, 48px tall
+      // Mini SVG candle
       const W = 28, H = 48, pad = 4;
       const priceRange = r.high - r.low || 0.01;
       const yHigh  = pad;
-      const yLow   = H - pad;
       const yOpen  = pad + ((r.high - r.open)  / priceRange) * (H - 2*pad);
       const yClose = pad + ((r.high - r.close) / priceRange) * (H - 2*pad);
       const bodyTop    = Math.min(yOpen, yClose);
@@ -2041,15 +2082,15 @@ function buildDailyCompare(rows, avgVol) {
       const svgCandle = `<svg class="daily-candle-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
         <line x1="${cx}" y1="${yHigh}" x2="${cx}" y2="${bodyTop}" stroke="${candleColor}" stroke-width="1.5"/>
         <rect x="${cx-5}" y="${bodyTop}" width="10" height="${bodyH}" fill="${candleColor}" rx="1"/>
-        <line x1="${cx}" y1="${bodyBottom}" x2="${cx}" y2="${yLow}" stroke="${candleColor}" stroke-width="1.5"/>
+        <line x1="${cx}" y1="${bodyBottom}" x2="${cx}" y2="${H-pad}" stroke="${candleColor}" stroke-width="1.5"/>
       </svg>`;
 
-      // Change vs previous day
+      // Day change vs previous
       const dayIdx = days.findIndex(d => d.row === row);
       const prevRow = dayIdx > 0 ? rows[rows.length - 3 + dayIdx - 1] : null;
       const dayChange = prevRow ? ((r.close - prevRow.close) / prevRow.close * 100) : null;
       const dayChangeStr = dayChange !== null
-        ? `<span style="color:${dayChange >= 0 ? 'var(--accent)' : 'var(--accent2)'};font-weight:700;">${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(2)}%</span>`
+        ? `<span style="color:${dayChange >= 0 ? 'var(--accent)' : 'var(--accent2)'};font-weight:700;font-family:'Space Mono',monospace;font-size:10px;">${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(2)}%</span>`
         : '';
 
       return `<div class="daily-col${isToday ? ' daily-today' : ''}">
@@ -2068,14 +2109,14 @@ function buildDailyCompare(rows, avgVol) {
         </div>
         <div style="margin-bottom:4px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-            <span class="daily-vol-label">VOL ${volRatio >= 1.8 ? '🔥' : ''}</span>
-            <span class="daily-vol-num" style="color:${volBarColor};">${volStr} (${volRatio.toFixed(1)}×)</span>
+            <span class="daily-vol-label">VOL ${volRatio >= 2 ? '🔥' : volRatio >= 1.5 ? '⬆' : ''}</span>
+            <span class="daily-vol-num" style="color:${volBarColor};">${volStr} · ${volRatio.toFixed(1)}×</span>
           </div>
           <div style="background:var(--surface2);border-radius:2px;height:4px;overflow:hidden;">
             <div class="daily-vol-bar" style="width:${volBarW}%;background:${volBarColor};"></div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
           <span class="daily-verdict ${verdictClass}">${verdict}</span>
           ${dayChangeStr}
         </div>
@@ -2154,7 +2195,18 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       <div class="ticker-big">${ticker}</div>
       <div class="price-big">$${last.close.toFixed(2)}</div>
       <div class="price-change ${isUp?'up':'down'}">${isUp?'▲':'▼'} $${Math.abs(change).toFixed(2)} (${isUp?'+':''}${changePct}%)</div>
-      <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto;">${meta?.exchange ? meta.exchange + ' · ' : ''}${dateRange}</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);">${meta?.exchange ? meta.exchange + ' · ' : ''}${dateRange}</span>
+        <button onclick="quickAddToJournal('${ticker}', ${last.close.toFixed(2)})"
+          style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;"
+          title="Voeg toe aan Trade Journal">
+          📓 Journal
+        </button>
+        <button onclick="navigator.clipboard.writeText('${ticker}').then(()=>{this.textContent='✅';setTimeout(()=>this.textContent='📋 ${ticker}',1500)})"
+          style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:4px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;">
+          📋 ${ticker}
+        </button>
+      </div>
     </div>
 
     ${buildDailyCompare(rows, avgVol)}
@@ -2207,7 +2259,19 @@ function renderResult(ticker, rows, signals, biasObj, checklist, stats, meta, cv
       </div>` : ''}
     </div>
     <div class="chart-area">
-      <div class="chart-title">${'KOERS'} · ${rows.length} ${'HANDELSDAGEN'}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <div class="chart-title" style="margin:0;">${'KOERS'} · ${rows.length} ${'HANDELSDAGEN'}</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <a href="https://finance.yahoo.com/chart/${ticker}" target="_blank" rel="noopener"
+             style="font-family:'Space Mono',monospace;font-size:9px;color:var(--blue);text-decoration:none;padding:3px 8px;border:1px solid rgba(37,99,168,0.3);border-radius:4px;">
+            Yahoo Chart ↗
+          </a>
+          <a href="https://www.tradingview.com/chart/?symbol=${ticker}" target="_blank" rel="noopener"
+             style="font-family:'Space Mono',monospace;font-size:9px;color:var(--purple);text-decoration:none;padding:3px 8px;border:1px solid rgba(109,63,168,0.3);border-radius:4px;">
+            TradingView ↗
+          </a>
+        </div>
+      </div>
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
       <div class="chart-title" style="margin-top:14px;">${'VOLUME · GEKLEURD OP VSA-SIGNAAL'}</div>
       <div class="vol-wrap"><canvas id="volChart"></canvas></div>
@@ -3794,6 +3858,21 @@ document.addEventListener('DOMContentLoaded', () => {
   renderJournalStats();
   renderJournalList();
 });
+
+function quickAddToJournal(ticker, price) {
+  // Switch to journal tab
+  switchDashTab('journal');
+  // Fill in the ticker and price
+  setTimeout(() => {
+    const t = document.getElementById('jTicker');
+    const e = document.getElementById('jEntry');
+    if (t) t.value = ticker;
+    if (e) e.value = price;
+    initJournalDate();
+    // Scroll to journal form
+    document.getElementById('dpanel-journal')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 150);
+}
 
 function saveJournalEntry() {
   const sym    = document.getElementById('jTicker').value.trim().toUpperCase();
