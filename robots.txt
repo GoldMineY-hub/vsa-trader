@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://goldminey-hub.github.io/vsa-trader/sitemap.xml
