@@ -3288,7 +3288,7 @@ if (alertHits.length > 0) renderAlertHits();
 async 
 let moversActive = 'gainers';
 let moversCache = {};
-const MOVERS_LISTS = {
+var MOVERS_LISTS = {
 gainers: ['F','BAC','SOFI','HOOD','PLTR','NIO','XPEV','SNAP','PINS','UBER','DKNG','MARA','RIOT','CLSK','HIMS','RBLX','AAL','CCL','RIVN','LCID','ROOT','GRAB','SE','CPNG','PENN','GME','AMC','PTON','SPCE','NKLA','BB','NOK','INTC','WBA','SNDL','VALE','ITUB','PBR','SLB','HAL'],
 losers:  ['F','BAC','SOFI','HOOD','PLTR','NIO','XPEV','SNAP','PINS','UBER','DKNG','MARA','RIOT','CLSK','HIMS','RBLX','AAL','CCL','RIVN','LCID','ROOT','GRAB','SE','CPNG','PENN','GME','AMC','PTON','SPCE','NKLA','BB','NOK','INTC','WBA','SNDL','VALE','ITUB','PBR','SLB','HAL'],
 active:  ['F','SOFI','PLTR','NIO','SNAP','UBER','AAL','MARA','RIOT','RIVN','GME','AMC','HOOD','DKNG','HIMS','RBLX','NOK','INTC','BB','PTON','VALE','ITUB','PBR','SLB','HAL','SE','GRAB','CPNG','CLSK','SPCE']
@@ -3407,7 +3407,7 @@ const btn = document.getElementById('copyWorkerBtn');
 if (btn) { btn.textContent = '✅ Gekopieerd!'; setTimeout(() => btn.textContent = '📋 Kopieer', 2000); }
 });
 }
-const LEARN_CONTENT = {
+var LEARN_CONTENT = {
 vsa: `
 <div class="learn-card">
 <h3>📊 Wat is VSA · Volume Spread Analysis?</h3>
