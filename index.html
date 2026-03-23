@@ -491,7 +491,7 @@ body.dark .seo-section h1,body.dark .seo-section h2,body.dark .seo-section h3,bo
     if (!target) return new Response('no url', { status: 400 });
     const allowed = ['query1.finance.yahoo.com','query2.finance.yahoo.com','stooq.com','finviz.com'];
     const targetUrl = new URL(target);
-    if (!allowed.some(d => targetUrl.hostname.includes(d))) {
+    if (!allowed.some(d =&gt; targetUrl.hostname.includes(d))) {
       return new Response('not allowed', { status: 403 });
     }
     const resp = await fetch(target, {
@@ -796,6 +796,20 @@ body.dark .seo-section h1,body.dark .seo-section h2,body.dark .seo-section h3,bo
 </footer>
 
 <script>const lang = 'nl';
+let activeDashTab = 'alerts';
+
+function switchDashTab(tab) {
+activeDashTab = tab;
+document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+const btn = document.getElementById('dtab-' + tab);
+if (btn) btn.classList.add('active');
+document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+const panel = document.getElementById('dpanel-' + tab);
+if (panel) panel.classList.add('active');
+if (tab === 'learn') {
+const content = document.getElementById('learnContent');
+if (content && !content.innerHTML.trim()) switchLearnTab('vsa');
+}
 function applyLang() {
 document.querySelectorAll('[data-nl]').forEach(el => {
 const val = el.getAttribute('data-nl');
@@ -3269,7 +3283,9 @@ renderAlertHits();
 }
 document.addEventListener('DOMContentLoaded', () => {
 if (alertHits.length > 0) renderAlertHits();
-});async 
+});
+
+async 
 let moversActive = 'gainers';
 let moversCache = {};
 const MOVERS_LISTS = {
@@ -3882,19 +3898,6 @@ setTimeout(renderQuizQuestion, 50);
 } else {
 content.innerHTML = LEARN_CONTENT[tab] || '<p style="color:var(--muted);">Inhoud volgt binnenkort.</p>';
 }
-}
-let activeDashTab = 'alerts';
-function switchDashTab(tab) {
-activeDashTab = tab;
-document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
-const btn = document.getElementById('dtab-' + tab);
-if (btn) btn.classList.add('active');
-document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-const panel = document.getElementById('dpanel-' + tab);
-if (panel) panel.classList.add('active');
-if (tab === 'learn') {
-const content = document.getElementById('learnContent');
-if (content && !content.innerHTML.trim()) switchLearnTab('vsa');
 }
 if (tab === 'journal') {
 initJournalDate();
