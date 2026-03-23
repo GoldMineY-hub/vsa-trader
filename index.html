@@ -2883,6 +2883,7 @@ const el = document.getElementById('jDate');
 if (el && !el.value) el.value = today;
 }
 document.addEventListener('DOMContentLoaded', () => {
+switchDashTab('alerts');
 initJournalDate();
 renderJournalStats();
 renderJournalList();
