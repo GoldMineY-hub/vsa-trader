@@ -57,7 +57,22 @@
 </style>
 
 <!-- Dark mode direct voorkomt witte flits -->
-<script>if(localStorage.getItem('vsa_dark')==='1'){document.documentElement.style.background='#0f0f11';document.body&&(document.body.className='dark');}</script>
+<script>if(localStorage.getItem('vsa_dark')==='1'){document.documentElement.style.background='#0f0f11';document.body&&(document.body.className='dark');}document.addEventListener('DOMContentLoaded', () => {
+switchDashTab('alerts');
+initJournalDate();
+renderJournalStats();
+renderJournalList();
+if (alertHits.length > 0) renderAlertHits();
+const saved = localStorage.getItem('vsa_proxy') || '';
+if (saved) {
+const el = document.getElementById('proxyInput');
+if (el) el.value = saved;
+const sub = document.getElementById('proxyStatusSub');
+if (sub) sub.textContent = '✅ Eigen server actief · analyses laden nu in 1–2 seconden';
+updateProxyBadge(true);
+}
+});
+</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
@@ -2883,11 +2898,7 @@ const today = new Date().toISOString().slice(0, 10);
 const el = document.getElementById('jDate');
 if (el && !el.value) el.value = today;
 }
-document.addEventListener('DOMContentLoaded', () => {
-initJournalDate();
-renderJournalStats();
-renderJournalList();
-});
+
 function quickAddToJournal(ticker, price) {
 switchDashTab('journal');
 setTimeout(() => {
@@ -3033,10 +3044,7 @@ renderResult(ticker, rows, signals, biasObj, checklist, stats, m, cvdData, vpDat
 (function() {
 if (localStorage.getItem('vsa_dark') === '1') {
 document.body.classList.add('dark');
-document.addEventListener('DOMContentLoaded', () => {
-const icon = document.getElementById('darkModeIcon');
-if (icon) icon.textContent = '☀️';
-});
+
 }
 })();
 function updateMarketStatusBar() {
@@ -3267,9 +3275,8 @@ alertHits = [];
 localStorage.removeItem('vsa_alert_hits');
 renderAlertHits();
 }
-document.addEventListener('DOMContentLoaded', () => {
-if (alertHits.length > 0) renderAlertHits();
-});async 
+
+
 let moversActive = 'gainers';
 let moversCache = {};
 const MOVERS_LISTS = {
@@ -3910,10 +3917,7 @@ const section = document.getElementById('newsSection');
 if (section) section.style.display = 'block';
 }
 }
-document.addEventListener('DOMContentLoaded', () => {
-switchDashTab('alerts');
-if (alertHits.length > 0) renderAlertHits();
-});
+
 function updateProxyBadge(active) {
 const badge = document.getElementById('proxyStatusBadge');
 if (!badge) return;
@@ -3957,15 +3961,6 @@ if (sub) sub.textContent = 'Stel je eigen gratis server in voor razendsnelle ana
 updateProxyBadge(false);
 document.getElementById('proxyTestResult').innerHTML = '<span style="color:var(--muted);">Server gewist.</span>';
 }
-document.addEventListener('DOMContentLoaded', () => {
-const saved = localStorage.getItem('vsa_proxy') || '';
-if (saved) {
-const el = document.getElementById('proxyInput');
-if (el) el.value = saved;
-const sub = document.getElementById('proxyStatusSub');
-if (sub) sub.textContent = '✅ Eigen server actief · analyses laden nu in 1–2 seconden';
-updateProxyBadge(true);
-}
-});</script>
+</script>
 </body>
 </html>
