@@ -1,8 +1,6 @@
 # VSA Trader
 
-> 🇳🇱 **Deze tool is volledig in het Nederlands — gebouwd voor day traders in Nederland, België en heel Europa.**
-
-A free **Volume Spread Analysis (VSA)** tool for Dutch and Belgian stock traders. Analyse US and AEX stocks in real-time using professional VSA signals, VWAP, EMA, ATR and CVD — directly from your browser, no account required.
+A free **Volume Spread Analysis (VSA)** tool for Dutch and Belgian stock traders. Analyse US and AEX stocks in real-time using professional VSA signals, VWAP, EMA, ATR and CVD. All directly from your browser, no account required.
 
 🌐 **Live app:** [goldminey-hub.github.io/vsa-trader](https://goldminey-hub.github.io/vsa-trader/)
 
@@ -10,7 +8,7 @@ A free **Volume Spread Analysis (VSA)** tool for Dutch and Belgian stock traders
 
 ## What does it do?
 
-Type any stock ticker — `AAPL`, `TSLA`, `NVDA` or `ASML.AS` — and get a full VSA report within seconds:
+Type any stock ticker such as `AAPL`, `TSLA`, `NVDA` or `ASML.AS` and get a full VSA report within seconds:
 
 - 20+ VSA signal types automatically detected
 - VWAP, EMA-20, EMA-50, ATR and CVD analysis
@@ -25,10 +23,10 @@ Type any stock ticker — `AAPL`, `TSLA`, `NVDA` or `ASML.AS` — and get a full
 | Feature | Description |
 |---|---|
 | 📊 **VSA Signal Detection** | Stopping Volume, No Supply, No Demand, Demand Surge, Shake Out, Up-Thrust and more |
-| 📍 **VWAP** | Volume-weighted average price — above = bullish, below = bearish |
+| 📍 **VWAP** | Volume-weighted average price. Above VWAP is bullish, below VWAP is bearish |
 | 📈 **EMA-20 / EMA-50** | Trend direction and momentum |
 | 📐 **ATR** | Average True Range for stop-loss calculation |
-| 🌊 **CVD** | Cumulative Volume Delta — buying vs selling pressure |
+| 🌊 **CVD** | Cumulative Volume Delta showing buying vs selling pressure |
 | 🔔 **Volume Alert Scanner** | Automatically scans 40+ stocks for volume spikes and price moves |
 | 📌 **Watchlist** | Track up to 20 stocks with live price, bias tag and sparkline |
 | 📓 **Trade Journal** | Log trades with entry, exit, stop-loss, win rate and personal stats |
@@ -41,20 +39,20 @@ Type any stock ticker — `AAPL`, `TSLA`, `NVDA` or `ASML.AS` — and get a full
 
 | Signal | Meaning |
 |---|---|
-| **Stopping Volume** | High volume, small spread at support — institutions absorbing sell pressure |
-| **No Supply** | Low volume down bar — sellers exhausted, potential reversal up |
-| **No Demand** | Low volume up bar — buyers weak, potential reversal down |
-| **Demand Surge** | High volume, wide spread closing near high — strong buying |
-| **Shake Out** | Price pushed below support, closes back up — bullish trap |
-| **Up-Thrust / Rejection** | Price pushed above resistance, closes back down — bearish trap |
-| **Climactic Action** | Extreme volume spike — possible trend exhaustion |
-| **Bullish Absorption** | High volume at support with little price reaction — hidden strength |
+| **Stopping Volume** | High volume, small spread at support. Institutions are absorbing sell pressure. |
+| **No Supply** | Low volume down bar. Sellers are exhausted with a potential reversal up |
+| **No Demand** | Low volume up bar. Buyers are weak with a potential reversal down |
+| **Demand Surge** | High volume, wide spread closing near high. Strong buying |
+| **Shake Out** | Price pushed below support, closes back up. Bullish reversal signal. |
+| **Up-Thrust / Rejection** | Price pushed above resistance, closes back down. Bearish reversal signal. |
+| **Climactic Action** | Extreme volume spike. Possible trend exhaustion. |
+| **Bullish Absorption** | High volume at support with little price reaction. Hidden strength. |
 
 ---
 
 ## Who is this for?
 
-- 🇳🇱 Dutch and Belgian day traders and swing traders
+- 🇳🇱 Dutch and Belgian day traders and swing traders.
 - Beginners learning VSA concepts step by step
 - Intermediate traders looking to confirm entries and exits
 - Anyone trading US stocks (NYSE, NASDAQ) or AEX stocks from Europe
@@ -73,19 +71,19 @@ Type any stock ticker — `AAPL`, `TSLA`, `NVDA` or `ASML.AS` — and get a full
 
 ## Getting Started
 
-### Option A — Use it directly (no setup)
-Open the live app at [goldminey-hub.github.io/vsa-trader](https://goldminey-hub.github.io/vsa-trader/). Analysis takes 20–30 seconds via the public server.
+### Option A: Use it directly (no setup)
+Open the live app at [goldminey-hub.github.io/vsa-trader](https://goldminey-hub.github.io/vsa-trader/). Analysis takes 20 to 30 seconds via the public server.
 
-### Option B — Set up your own Cloudflare Worker (recommended)
-Get analysis results in **1–2 seconds** with your own free Cloudflare Worker.
+### Option B: Set up your own Cloudflare Worker (recommended)
+Get analysis results in 1 to 2 seconds with your own free Cloudflare Worker.
 
-1. Go to [workers.cloudflare.com](https://workers.cloudflare.com) and create a free account — no credit card needed
+1. Go to [workers.cloudflare.com](https://workers.cloudflare.com) and create a free account. No credit card needed.
 2. Click **Workers & Pages** → **Create** → **Create Worker** → click **Deploy**
 3. Click **Edit Code**, select all (Ctrl+A), delete and paste the worker code from the app's setup guide
 4. Click **Deploy** and copy your Worker URL
 5. Open the app, go to **Instellingen**, paste your Worker URL and save
 
-Your Worker URL is saved in your browser — you only need to set it up once.
+Your Worker URL is saved in your browser. You only need to set it up once.
 
 ---
 
@@ -95,7 +93,7 @@ Your Worker URL is saved in your browser — you only need to set it up once.
 Browser (your computer)
     │
     ▼
-Cloudflare Worker (your free worker — optional but recommended)
+Cloudflare Worker (your free worker, optional but recommended)
     │
     ▼
 Yahoo Finance API → real-time price, volume and candle data
@@ -107,7 +105,7 @@ VSA calculations → signals, VWAP, EMA, ATR, CVD
 Results displayed in browser
 ```
 
-No data is stored anywhere. Everything runs locally in your browser. Your settings are saved in localStorage.
+No data is stored anywhere. Everything runs locally in your browser and your settings are saved in localStorage.
 
 ---
 
